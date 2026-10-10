@@ -1,0 +1,2615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04070d">
+<meta name="description" content="EcoCommand — One Ecosystem. One Shared Source of Truth. Real-Time Visibility. Verified Action.">
+<title>EcoCommand — Operations Control Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ============================================================
+   ECOCOMMAND — OPERATIONS CONTROL CENTRE
+   Dark operations-room palette with electric cyan accents
+   ============================================================ */
+:root{
+  --bg:#04070d; --bg-2:#080e17; --bg-3:#0c1420; --bg-4:#131f2f; --bg-5:#1a2738;
+  --bg-elev:rgba(8,14,23,0.92); --bg-glass:rgba(8,14,23,0.75);
+  --cy:#06b6d4; --cy-2:#22d3ee; --cy-3:#67e8f9; --cy-deep:#0891b2; --cy-ink:#082f3a;
+  --jade:#10b981; --jade-2:#34d399; --jade-3:#6ee7b7;
+  --blue:#3b82f6; --blue-2:#60a5fa; --indigo:#6366f1;
+  --violet:#a78bfa; --violet-2:#c4b5fd;
+  --gold:#fbbf24; --gold-2:#fde68a; --amber:#f59e0b; --orange:#fb923c;
+  --rose:#f43f5e; --rose-2:#fb7185; --red:#ef4444; --pink:#ec4899;
+  --white:#ffffff; --text:#e2eef7; --text-2:#94a8bb; --text-3:#647a90; --text-4:#465a6f; --text-5:#2e3f52;
+  --line:rgba(255,255,255,0.06); --line-2:rgba(255,255,255,0.1); --line-3:rgba(255,255,255,0.16);
+  --line-cy:rgba(34,211,238,0.2); --line-cy-2:rgba(34,211,238,0.4); --line-jade:rgba(52,211,153,0.22);
+  --sh-sm:0 1px 2px rgba(0,0,0,0.4); --sh-md:0 8px 32px rgba(0,0,0,0.55);
+  --sh-lg:0 24px 64px rgba(0,0,0,0.7);
+  --sh-glow:0 0 0 1px rgba(34,211,238,0.15),0 8px 32px rgba(6,182,212,0.15);
+  --sh-glow-2:0 0 0 1px rgba(34,211,238,0.28),0 12px 40px rgba(6,182,212,0.22);
+  --r-xs:6px; --r-sm:10px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-full:9999px;
+  --tx:0.22s cubic-bezier(0.4,0,0.2,1);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --hdr:60px; --sidenav:240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:14px;position:relative;letter-spacing:-0.005em}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 5% 0%,rgba(6,182,212,0.12) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 95% 5%,rgba(99,102,241,0.08) 0%,transparent 55%),radial-gradient(ellipse 60% 50% at 50% 100%,rgba(16,185,129,0.06) 0%,transparent 55%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(34,211,238,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.015) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 90% 80% at 50% 0%,black 0%,transparent 85%);-webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 0%,black 0%,transparent 85%)}
+a{color:inherit;text-decoration:none;transition:var(--tx)}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;font-size:inherit}
+img{max-width:100%;display:block}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+input:focus,textarea:focus,select:focus{outline:none}
+::selection{background:var(--cy);color:#000}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(34,211,238,0.15);border-radius:8px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,0.3);background-clip:content-box;border:2px solid transparent}
+
+/* ============ APP SHELL ============ */
+.app{display:grid;grid-template-columns:var(--sidenav) 1fr;min-height:100vh;position:relative;z-index:1}
+@media(max-width:1100px){.app{grid-template-columns:1fr}}
+
+/* ============ SIDE NAV ============ */
+.sidenav{background:linear-gradient(180deg,var(--bg-2),var(--bg));border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:thin}
+@media(max-width:1100px){.sidenav{position:fixed;left:-280px;top:0;width:280px;z-index:300;transition:left 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:8px 0 40px rgba(0,0,0,0.6)}.sidenav.open{left:0}}
+.sidenav-hd{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sidenav-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;box-shadow:0 4px 16px rgba(6,182,212,0.4),inset 0 1px 0 rgba(255,255,255,0.2)}
+.sidenav-title{font-weight:900;font-size:0.98rem;color:var(--white);letter-spacing:-0.03em;line-height:1}
+.sidenav-title small{display:block;font-size:0.58rem;color:var(--cy-2);font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin-top:4px;opacity:0.85}
+.sidenav-scroll{flex:1;padding:12px 10px 20px;overflow-y:auto}
+.sidenav-sec{margin-bottom:16px}
+.sidenav-sec-t{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-4);padding:8px 12px 4px;font-weight:800}
+.navitem{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:8px;color:var(--text-2);font-weight:500;font-size:0.83rem;cursor:pointer;transition:var(--tx);width:100%;text-align:left;border:1px solid transparent;position:relative;margin-bottom:1px}
+.navitem:hover{background:rgba(34,211,238,0.06);color:var(--cy-2)}
+.navitem.active{background:linear-gradient(90deg,rgba(34,211,238,0.14),rgba(34,211,238,0.03));color:var(--cy-3);font-weight:700;border-color:var(--line-cy)}
+.navitem.active::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--cy-2);border-radius:0 3px 3px 0}
+.navitem i{width:18px;text-align:center;flex-shrink:0;font-size:0.85rem}
+.navitem .n{margin-left:auto;background:rgba(34,211,238,0.16);color:var(--cy-3);font-size:0.6rem;font-weight:800;padding:1px 7px;border-radius:8px;min-width:20px;text-align:center;border:1px solid var(--line-cy);font-family:var(--font-mono)}
+.navitem .n.rose{background:rgba(244,63,94,0.18);color:var(--rose-2);border-color:rgba(244,63,94,0.32)}
+.navitem .n.gold{background:rgba(251,191,36,0.18);color:var(--gold-2);border-color:rgba(251,191,36,0.32)}
+.sidenav-ft{padding:12px;border-top:1px solid var(--line);flex-shrink:0}
+
+/* ============ MAIN ============ */
+.main{display:flex;flex-direction:column;min-width:0}
+
+/* ============ TOP BAR ============ */
+.topbar{position:sticky;top:0;z-index:80;height:var(--hdr);background:rgba(4,7,13,0.9);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 18px;flex-shrink:0}
+.topbar.scrolled{background:rgba(4,7,13,0.97);border-bottom-color:var(--line-cy);box-shadow:0 8px 32px rgba(0,0,0,0.55)}
+.menubtn{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--text-2);cursor:pointer;transition:var(--tx)}
+.menubtn:hover{color:var(--cy-2);border-color:var(--line-cy)}
+@media(max-width:1100px){.menubtn{display:flex}}
+.topbar-title{font-weight:800;font-size:0.94rem;color:var(--white);letter-spacing:-0.02em;flex-shrink:0;display:flex;align-items:center;gap:10px}
+.topbar-title i{color:var(--cy-2);font-size:0.85rem}
+.topbar-title .crumb{color:var(--text-3);font-weight:500;font-size:0.78rem;letter-spacing:0}
+.topbar-search{flex:1;max-width:520px;margin:0 auto;display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:var(--r-full);background:var(--bg-3);border:1px solid var(--line-2);transition:var(--tx)}
+.topbar-search:focus-within{border-color:var(--line-cy-2);background:rgba(34,211,238,0.04);box-shadow:0 0 0 3px rgba(34,211,238,0.1)}
+.topbar-search i{color:var(--text-3);font-size:0.82rem}
+.topbar-search input{background:none;border:0;color:var(--white);width:100%;font-size:0.83rem;min-width:0}
+.topbar-search input::placeholder{color:var(--text-3)}
+.topbar-search kbd{font-family:var(--font-mono);font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,0.05);border:1px solid var(--line-2);color:var(--text-3)}
+@media(max-width:800px){.topbar-search{display:none}}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sysstat{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:var(--r-full);background:rgba(16,185,129,0.08);border:1px solid var(--line-jade);font-size:0.68rem;font-weight:800;color:var(--jade-2);letter-spacing:0.04em;text-transform:uppercase}
+.sysstat.degraded{background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.28);color:var(--gold-2)}
+.sysstat .dot{width:6px;height:6px;border-radius:50%;background:var(--jade-2);box-shadow:0 0 8px var(--jade-2);animation:pulse 2s infinite}
+.sysstat.degraded .dot{background:var(--gold-2);box-shadow:0 0 8px var(--gold-2)}
+@media(max-width:900px){.sysstat{display:none}}
+
+/* ============ ECO LIVE PILL ============ */
+.eco-live{
+  display:inline-flex;align-items:center;gap:7px;padding:6px 12px;
+  border-radius:var(--r-full);
+  background:rgba(148,163,184,0.08);
+  border:1px solid rgba(148,163,184,0.25);
+  color:var(--text-3);
+  font-size:0.66rem;font-weight:800;letter-spacing:0.06em;
+  text-transform:uppercase;cursor:pointer;transition:var(--tx);
+  font-family:var(--font-mono);flex-shrink:0;
+  user-select:none;white-space:nowrap;
+}
+.eco-live:hover{background:rgba(34,211,238,0.08);border-color:var(--line-cy)}
+.eco-live .ldot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--text-4);flex-shrink:0;transition:var(--tx);
+}
+.eco-live[data-state="connected"],
+.eco-live[data-state="synced"]{
+  background:rgba(16,185,129,0.08);
+  border-color:var(--line-jade);
+  color:var(--jade-2);
+}
+.eco-live[data-state="connected"] .ldot,
+.eco-live[data-state="synced"] .ldot{
+  background:var(--jade-2);box-shadow:0 0 8px var(--jade-2);
+}
+.eco-live[data-state="connecting"],
+.eco-live[data-state="syncing"]{
+  background:rgba(251,191,36,0.08);
+  border-color:rgba(251,191,36,0.28);
+  color:var(--gold-2);
+}
+.eco-live[data-state="connecting"] .ldot,
+.eco-live[data-state="syncing"] .ldot{
+  background:var(--gold-2);box-shadow:0 0 8px var(--gold-2);
+  animation:pulse 1.2s infinite;
+}
+.eco-live[data-state="reconnecting"]{
+  background:rgba(245,158,11,0.08);
+  border-color:rgba(245,158,11,0.3);
+  color:var(--amber);
+}
+.eco-live[data-state="reconnecting"] .ldot{
+  background:var(--amber);box-shadow:0 0 8px var(--amber);
+  animation:pulse 1.2s infinite;
+}
+.eco-live[data-state="offline"]{
+  background:rgba(148,163,184,0.08);
+  border-color:rgba(148,163,184,0.25);
+  color:var(--text-3);
+}
+.eco-live[data-state="error"],
+.eco-live[data-state="unavailable"]{
+  background:rgba(244,63,94,0.08);
+  border-color:rgba(244,63,94,0.3);
+  color:var(--rose-2);
+}
+.eco-live[data-state="error"] .ldot,
+.eco-live[data-state="unavailable"] .ldot{
+  background:var(--rose-2);box-shadow:0 0 8px var(--rose-2);
+}
+@media(max-width:560px){
+  .eco-live span.eco-live-label{display:none}
+  .eco-live{padding:6px 10px}
+}
+
+/* ============ TOPBAR CONTROLS ============ */
+.tb-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--text-2);cursor:pointer;transition:var(--tx);position:relative}
+.tb-icon:hover{background:rgba(34,211,238,0.1);border-color:var(--line-cy);color:var(--cy-2)}
+.tb-icon .badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--rose);color:#fff;font-size:0.58rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);font-family:var(--font-mono)}
+.tb-icon .badge.gold{background:var(--gold)}
+.tb-user{display:flex;align-items:center;gap:9px;padding:5px 10px 5px 5px;border-radius:var(--r-full);background:rgba(255,255,255,0.03);border:1px solid var(--line);cursor:pointer;transition:var(--tx)}
+.tb-user:hover{border-color:var(--line-cy);background:rgba(34,211,238,0.06)}
+.tb-user-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#0891b2);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.78rem;flex-shrink:0}
+.tb-user-info{display:flex;flex-direction:column;line-height:1.1}
+.tb-user-info strong{font-size:0.75rem;color:var(--white);font-weight:700}
+.tb-user-info small{font-size:0.6rem;color:var(--cy-2);font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
+@media(max-width:640px){.tb-user-info{display:none}}
+
+/* ============ MOBILE OVERLAY ============ */
+.mob-ovl{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:250;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.mob-ovl.open{opacity:1;pointer-events:auto}
+
+/* ============ CONTENT ============ */
+.content{padding:22px;flex:1;min-width:0}
+@media(max-width:640px){.content{padding:16px}}
+@media(min-width:1400px){.content{padding:28px 32px}}
+
+/* ============ PAGE ============ */
+.page{display:none}
+.page.active{display:block;animation:fadeUp 0.32s cubic-bezier(0.4,0,0.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============ PAGE HEADER ============ */
+.ph{margin-bottom:20px;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.ph-info{flex:1;min-width:240px}
+.ph-title{font-size:1.35rem;font-weight:900;color:var(--white);letter-spacing:-0.032em;line-height:1.15;margin-bottom:6px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.ph-title i{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,rgba(34,211,238,0.14),rgba(34,211,238,0.03));border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--cy-2);flex-shrink:0}
+.ph-desc{font-size:0.85rem;color:var(--text-2);line-height:1.55;max-width:820px}
+.ph-actions{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 15px;border-radius:var(--r-sm);font-weight:600;font-size:0.8rem;transition:var(--tx);cursor:pointer;border:1px solid transparent;white-space:nowrap;min-height:38px;text-align:center;text-decoration:none;user-select:none;letter-spacing:-0.005em}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;font-weight:700;box-shadow:0 4px 16px rgba(6,182,212,0.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(6,182,212,0.5)}
+.btn-outline{background:rgba(34,211,238,0.06);color:var(--cy-2);border-color:var(--line-cy-2)}
+.btn-outline:hover{background:rgba(34,211,238,0.13);border-color:var(--cy-2);transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,0.04);color:var(--text);border-color:var(--line-2)}
+.btn-ghost:hover{background:rgba(255,255,255,0.08);color:var(--white);transform:translateY(-1px)}
+.btn-danger{background:rgba(244,63,94,0.12);color:var(--rose-2);border-color:rgba(244,63,94,0.28)}
+.btn-danger:hover{background:rgba(244,63,94,0.22);transform:translateY(-1px)}
+.btn-success{background:rgba(52,211,153,0.12);color:var(--jade-2);border-color:var(--line-jade)}
+.btn-success:hover{background:rgba(52,211,153,0.22);transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a1a;font-weight:800}
+.btn-sm{padding:7px 12px;font-size:0.74rem;min-height:32px}
+.btn-xs{padding:5px 9px;font-size:0.68rem;min-height:26px;font-weight:700}
+.btn-icon{padding:8px;min-width:34px}
+.btn[disabled]{opacity:0.4;cursor:not-allowed;filter:grayscale(0.6)}
+.btn[disabled]:hover{transform:none;box-shadow:none}
+
+/* ============ TOOLBAR ============ */
+.tb-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.tb-row .spacer{flex:1}
+.search-box{display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:var(--r-sm);background:var(--bg-2);border:1px solid var(--line-2);transition:var(--tx);min-width:220px;flex:1;max-width:420px}
+.search-box:focus-within{border-color:var(--line-cy-2);background:rgba(34,211,238,0.03);box-shadow:0 0 0 3px rgba(34,211,238,0.1)}
+.search-box i{color:var(--text-3);font-size:0.82rem}
+.search-box input{background:none;border:0;color:var(--white);width:100%;font-size:0.83rem;min-width:0}
+.search-box input::placeholder{color:var(--text-3)}
+.fsel{padding:9px 34px 9px 13px;border-radius:var(--r-sm);background:var(--bg-2);border:1px solid var(--line-2);color:var(--text);font-size:0.79rem;font-weight:600;cursor:pointer;transition:var(--tx);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23647a90' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.fsel:focus{border-color:var(--line-cy-2)}
+
+/* ============ TABS ============ */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;margin-bottom:14px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-full);background:var(--bg-2);border:1px solid var(--line);color:var(--text-2);font-size:0.78rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--tx);flex-shrink:0}
+.tab:hover{border-color:var(--line-cy);color:var(--cy-2)}
+.tab.active{background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(6,182,212,0.3);font-weight:700}
+.tab .n{font-size:0.62rem;font-weight:700;padding:1px 6px;background:rgba(255,255,255,0.08);border-radius:8px;margin-left:2px;font-family:var(--font-mono)}
+.tab.active .n{background:rgba(0,0,0,0.22)}
+
+/* ============ KPI GRID ============ */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:22px}
+.kpi{padding:16px 18px;border-radius:var(--r-md);background:linear-gradient(160deg,rgba(12,20,32,0.85),rgba(8,14,23,0.7));border:1px solid var(--line-2);transition:var(--tx);cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.kpi:hover{border-color:var(--line-cy);transform:translateY(-2px);box-shadow:var(--sh-glow)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cy-2),transparent);opacity:0;transition:var(--tx)}
+.kpi:hover::before{opacity:1}
+.kpi-hd{display:flex;align-items:center;gap:10px}
+.kpi-ic{width:32px;height:32px;border-radius:9px;background:rgba(34,211,238,0.1);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:0.8rem;flex-shrink:0}
+.kpi-ic.jade{background:rgba(52,211,153,0.1);border-color:var(--line-jade);color:var(--jade-2)}
+.kpi-ic.gold{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.28);color:var(--gold-2)}
+.kpi-ic.violet{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.28);color:var(--violet-2)}
+.kpi-ic.rose{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.28);color:var(--rose-2)}
+.kpi-ic.blue{background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.28);color:var(--blue-2)}
+.kpi-lbl{font-size:0.66rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em;font-weight:800;line-height:1.2;flex:1}
+.kpi-v{font-family:var(--font);font-size:1.75rem;font-weight:900;color:var(--white);letter-spacing:-0.04em;line-height:1;display:flex;align-items:baseline;gap:5px;font-variant-numeric:tabular-nums}
+.kpi-v small{font-size:0.4em;color:var(--text-3);font-weight:700;letter-spacing:0}
+.kpi-sub{font-size:0.68rem;color:var(--text-3);font-weight:600}
+.kpi.jade .kpi-v{color:var(--jade-3)}
+.kpi.gold .kpi-v{color:var(--gold-2)}
+.kpi.rose .kpi-v{color:var(--rose-2)}
+.kpi.violet .kpi-v{color:var(--violet-2)}
+.kpi.blue .kpi-v{color:var(--blue-2)}
+
+/* ============ CARDS ============ */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.g4{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:linear-gradient(160deg,rgba(12,20,32,0.75),rgba(8,14,23,0.6));border:1px solid var(--line-2);border-radius:var(--r-md);padding:16px;transition:var(--tx);position:relative;display:flex;flex-direction:column;gap:12px}
+.card:hover{border-color:var(--line-cy);box-shadow:var(--sh-glow)}
+.card.s-draft{border-left:3px solid var(--text-4)}
+.card.s-pending{border-left:3px solid var(--gold)}
+.card.s-active{border-left:3px solid var(--cy-2)}
+.card.s-in_progress{border-left:3px solid var(--cy-2);animation:pulseSoft 2.5s infinite}
+.card.s-verified,.card.s-completed,.card.s-approved{border-left:3px solid var(--jade-2)}
+.card.s-rejected,.card.s-failed{border-left:3px solid var(--rose)}
+.card.s-disputed,.card.s-warning{border-left:3px solid var(--gold)}
+.card.s-critical{border-left:3px solid var(--red);animation:pulseSoft 1.8s infinite}
+.card.s-cancelled,.card.s-archived{border-left:3px solid var(--text-4);opacity:0.65}
+@keyframes pulseSoft{0%,100%{opacity:1}50%{opacity:0.85}}
+.card-hd{display:flex;align-items:flex-start;gap:12px}
+.card-ic{width:40px;height:40px;border-radius:11px;background:rgba(34,211,238,0.1);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:var(--cy-2)}
+.card-ic.jade{background:rgba(52,211,153,0.1);border-color:var(--line-jade);color:var(--jade-2)}
+.card-ic.gold{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.28);color:var(--gold-2)}
+.card-ic.violet{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.28);color:var(--violet-2)}
+.card-ic.rose{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.28);color:var(--rose-2)}
+.card-ic.blue{background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.28);color:var(--blue-2)}
+.card-info{flex:1;min-width:0}
+.card-info h4{font-size:0.9rem;font-weight:800;color:var(--white);margin-bottom:4px;line-height:1.3;letter-spacing:-0.02em;word-break:break-word}
+.card-info .meta{font-size:0.72rem;color:var(--text-3);display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.card-info .meta i{font-size:0.66rem;opacity:0.85}
+.card-body{display:flex;gap:5px;flex-wrap:wrap}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.card-actions .btn{flex:1;min-width:0}
+
+/* ============ CHIPS ============ */
+.chip{padding:3px 9px;border-radius:var(--r-full);font-size:0.64rem;font-weight:700;letter-spacing:0.01em;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.chip i{font-size:0.7rem}
+.chip-cy{background:rgba(34,211,238,0.1);color:var(--cy-3);border:1px solid var(--line-cy)}
+.chip-jade{background:rgba(52,211,153,0.1);color:var(--jade-3);border:1px solid var(--line-jade)}
+.chip-gold{background:rgba(251,191,36,0.12);color:var(--gold-2);border:1px solid rgba(251,191,36,0.24)}
+.chip-violet{background:rgba(167,139,250,0.12);color:var(--violet-2);border:1px solid rgba(167,139,250,0.24)}
+.chip-rose{background:rgba(244,63,94,0.12);color:var(--rose-2);border:1px solid rgba(244,63,94,0.24)}
+.chip-blue{background:rgba(59,130,246,0.12);color:var(--blue-2);border:1px solid rgba(59,130,246,0.24)}
+.chip-mute{background:rgba(255,255,255,0.04);color:var(--text-2);border:1px solid var(--line-2)}
+.chip-mono{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:-0.01em}
+
+/* ============ STATUS PILLS ============ */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--r-full);font-size:0.62rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap}
+.pill i{font-size:0.5rem}
+.p-draft{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.24)}
+.p-pending{background:rgba(251,191,36,0.14);color:var(--gold-2);border:1px solid rgba(251,191,36,0.3)}
+.p-active,.p-in_progress,.p-processing{background:rgba(34,211,238,0.14);color:var(--cy-3);border:1px solid var(--line-cy-2);animation:pulse 2.4s infinite}
+.p-verified,.p-completed,.p-approved,.p-online,.p-success{background:rgba(52,211,153,0.14);color:var(--jade-3);border:1px solid var(--line-jade)}
+.p-rejected,.p-failed,.p-error,.p-offline,.p-critical{background:rgba(244,63,94,0.14);color:var(--rose-2);border:1px solid rgba(244,63,94,0.3)}
+.p-disputed,.p-warning,.p-review,.p-awaiting{background:rgba(251,191,36,0.14);color:var(--gold-2);border:1px solid rgba(251,191,36,0.3)}
+.p-cancelled,.p-archived,.p-inactive,.p-not_connected{background:rgba(148,163,184,0.1);color:#94a3b8;border:1px solid rgba(148,163,184,0.2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+
+/* ============ BANNERS ============ */
+.banner{display:flex;align-items:flex-start;gap:11px;padding:13px 16px;border-radius:var(--r-md);font-size:0.81rem;font-weight:500;margin-bottom:16px;line-height:1.55;position:relative;overflow:hidden}
+.banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.banner i{font-size:0.95rem;flex-shrink:0;margin-top:2px}
+.banner strong{color:var(--white);font-weight:800}
+.banner.info{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.22);color:var(--blue-2)}
+.banner.info::before{background:var(--blue)}.banner.info i{color:var(--blue-2)}
+.banner.warn{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.22);color:var(--gold-2)}
+.banner.warn::before{background:var(--gold)}.banner.warn i{color:var(--gold-2)}
+.banner.danger{background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.22);color:var(--rose-2)}
+.banner.danger::before{background:var(--rose)}.banner.danger i{color:var(--rose-2)}
+.banner.success{background:rgba(52,211,153,0.06);border:1px solid var(--line-jade);color:var(--jade-2)}
+.banner.success::before{background:var(--jade-2)}.banner.success i{color:var(--jade-2)}
+
+/* ============ EMPTY ============ */
+.empty{text-align:center;padding:52px 24px;border-radius:var(--r-lg);background:linear-gradient(160deg,rgba(12,20,32,0.4),rgba(8,14,23,0.25));border:1px dashed var(--line-cy);position:relative;overflow:hidden}
+.empty::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(34,211,238,0.05),transparent 60%);pointer-events:none}
+.empty i.main{font-size:2.6rem;color:var(--cy-2);margin-bottom:16px;display:block;opacity:0.55}
+.empty h3{font-size:1rem;font-weight:800;color:var(--white);margin-bottom:8px;letter-spacing:-0.02em}
+.empty p{font-size:0.83rem;color:var(--text-2);margin-bottom:20px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
+.empty-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.empty.sm{padding:32px 20px}
+.empty.sm i.main{font-size:2rem;margin-bottom:10px}
+
+/* ============ TABLES ============ */
+.table-wrap{background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-md);overflow:hidden}
+.table{width:100%;border-collapse:collapse;font-size:0.81rem}
+.table th{text-align:left;padding:11px 14px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--line-2);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);font-weight:800;white-space:nowrap}
+.table td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--text);vertical-align:middle}
+.table tr:last-child td{border-bottom:0}
+.table tbody tr{transition:var(--tx);cursor:pointer}
+.table tbody tr:hover td{background:rgba(34,211,238,0.03)}
+.table .cell-mono{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-2)}
+@media(max-width:720px){.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.table{min-width:640px}}
+
+/* ============ FEED ITEM ============ */
+.feed-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-sm);background:var(--bg-2);border:1px solid var(--line);margin-bottom:7px;transition:var(--tx);cursor:pointer;position:relative;overflow:hidden}
+.feed-item:hover{border-color:var(--line-cy);transform:translateX(2px);background:rgba(34,211,238,0.02)}
+.feed-ic{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:rgba(34,211,238,0.1);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:0.8rem}
+.feed-ic.jade{background:rgba(52,211,153,0.1);border-color:var(--line-jade);color:var(--jade-2)}
+.feed-ic.gold{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.28);color:var(--gold-2)}
+.feed-ic.rose{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.28);color:var(--rose-2)}
+.feed-ic.violet{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.28);color:var(--violet-2)}
+.feed-ic.blue{background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.28);color:var(--blue-2)}
+.feed-info{flex:1;min-width:0}
+.feed-info strong{display:block;font-size:0.84rem;color:var(--white);font-weight:700;margin-bottom:3px;letter-spacing:-0.01em}
+.feed-info p{font-size:0.76rem;color:var(--text-2);line-height:1.5;margin-bottom:4px}
+.feed-info small{font-size:0.66rem;color:var(--text-3);font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--font-mono);letter-spacing:-0.01em}
+.feed-info small span{display:flex;align-items:center;gap:4px}
+
+/* ============ MODAL ============ */
+.ovl{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;overscroll-behavior:contain}
+.ovl.open{display:flex;animation:fadeIn 0.22s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mdl{background:linear-gradient(180deg,#0c1420,#080e17);border:1px solid var(--line-2);border-radius:var(--r-lg);width:100%;max-width:700px;padding:26px;position:relative;box-shadow:0 40px 100px rgba(0,0,0,0.9),0 0 0 1px rgba(34,211,238,0.06);animation:mUp 0.35s cubic-bezier(0.34,1.56,0.64,1);margin:auto}
+.mdl-lg{max-width:960px}
+.mdl-xl{max-width:1200px}
+@keyframes mUp{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mdl-hd{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;padding-right:44px}
+.mdl-hd-ic{width:40px;height:40px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,rgba(34,211,238,0.14),rgba(34,211,238,0.04));border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:1rem}
+.mdl-hd-txt h2{font-size:1.12rem;font-weight:800;color:var(--white);letter-spacing:-0.02em;line-height:1.25}
+.mdl-hd-txt p{font-size:0.78rem;color:var(--text-3);margin-top:3px;font-family:var(--font-mono)}
+.mdl-sub{font-size:0.82rem;color:var(--text-2);margin-bottom:20px;line-height:1.6}
+.mdl-close{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--text-3);transition:var(--tx);cursor:pointer;border:1px solid transparent}
+.mdl-close:hover{background:rgba(244,63,94,0.12);color:var(--rose-2);transform:rotate(90deg);border-color:rgba(244,63,94,0.3)}
+
+/* ============ FORM ============ */
+.fg{margin-bottom:15px}
+.fl{display:block;font-size:0.68rem;font-weight:800;color:var(--text-2);margin-bottom:7px;letter-spacing:0.06em;text-transform:uppercase}
+.fl .req{color:var(--rose)}
+.fl .hint{font-weight:500;color:var(--text-3);text-transform:none;letter-spacing:0;font-size:0.7rem}
+.fi,.fs,.ft{width:100%;padding:11px 14px;border-radius:var(--r-sm);background:var(--bg-3);border:1px solid var(--line-2);color:var(--white);font-size:0.86rem;outline:none;transition:var(--tx);-webkit-appearance:none;appearance:none}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--cy-2);background:rgba(34,211,238,0.03);box-shadow:0 0 0 3px rgba(34,211,238,0.12)}
+.ft{resize:vertical;min-height:90px;font-family:inherit;line-height:1.55}
+.fs{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 12 12'%3E%3Cpath fill='%23647a90' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+.fi::placeholder,.ft::placeholder{color:var(--text-3)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.frow{grid-template-columns:1fr}}
+
+/* ============ DETAIL ROWS ============ */
+.det-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;font-size:0.83rem;border-bottom:1px dashed rgba(255,255,255,0.05)}
+.det-row:last-child{border-bottom:0}
+.det-row .k{color:var(--text-3);font-weight:700;font-size:0.72rem;letter-spacing:0.04em;flex-shrink:0;text-transform:uppercase}
+.det-row .v{color:var(--white);font-weight:600;text-align:right;word-break:break-word;font-family:var(--font-mono);font-size:0.78rem}
+
+/* ============ TIMELINE ============ */
+.timeline{position:relative;padding:8px 0}
+.tl-item{position:relative;padding-left:30px;padding-bottom:18px;border-left:2px solid var(--line-2);margin-left:10px}
+.tl-item:last-child{border-left-color:transparent;padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--bg-2);border:2px solid var(--text-4);transition:var(--tx)}
+.tl-item.done::before{border-color:var(--jade-2);background:var(--jade-2);box-shadow:0 0 10px rgba(52,211,153,0.4)}
+.tl-item.active::before{border-color:var(--cy-2);background:var(--bg-2);animation:pulse 2.4s infinite}
+.tl-item.rejected::before{border-color:var(--rose);background:var(--rose)}
+.tl-time{font-size:0.68rem;color:var(--text-3);font-weight:600;margin-bottom:2px;font-family:var(--font-mono)}
+.tl-title{font-size:0.84rem;font-weight:700;color:var(--white);margin-bottom:2px}
+.tl-desc{font-size:0.78rem;color:var(--text-2);line-height:1.5}
+
+/* ============ PROGRESS ============ */
+.progress{height:6px;border-radius:3px;background:var(--bg-4);overflow:hidden;position:relative;margin:8px 0}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#22d3ee,#0891b2);transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+.progress-fill.jade{background:linear-gradient(90deg,#10b981,#34d399)}
+.progress-fill.rose{background:linear-gradient(90deg,#f43f5e,#fb7185)}
+.progress-fill.gold{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+
+/* ============ TOAST ============ */
+.toasts{position:fixed;top:74px;right:18px;z-index:4000;display:flex;flex-direction:column;gap:9px;pointer-events:none;max-width:360px;width:100%}
+.tst{padding:13px 16px;border-radius:var(--r-md);background:rgba(12,20,32,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line-cy);color:var(--white);font-size:0.82rem;font-weight:500;box-shadow:0 20px 50px rgba(0,0,0,0.6),0 0 0 1px rgba(34,211,238,0.1);display:flex;align-items:flex-start;gap:11px;animation:tIn 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:auto}
+.tst.err{border-color:rgba(244,63,94,0.5)}
+.tst.info{border-color:rgba(59,130,246,0.4)}
+.tst.warn{border-color:rgba(251,191,36,0.4)}
+.tst i{font-size:1rem;flex-shrink:0;margin-top:1px}
+.tst i.ok{color:var(--jade-2)}.tst i.er{color:var(--rose-2)}
+.tst i.in{color:var(--blue-2)}.tst i.wn{color:var(--gold-2)}
+.tst span{flex:1;line-height:1.5}
+@keyframes tIn{from{opacity:0;transform:translateX(50px) scale(0.9)}to{opacity:1;transform:translateX(0) scale(1)}}
+@media(max-width:600px){.toasts{left:12px;right:12px;max-width:none;top:70px}}
+
+/* ============ UTILS ============ */
+.hidden{display:none!important}
+.mono{font-family:var(--font-mono);font-size:0.78rem;letter-spacing:-0.01em}
+.flx{display:flex}.flx-1{flex:1}
+.aic{align-items:center}.ais{align-items:flex-start}
+.jcb{justify-content:space-between}.jcc{justify-content:center}
+.g-1{gap:4px}.g-2{gap:8px}.g-3{gap:12px}.g-4{gap:16px}
+.wrap{flex-wrap:wrap}
+.txt-c{text-align:center}
+.mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:14px}.mt-4{margin-top:20px}
+.mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:14px}.mb-4{margin-bottom:20px}
+.t2{color:var(--text-2)}.t3{color:var(--text-3)}.t4{color:var(--text-4)}
+.cy{color:var(--cy-2)}.jd{color:var(--jade-2)}.gd{color:var(--gold-2)}.vi{color:var(--violet-2)}
+.sk{color:var(--blue-2)}.rs{color:var(--rose-2)}
+.tx-xs{font-size:0.7rem}.tx-sm{font-size:0.82rem}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.sec-title{font-size:0.64rem;font-weight:800;color:var(--text-3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title i{color:var(--cy-2)}
+
+/* ============ CHART ============ */
+.chart{background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-md);padding:18px;position:relative}
+.chart-title{font-size:0.68rem;font-weight:800;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.chart-title i{color:var(--cy-2);margin-right:6px}
+.bars{display:flex;align-items:flex-end;gap:4px;height:120px;padding-top:10px}
+.bar{flex:1;background:linear-gradient(180deg,rgba(34,211,238,0.6),rgba(34,211,238,0.15));border-radius:4px 4px 0 0;transition:var(--tx);position:relative;min-height:3px;cursor:pointer}
+.bar:hover{background:linear-gradient(180deg,rgba(34,211,238,0.9),rgba(34,211,238,0.25))}
+.bar.jade{background:linear-gradient(180deg,rgba(52,211,153,0.6),rgba(52,211,153,0.15))}
+.bar.jade:hover{background:linear-gradient(180deg,rgba(52,211,153,0.9),rgba(52,211,153,0.25))}
+.bar.gold{background:linear-gradient(180deg,rgba(251,191,36,0.6),rgba(251,191,36,0.15))}
+.bar.gold:hover{background:linear-gradient(180deg,rgba(251,191,36,0.9),rgba(251,191,36,0.25))}
+.bar-lbl{font-size:0.6rem;color:var(--text-3);text-align:center;margin-top:6px;font-weight:600;font-family:var(--font-mono)}
+
+/* ============ NOTIF/ALERT/HEALTH ============ */
+.notif{padding:12px 14px;border-radius:var(--r-sm);background:var(--bg-2);border:1px solid var(--line);display:flex;gap:11px;align-items:flex-start;margin-bottom:7px;transition:var(--tx);cursor:pointer}
+.notif.unread{background:rgba(34,211,238,0.04);border-left:3px solid var(--cy-2)}
+.notif:hover{border-color:var(--line-cy)}
+.notif-ic{width:32px;height:32px;border-radius:9px;background:rgba(34,211,238,0.1);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:0.8rem;flex-shrink:0}
+.notif-info{flex:1;min-width:0}
+.notif-info strong{display:block;font-size:0.82rem;color:var(--white);font-weight:700;margin-bottom:2px}
+.notif-info p{font-size:0.75rem;color:var(--text-2);line-height:1.5;margin-bottom:3px}
+.notif-info small{font-size:0.64rem;color:var(--text-3);font-weight:600;font-family:var(--font-mono)}
+
+.alert-item{padding:14px;border-radius:var(--r-md);background:var(--bg-2);border:1px solid var(--line);border-left:4px solid var(--gold);display:flex;gap:12px;align-items:flex-start;margin-bottom:9px;transition:var(--tx)}
+.alert-item:hover{border-color:var(--line-cy);transform:translateX(2px)}
+.alert-item.sev-critical{border-left-color:var(--red);background:linear-gradient(160deg,rgba(239,68,68,0.05),var(--bg-2))}
+.alert-item.sev-high{border-left-color:var(--orange)}
+.alert-item.sev-medium{border-left-color:var(--gold)}
+.alert-item.sev-low{border-left-color:var(--blue)}
+.alert-ic{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.28);display:flex;align-items:center;justify-content:center;color:var(--gold-2);font-size:0.88rem}
+.alert-ic.critical{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.35);color:#fca5a5}
+.alert-ic.high{background:rgba(251,146,60,0.14);border-color:rgba(251,146,60,0.3);color:var(--orange)}
+.alert-ic.low{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.28);color:var(--blue-2)}
+.alert-info{flex:1;min-width:0}
+.alert-info strong{display:block;font-size:0.86rem;color:var(--white);font-weight:800;margin-bottom:3px}
+.alert-info p{font-size:0.78rem;color:var(--text-2);line-height:1.5;margin-bottom:6px}
+.alert-info small{font-size:0.66rem;color:var(--text-3);font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--font-mono)}
+.alert-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+.health-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--r-sm);background:var(--bg-2);border:1px solid var(--line);margin-bottom:7px;transition:var(--tx)}
+.health-row:hover{border-color:var(--line-cy)}
+.health-ic{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.82rem;background:rgba(52,211,153,0.1);border:1px solid var(--line-jade);color:var(--jade-2)}
+.health-ic.warn{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.28);color:var(--gold-2)}
+.health-ic.err{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.28);color:var(--rose-2)}
+.health-ic.off{background:rgba(148,163,184,0.1);border-color:rgba(148,163,184,0.22);color:#94a3b8}
+.health-info{flex:1;min-width:0}
+.health-info strong{display:block;font-size:0.83rem;color:var(--white);font-weight:700}
+.health-info small{font-size:0.7rem;color:var(--text-3)}
+.health-tag{font-family:var(--font-mono);font-size:0.66rem;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.02em;background:rgba(52,211,153,0.1);color:var(--jade-2);border:1px solid var(--line-jade)}
+.health-tag.warn{background:rgba(251,191,36,0.1);color:var(--gold-2);border-color:rgba(251,191,36,0.28)}
+.health-tag.err{background:rgba(244,63,94,0.1);color:var(--rose-2);border-color:rgba(244,63,94,0.28)}
+.health-tag.off{background:rgba(148,163,184,0.1);color:#94a3b8;border-color:rgba(148,163,184,0.22)}
+
+/* ============ MAP ============ */
+.map-view{background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-md);height:400px;position:relative;overflow:hidden;background-image:linear-gradient(rgba(34,211,238,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.04) 1px,transparent 1px);background-size:40px 40px}
+.map-pin{position:absolute;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,0.5);transform:translate(-50%,-50%);cursor:pointer;transition:var(--tx);z-index:5}
+.map-pin:hover{transform:translate(-50%,-50%) scale(1.25);z-index:10}
+.map-pin.jade{background:linear-gradient(135deg,#34d399,#059669)}
+.map-pin.rose{background:linear-gradient(135deg,#fb7185,#e11d48)}
+
+/* ============ DRAWER (mobile) ============ */
+.drwr-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:250;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.drwr-overlay.open{opacity:1;pointer-events:auto}
+
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+  .kpi{padding:13px 14px}
+  .kpi-v{font-size:1.4rem}
+  .content{padding:14px 12px 60px}
+  .tb-row{gap:8px}
+  .mdl{padding:20px;border-radius:16px}
+  .btn{padding:8px 13px;font-size:0.77rem;min-height:36px}
+  .ph-title{font-size:1.15rem}
+  .ph-title i{width:30px;height:30px;font-size:0.78rem}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidenav" id="sidenav">
+    <div class="sidenav-hd">
+      <div class="sidenav-logo"><i class="fas fa-tower-broadcast"></i></div>
+      <div class="sidenav-title"><span>EcoCommand</span><small>Control Centre</small></div>
+    </div>
+    <div class="sidenav-scroll">
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Overview</div>
+        <button class="navitem active" data-nav="dashboard" onclick="showPage('dashboard')" type="button"><i class="fas fa-gauge-simple-high"></i> Command Centre</button>
+        <button class="navitem" data-nav="activity" onclick="showPage('activity')" type="button"><i class="fas fa-bolt"></i> Live Activity</button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Materials &amp; Collections</div>
+        <button class="navitem" data-nav="materials" onclick="showPage('materials')" type="button"><i class="fas fa-cubes"></i> Materials <span class="n" id="nvMaterials">0</span></button>
+        <button class="navitem" data-nav="collections" onclick="showPage('collections')" type="button"><i class="fas fa-truck"></i> Collections <span class="n" id="nvCollections">0</span></button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Marketplace &amp; Finance</div>
+        <button class="navitem" data-nav="market" onclick="showPage('market')" type="button"><i class="fas fa-store"></i> EcoMarket</button>
+        <button class="navitem" data-nav="paytri" onclick="showPage('paytri')" type="button"><i class="fas fa-credit-card"></i> PayTri</button>
+        <button class="navitem" data-nav="wallet" onclick="showPage('wallet')" type="button"><i class="fas fa-wallet"></i> EcoWallet</button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Network</div>
+        <button class="navitem" data-nav="connect" onclick="showPage('connect')" type="button"><i class="fas fa-network-wired"></i> EcoConnect</button>
+        <button class="navitem" data-nav="creative" onclick="showPage('creative')" type="button"><i class="fas fa-palette"></i> Creative Community</button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Intelligence &amp; Devices</div>
+        <button class="navitem" data-nav="scan" onclick="showPage('scan')" type="button"><i class="fas fa-camera"></i> EcoScan AI</button>
+        <button class="navitem" data-nav="genius" onclick="showPage('genius')" type="button"><i class="fas fa-robot"></i> EcoGenius</button>
+        <button class="navitem" data-nav="smart" onclick="showPage('smart')" type="button"><i class="fas fa-microchip"></i> EcoSmart</button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Impact &amp; Verification</div>
+        <button class="navitem" data-nav="impact" onclick="showPage('impact')" type="button"><i class="fas fa-seedling"></i> EcoImpact</button>
+        <button class="navitem" data-nav="verification" onclick="showPage('verification')" type="button"><i class="fas fa-shield-check"></i> Verification <span class="n gold" id="nvVerif">0</span></button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Operations</div>
+        <button class="navitem" data-nav="alerts" onclick="showPage('alerts')" type="button"><i class="fas fa-bell"></i> Alerts <span class="n rose" id="nvAlerts">0</span></button>
+        <button class="navitem" data-nav="incidents" onclick="showPage('incidents')" type="button"><i class="fas fa-triangle-exclamation"></i> Incidents</button>
+        <button class="navitem" data-nav="tasks" onclick="showPage('tasks')" type="button"><i class="fas fa-clipboard-list"></i> Tasks</button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Intelligence</div>
+        <button class="navitem" data-nav="reports" onclick="showPage('reports')" type="button"><i class="fas fa-chart-line"></i> Reports &amp; Analytics</button>
+        <button class="navitem" data-nav="audit" onclick="showPage('audit')" type="button"><i class="fas fa-book"></i> Audit Logs</button>
+        <button class="navitem" data-nav="system" onclick="showPage('system')" type="button"><i class="fas fa-server"></i> System Health</button>
+      </div>
+      <div class="sidenav-sec">
+        <div class="sidenav-sec-t">Configuration</div>
+        <button class="navitem" data-nav="integrations" onclick="showPage('integrations')" type="button"><i class="fas fa-plug"></i> Integrations</button>
+        <button class="navitem" data-nav="settings" onclick="showPage('settings')" type="button"><i class="fas fa-gear"></i> Settings</button>
+      </div>
+    </div>
+    <div class="sidenav-ft">
+      <div class="flx aic g-2" style="font-size:0.66rem;color:var(--text-3);font-family:var(--font-mono)">
+        <span style="display:flex;align-items:center;gap:5px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--jade-2);box-shadow:0 0 8px var(--jade-2);animation:pulse 2s infinite"></span>
+          <span id="ftEnvLabel">LOCAL</span>
+        </span>
+        <span style="margin-left:auto" id="ftVersion">v1.0.0</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="mob-ovl" id="mobOvl" onclick="closeSidenav()"></div>
+
+  <main class="main">
+    <header class="topbar" id="topbar">
+      <button class="menubtn" onclick="openSidenav()" aria-label="Menu" type="button"><i class="fas fa-bars"></i></button>
+      <div class="topbar-title">
+        <i class="fas fa-tower-broadcast"></i>
+        <span id="topbarCrumb">Command Centre</span>
+      </div>
+      <div class="topbar-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="globalSearch" placeholder="Search across EcoCycle X…" onkeydown="if(event.key==='Enter')runGlobalSearch()">
+        <kbd>⏎</kbd>
+      </div>
+      <div class="topbar-actions">
+        <!-- EcoSync live pill -->
+        <button class="eco-live" id="hdrLive" data-state="offline" onclick="EcoSync && EcoSync.reconnect && EcoSync.reconnect()" title="EcoSync real-time connection — click to reconnect">
+          <span class="ldot"></span>
+          <span class="eco-live-label" id="hdrLiveText">Connecting</span>
+        </button>
+
+        <div class="sysstat" id="sysStat">
+          <span class="dot"></span>
+          <span>All Systems Nominal</span>
+        </div>
+        <button class="tb-icon" onclick="showPage('alerts')" aria-label="Alerts" type="button">
+          <i class="fas fa-bell"></i>
+          <span class="badge" id="tbAlertBadge" style="display:none">0</span>
+        </button>
+        <button class="tb-icon" onclick="showPage('tasks')" aria-label="Tasks" type="button">
+          <i class="fas fa-clipboard-list"></i>
+          <span class="badge gold" id="tbTaskBadge" style="display:none">0</span>
+        </button>
+        <button class="tb-user" onclick="showPage('settings')" type="button">
+          <div class="tb-user-av" id="tbUserAv">A</div>
+          <div class="tb-user-info">
+            <strong id="tbUserName">Operator</strong>
+            <small id="tbUserRole">ADMIN</small>
+          </div>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Dashboard -->
+      <section class="page active" id="page-dashboard">
+        <div class="ph">
+          <div class="ph-info">
+            <h1 class="ph-title"><i class="fas fa-gauge-simple-high"></i> Command Centre</h1>
+            <p class="ph-desc">One Ecosystem. One Shared Source of Truth. Real-Time Visibility. Verified Action.</p>
+          </div>
+          <div class="ph-actions">
+            <button class="btn btn-outline btn-sm" onclick="showPage('activity')" type="button"><i class="fas fa-bolt"></i> Live Feed</button>
+            <button class="btn btn-ghost btn-sm" onclick="refreshAll()" type="button"><i class="fas fa-rotate"></i> Refresh</button>
+          </div>
+        </div>
+        <div class="banner info" id="dashEnvBanner">
+          <i class="fas fa-circle-info"></i>
+          <span><strong>Operational truth.</strong> Every number below is computed live from actual EcoCycle X records. <span id="dashDataSources"></span></span>
+        </div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="tb-row"><h2 class="sec-title" style="margin:0"><i class="fas fa-heart-pulse"></i> Module Health</h2></div>
+        <div class="grid g2 mb-4" id="moduleHealthGrid"></div>
+        <div class="tb-row"><h2 class="sec-title" style="margin:0"><i class="fas fa-bolt"></i> Latest Events</h2><div class="spacer"></div><button class="btn btn-ghost btn-xs" onclick="showPage('activity')" type="button">All activity →</button></div>
+        <div id="dashFeed" class="mb-4"></div>
+        <div class="tb-row"><h2 class="sec-title" style="margin:0"><i class="fas fa-bell"></i> Active Alerts</h2><div class="spacer"></div><button class="btn btn-ghost btn-xs" onclick="showPage('alerts')" type="button">All alerts →</button></div>
+        <div id="dashAlerts" class="mb-4"></div>
+        <div class="tb-row"><h2 class="sec-title" style="margin:0"><i class="fas fa-list-check"></i> Work Queues</h2></div>
+        <div class="grid g3" id="queueSnapshots"></div>
+      </section>
+
+      <section class="page" id="page-activity">
+        <div class="ph">
+          <div class="ph-info"><h1 class="ph-title"><i class="fas fa-bolt"></i> Live Activity</h1><p class="ph-desc">Real-time event stream from across EcoCycle X.</p></div>
+          <div class="ph-actions">
+            <select class="fsel" id="feedModuleFilter" onchange="renderActivity()">
+              <option value="">All modules</option>
+              <option value="ecocollect">EcoCollect</option>
+              <option value="ecomarket">EcoMarket</option>
+              <option value="ecowallet">EcoWallet</option>
+              <option value="ecoconnect">EcoConnect</option>
+              <option value="ecosmart">EcoSmart</option>
+              <option value="ecoimpact">EcoImpact</option>
+              <option value="ecoscan">EcoScan AI</option>
+              <option value="ecocommand">EcoCommand</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="refreshAll()" type="button"><i class="fas fa-rotate"></i></button>
+          </div>
+        </div>
+        <div id="activityWrap"></div>
+      </section>
+
+      <section class="page" id="page-materials">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-cubes"></i> Materials Command</h1><p class="ph-desc">Complete traceability for every material record.</p></div></div>
+        <div class="tb-row">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" id="matSearch" placeholder="Search…" oninput="renderMaterials()"></div>
+          <select class="fsel" id="matTypeFilter" onchange="renderMaterials()"><option value="">All material types</option></select>
+          <select class="fsel" id="matStatusFilter" onchange="renderMaterials()"><option value="">All statuses</option><option value="pending">Pending</option><option value="verified">Verified</option></select>
+        </div>
+        <div id="materialsWrap"></div>
+      </section>
+
+      <section class="page" id="page-collections">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-truck"></i> Collections Command</h1><p class="ph-desc">Every collection task from EcoCollect.</p></div></div>
+        <div class="kpi-grid" id="collectionKpiGrid"></div>
+        <div class="tabs">
+          <button class="tab active" data-cf="all" onclick="setColFilter('all',this)" type="button">All <span class="n" id="cfAll">0</span></button>
+          <button class="tab" data-cf="pending" onclick="setColFilter('pending',this)" type="button">Pending</button>
+          <button class="tab" data-cf="progress" onclick="setColFilter('progress',this)" type="button">In Progress</button>
+          <button class="tab" data-cf="verify" onclick="setColFilter('verify',this)" type="button">Awaiting Verification</button>
+          <button class="tab" data-cf="completed" onclick="setColFilter('completed',this)" type="button">Completed</button>
+        </div>
+        <div id="collectionsWrap"></div>
+      </section>
+
+      <section class="page" id="page-market">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-store"></i> EcoMarket Command</h1><p class="ph-desc">Monitor the marketplace for recyclable raw materials.</p></div></div>
+        <div class="kpi-grid" id="marketKpiGrid"></div>
+        <div class="grid g2">
+          <div class="card"><div class="sec-title"><i class="fas fa-cube"></i> Listings by category</div><div id="marketByCategory"></div></div>
+          <div class="card"><div class="sec-title"><i class="fas fa-chart-simple"></i> Listing activity</div><div class="bars" id="marketBars"></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-paytri">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-credit-card"></i> PayTri Command</h1><p class="ph-desc">Reward and payment orchestration.</p></div></div>
+        <div class="banner warn"><i class="fas fa-plug-circle-xmark"></i><span><strong>Payment Provider Not Connected.</strong> All transactions will display as <strong>Pending Configuration</strong> rather than being simulated as successful.</span></div>
+        <div class="kpi-grid" id="paytriKpiGrid"></div>
+        <div id="paytriWrap"></div>
+      </section>
+
+      <section class="page" id="page-wallet">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-wallet"></i> EcoWallet Command</h1><p class="ph-desc">Financial oversight for wallet ledgers.</p></div></div>
+        <div class="kpi-grid" id="walletKpiGrid"></div>
+        <div id="walletWrap"></div>
+      </section>
+
+      <section class="page" id="page-connect">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-network-wired"></i> EcoConnect Command</h1><p class="ph-desc">The circular-economy network.</p></div></div>
+        <div class="kpi-grid" id="connectKpiGrid"></div>
+        <div class="tabs">
+          <button class="tab active" data-xf="profiles" onclick="setConnectFilter('profiles',this)" type="button">Profiles</button>
+          <button class="tab" data-xf="connections" onclick="setConnectFilter('connections',this)" type="button">Connections</button>
+          <button class="tab" data-xf="materials" onclick="setConnectFilter('materials',this)" type="button">Material Posts</button>
+        </div>
+        <div id="connectWrap"></div>
+      </section>
+
+      <section class="page" id="page-creative">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-palette"></i> Creative Community</h1></div></div>
+        <div class="empty"><i class="fas fa-palette main"></i><h3>No creative posts available</h3><p>Creative Community content appears when users publish upcycled or recycled creations.</p></div>
+      </section>
+
+      <section class="page" id="page-scan">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-camera"></i> EcoScan AI Command</h1></div></div>
+        <div class="kpi-grid" id="scanKpiGrid"></div>
+        <div id="scanWrap"></div>
+      </section>
+
+      <section class="page" id="page-genius">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-robot"></i> EcoGenius Command</h1></div></div>
+        <div class="grid g3">
+          <div class="card"><div class="sec-title">Total Sessions</div><div class="kpi-v" id="geniusSessions">0</div></div>
+          <div class="card"><div class="sec-title">Positive Feedback</div><div class="kpi-v" id="geniusFeedback">—</div></div>
+          <div class="card"><div class="sec-title">Safety Events</div><div class="kpi-v" id="geniusSafety">0</div></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-smart">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-microchip"></i> EcoSmart Command</h1></div></div>
+        <div class="kpi-grid" id="smartKpiGrid"></div>
+        <div id="smartWrap"></div>
+      </section>
+
+      <section class="page" id="page-impact">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-seedling"></i> EcoImpact Command</h1></div></div>
+        <div class="kpi-grid" id="impactKpiGrid"></div>
+        <div class="tabs">
+          <button class="tab active" data-if="verified" onclick="setImpactFilter('verified',this)" type="button">Verified</button>
+          <button class="tab" data-if="pending" onclick="setImpactFilter('pending',this)" type="button">Pending</button>
+          <button class="tab" data-if="all" onclick="setImpactFilter('all',this)" type="button">All</button>
+        </div>
+        <div id="impactWrap"></div>
+      </section>
+
+      <section class="page" id="page-verification">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-shield-check"></i> Verification Centre</h1></div></div>
+        <div class="kpi-grid" id="verifKpiGrid"></div>
+        <div class="tabs">
+          <button class="tab active" data-vf="pending" onclick="setVerifFilter('pending',this)" type="button">Pending <span class="n" id="vfPending">0</span></button>
+          <button class="tab" data-vf="approved" onclick="setVerifFilter('approved',this)" type="button">Approved</button>
+          <button class="tab" data-vf="rejected" onclick="setVerifFilter('rejected',this)" type="button">Rejected</button>
+        </div>
+        <div id="verifWrap"></div>
+      </section>
+
+      <section class="page" id="page-alerts">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-bell"></i> Alert Centre</h1></div>
+          <div class="ph-actions"><button class="btn btn-outline btn-sm" onclick="markAllAlertsAcknowledged()" type="button"><i class="fas fa-check-double"></i> Acknowledge all</button></div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-af="active" onclick="setAlertFilter('active',this)" type="button">Active <span class="n" id="afActive">0</span></button>
+          <button class="tab" data-af="resolved" onclick="setAlertFilter('resolved',this)" type="button">Resolved</button>
+          <button class="tab" data-af="all" onclick="setAlertFilter('all',this)" type="button">All</button>
+        </div>
+        <div id="alertsWrap"></div>
+      </section>
+
+      <section class="page" id="page-incidents">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-triangle-exclamation"></i> Incidents</h1></div>
+          <div class="ph-actions"><button class="btn btn-primary btn-sm" onclick="openIncidentForm()" type="button"><i class="fas fa-plus"></i> Open Incident</button></div>
+        </div>
+        <div class="kpi-grid" id="incidentsKpiGrid"></div>
+        <div id="incidentsWrap"></div>
+      </section>
+
+      <section class="page" id="page-tasks">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-clipboard-list"></i> Tasks</h1></div>
+          <div class="ph-actions"><button class="btn btn-primary btn-sm" onclick="openTaskForm()" type="button"><i class="fas fa-plus"></i> New Task</button></div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-tf="open" onclick="setTaskFilter('open',this)" type="button">Open <span class="n" id="tfOpen">0</span></button>
+          <button class="tab" data-tf="progress" onclick="setTaskFilter('progress',this)" type="button">In Progress</button>
+          <button class="tab" data-tf="done" onclick="setTaskFilter('done',this)" type="button">Completed</button>
+          <button class="tab" data-tf="all" onclick="setTaskFilter('all',this)" type="button">All</button>
+        </div>
+        <div id="tasksWrap"></div>
+      </section>
+
+      <section class="page" id="page-reports">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-chart-line"></i> Reports &amp; Analytics</h1></div></div>
+        <div class="tb-row">
+          <select class="fsel" id="reportPeriod" onchange="renderReports()">
+            <option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option><option value="365">Last 12 months</option><option value="all">All time</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn btn-ghost btn-sm" onclick="exportCommandReport()" type="button"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <div class="kpi-grid" id="reportKpiGrid"></div>
+        <div class="grid g2 mb-4">
+          <div class="chart"><div class="chart-title">Collection Activity</div><div class="bars" id="reportBarsCollections"></div></div>
+          <div class="chart"><div class="chart-title">Verification Activity</div><div class="bars" id="reportBarsVerif"></div></div>
+        </div>
+        <div id="reportSnapshot"></div>
+      </section>
+
+      <section class="page" id="page-audit">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-book"></i> Audit Log</h1></div>
+          <div class="ph-actions"><button class="btn btn-ghost btn-sm" onclick="exportAudit()" type="button"><i class="fas fa-download"></i> Export</button></div>
+        </div>
+        <div class="tb-row"><div class="search-box"><i class="fas fa-search"></i><input type="text" id="auditSearch" placeholder="Search…" oninput="renderAudit()"></div></div>
+        <div id="auditWrap"></div>
+      </section>
+
+      <section class="page" id="page-system">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-server"></i> System Health</h1></div></div>
+        <div class="grid g2">
+          <div class="card"><div class="sec-title">Data Footprint</div><div id="dataFootprint"></div></div>
+          <div class="card"><div class="sec-title">Integration Status</div><div id="integrationStatus"></div></div>
+        </div>
+        <div class="tb-row mt-4"><h2 class="sec-title" style="margin:0">Live Metrics</h2></div>
+        <div class="grid g3" id="liveMetrics"></div>
+      </section>
+
+      <section class="page" id="page-integrations">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-plug"></i> Integration Centre</h1></div></div>
+        <div class="banner info"><i class="fas fa-circle-info"></i><span>Each integration row shows its <strong>real connection state</strong>.</span></div>
+        <div id="integrationsWrap"></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="ph"><div class="ph-info"><h1 class="ph-title"><i class="fas fa-gear"></i> Settings</h1></div></div>
+        <div class="grid g2">
+          <div class="card">
+            <div class="sec-title">Operator</div>
+            <div class="fg"><label class="fl" for="setDisplayName">Display name</label><input class="fi" id="setDisplayName"></div>
+            <div class="fg"><label class="fl" for="setRole">Role</label>
+              <select class="fs" id="setRole">
+                <option value="super_admin">Super Administrator</option>
+                <option value="ops_manager">Operations Manager</option>
+                <option value="finance_admin">Finance / Payment Administrator</option>
+                <option value="verification_officer">Verification Officer</option>
+                <option value="moderator">Moderator</option>
+                <option value="device_admin">Device / IoT Administrator</option>
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sec-title">Session</div>
+            <div class="det-row"><span class="k">EcoID</span><span class="v mono" id="setEcoId">—</span></div>
+            <div class="det-row"><span class="k">Session started</span><span class="v mono" id="setSessionStart">—</span></div>
+            <div class="det-row"><span class="k">Environment</span><span class="v mono" id="setEnv">Local</span></div>
+            <button class="btn btn-danger btn-block mt-3" onclick="secureLogout()" type="button"><i class="fas fa-right-from-bracket"></i> Secure Logout</button>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block mt-4" onclick="saveCommandSettings()" type="button"><i class="fas fa-save"></i> Save Settings</button>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="ovl" id="mDetail" role="dialog" aria-modal="true"><div class="mdl mdl-lg" id="mDetailBody"></div></div>
+<div class="ovl" id="mIncident" role="dialog" aria-modal="true"><div class="mdl mdl-lg" id="mIncidentBody"></div></div>
+<div class="ovl" id="mTask" role="dialog" aria-modal="true"><div class="mdl mdl-lg" id="mTaskBody"></div></div>
+<div class="ovl" id="mSearch" role="dialog" aria-modal="true"><div class="mdl mdl-lg" id="mSearchBody"></div></div>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   ECOCOMMAND — LIVE OPERATIONAL CONSOLE
+   Reads from all EcoCycle X modules via localStorage.
+   EcoSync client (bottom of file) pushes activities, materials,
+   projects, goals, and methods to the Java backend in real time.
+   ============================================================ */
+(function(){
+'use strict';
+
+/* ---------- STORAGE KEYS ---------- */
+var K = {
+  user:      'ecocycle_user_v1',
+  collect:   'ecocycle_collections_v2',
+  smart:     'ecocycle_smart_db_v1',
+  connect:   'ecocycle_connect_db_v1',
+  wallet:    'ecocycle_wallet_ledger_v1',
+  walletPts: 'ecocycle_wallet_points_v1',
+  impact:    'ecocycle_impact_db_v1',
+  impactTest:'ecocycle_impact_test_v1',
+  market:    'ecocycle_market_listings_v1',
+  marketOrd: 'ecocycle_market_orders_v1',
+  command:   'ecocycle_command_v1'
+};
+
+/* ---------- STATE ---------- */
+var S = {
+  user:{ name:'Operator', ecoId:'ECO-COMMAND', role:'super_admin' },
+  settings:{ displayName:'Operator', role:'super_admin', ntInApp:true, ntCriticalOnly:false },
+  cmd:{ incidents:[], tasks:[], alerts:[], audit:[], notes:[] },
+  feed:[],
+  colFilter:'all',
+  verifFilter:'pending',
+  alertFilter:'active',
+  taskFilter:'open',
+  impactFilter:'verified',
+  connectFilter:'profiles',
+  sessionStart:Date.now(),
+  channel:null,
+  modules:{}
+};
+
+/* ---------- UTILS ---------- */
+function lsGet(k, fb){ try{ var r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; }catch(e){ return fb; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function uid(p){ return (p||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function now(){ return Date.now(); }
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function num(v){ var n = Number(v); return isNaN(n) ? 0 : n; }
+function fmtNum(v, dec){ if(v == null) return '0'; dec = dec == null ? 0 : dec; var parts = num(v).toFixed(dec).split('.'); parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ','); return parts.join('.'); }
+function fmtTime(t){ try{ return new Date(t).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function fmtRel(t){
+  if(!t) return 'never';
+  var d = Date.now() - t;
+  if(d < 0) return 'in future';
+  if(d < 60000) return 'just now';
+  if(d < 3600000) return Math.floor(d/60000)+'m ago';
+  if(d < 86400000) return Math.floor(d/3600000)+'h ago';
+  if(d < 2592000000) return Math.floor(d/86400000)+'d ago';
+  return fmtTime(t);
+}
+function initials(s){ if(!s) return '?'; var a = String(s).trim().split(/\s+/); return (a[0].charAt(0) + (a[1]?a[1].charAt(0):'')).toUpperCase(); }
+
+/* ---------- TOAST ---------- */
+function toast(msg, type){
+  type = type || 'success';
+  var stack = document.getElementById('toasts');
+  if(!stack) return;
+  var el = document.createElement('div');
+  el.className = 'tst' + (type==='error'?' err':type==='info'?' info':type==='warn'?' warn':'');
+  var icons = {error:'fa-exclamation-circle',warn:'fa-exclamation-triangle',info:'fa-circle-info',success:'fa-check-circle'};
+  var clss = {error:'er',warn:'wn',info:'in',success:'ok'};
+  el.setAttribute('role','alert');
+  el.innerHTML = '<i class="fas '+icons[type]+' '+clss[type]+'"></i><span>'+esc(msg)+'</span>';
+  stack.appendChild(el);
+  setTimeout(function(){
+    el.style.transition='all 0.35s'; el.style.opacity='0'; el.style.transform='translateX(30px)';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 350);
+  }, 3200);
+}
+
+/* ---------- MODAL ---------- */
+function openM(id){ var m = document.getElementById(id); if(m){ m.classList.add('open'); document.body.style.overflow='hidden'; } }
+function closeM(id){ var m = document.getElementById(id); if(m){ m.classList.remove('open'); document.body.style.overflow=''; } }
+document.addEventListener('click', function(e){
+  if(e.target && e.target.classList && e.target.classList.contains('ovl')){
+    e.target.classList.remove('open'); document.body.style.overflow='';
+  }
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    var ovls = document.querySelectorAll('.ovl.open');
+    for(var i=0;i<ovls.length;i++) ovls[i].classList.remove('open');
+    document.body.style.overflow='';
+    closeSidenav();
+  }
+});
+
+/* ---------- MOBILE SIDENAV ---------- */
+function openSidenav(){ var s=document.getElementById('sidenav'); var o=document.getElementById('mobOvl'); if(s) s.classList.add('open'); if(o) o.classList.add('open'); }
+function closeSidenav(){ var s=document.getElementById('sidenav'); var o=document.getElementById('mobOvl'); if(s) s.classList.remove('open'); if(o) o.classList.remove('open'); }
+
+/* ---------- NAVIGATION ---------- */
+function showPage(p){
+  var pages = document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove('active');
+  var el = document.getElementById('page-'+p);
+  if(el) el.classList.add('active');
+  var items = document.querySelectorAll('.navitem');
+  for(var j=0;j<items.length;j++) items[j].classList.toggle('active', items[j].getAttribute('data-nav')===p);
+  var crumb = document.getElementById('topbarCrumb');
+  var titles = {
+    dashboard:'Command Centre', activity:'Live Activity', materials:'Materials Command',
+    collections:'Collections Command', market:'EcoMarket Command', paytri:'PayTri Command',
+    wallet:'EcoWallet Command', connect:'EcoConnect Command', creative:'Creative Community',
+    scan:'EcoScan AI Command', genius:'EcoGenius Command', smart:'EcoSmart Command',
+    impact:'EcoImpact Command', verification:'Verification Centre', alerts:'Alert Centre',
+    incidents:'Incident Management', tasks:'Task Management', reports:'Reports & Analytics',
+    audit:'Audit Log', system:'System Health', integrations:'Integration Centre', settings:'Settings'
+  };
+  if(crumb) crumb.textContent = titles[p] || 'Command Centre';
+  closeSidenav();
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderPage(p);
+  updateBadges();
+}
+function renderPage(p){
+  if(p==='dashboard')    renderDashboard();
+  if(p==='activity')     renderActivity();
+  if(p==='materials')    renderMaterials();
+  if(p==='collections')  renderCollections();
+  if(p==='market')       renderMarket();
+  if(p==='paytri')       renderPaytri();
+  if(p==='wallet')       renderWallet();
+  if(p==='connect')      renderConnect();
+  if(p==='creative')     renderCreative();
+  if(p==='scan')         renderScan();
+  if(p==='genius')       renderGenius();
+  if(p==='smart')        renderSmart();
+  if(p==='impact')       renderImpact();
+  if(p==='verification') renderVerification();
+  if(p==='alerts')       renderAlerts();
+  if(p==='incidents')    renderIncidents();
+  if(p==='tasks')        renderTasks();
+  if(p==='reports')      renderReports();
+  if(p==='audit')        renderAudit();
+  if(p==='system')       renderSystem();
+  if(p==='integrations') renderIntegrations();
+  if(p==='settings')     renderSettings();
+}
+
+/* ---------- LOAD MODULES ---------- */
+function loadAllModules(){
+  S.modules = {
+    collections: lsGet(K.collect, []) || [],
+    smart: lsGet(K.smart, null) || { devices:[], readings:[], alerts:[], maintenanceTasks:[], integrations:[], auditLog:[] },
+    connect: lsGet(K.connect, null) || { profiles:{}, connections:[], materials:[], opportunities:[], enquiries:[], partnerships:[], conversations:[], messages:[], notifications:[], verifications:[], reports:[], blocks:[], reviews:[], auditLog:[] },
+    wallet: lsGet(K.wallet, []) || [],
+    walletPoints: lsGet(K.walletPts, []) || [],
+    impact: lsGet(K.impact, null) || { activities:[], materials:[], reuse:[], community:[], projects:[], goals:[], methods:[], evidence:[], qualityFlags:[], reports:[], stories:[], disputes:[], feed:[], auditLog:[] },
+    market: lsGet(K.market, []) || [],
+    marketOrders: lsGet(K.marketOrd, []) || []
+  };
+}
+function loadCommandDB(){
+  var d = lsGet(K.command, null);
+  if(!d) d = { incidents:[], tasks:[], alerts:[], audit:[], notes:[] };
+  ['incidents','tasks','alerts','audit','notes'].forEach(function(k){ if(!Array.isArray(d[k])) d[k] = []; });
+  S.cmd = d;
+}
+function saveCommandDB(){ lsSet(K.command, S.cmd); }
+function loadUser(){ var u = lsGet(K.user, null); if(u){ S.user = Object.assign(S.user, u); } S.user.role = S.settings.role || 'super_admin'; }
+function loadSettings(){ var s = lsGet(K.command + '_settings', null); if(s) S.settings = Object.assign(S.settings, s); }
+
+/* ---------- AUDIT ---------- */
+function auditAction(action, detail){
+  S.cmd.audit.unshift({ id: uid('aud'), ts: now(), actor: S.user.ecoId, actorName: S.user.name, role: S.user.role, action: action, detail: detail || '' });
+  if(S.cmd.audit.length > 800) S.cmd.audit = S.cmd.audit.slice(0, 800);
+  saveCommandDB();
+}
+
+/* ---------- REALTIME (local) ---------- */
+function initRealtime(){
+  try {
+    if(typeof BroadcastChannel !== 'undefined'){
+      S.channel = new BroadcastChannel('ecocycle_command_v1');
+      S.channel.onmessage = function(){ loadAllModules(); loadCommandDB(); renderAll(); };
+      S.otherChannels = [
+        new BroadcastChannel('ecocycle_impact_v1'),
+        new BroadcastChannel('ecocycle_smart_v1'),
+        new BroadcastChannel('ecocycle_connect_v1'),
+        new BroadcastChannel('ecocycle_wallet_v1')
+      ];
+      S.otherChannels.forEach(function(ch){
+        ch.onmessage = function(ev){
+          loadAllModules();
+          renderAll();
+          // Push changed payload to backend via EcoSync (if present)
+          if(window.EcoSync && window.EcoSync.pushEntity && ev && ev.data){
+            try{
+              var d = ev.data || {};
+              if(d.type && d.type.indexOf('impact:') === 0 && S.modules.impact){
+                window.EcoSync.pushEntity('activities', S.modules.impact.activities);
+                window.EcoSync.pushEntity('materials',  S.modules.impact.materials);
+                window.EcoSync.pushEntity('projects',   S.modules.impact.projects);
+                window.EcoSync.pushEntity('goals',      S.modules.impact.goals);
+                window.EcoSync.pushEntity('methods',    S.modules.impact.methods);
+              }
+            }catch(e){}
+          }
+        };
+      });
+    }
+  } catch(e){}
+}
+function publish(type, payload){ if(S.channel){ try{ S.channel.postMessage({type:type, payload:payload||{}, ts:Date.now()}); }catch(e){} } }
+
+/* ---------- FEED AGGREGATION ---------- */
+function buildUnifiedFeed(){
+  var feed = [];
+  (S.modules.collections || []).forEach(function(c){
+    if(c.createdAt) feed.push({ ts: c.createdAt, kind:'create', module:'ecocollect', title: c.title || ('Collection ' + (c.ref || c.id.slice(-6))), body:(c.materialCategory || '') + ' · ' + (c.estimatedWeight || '?') + ' kg', ref:c.id, refType:'collection' });
+    if(c.updatedAt && c.updatedAt !== c.createdAt) feed.push({ ts: c.updatedAt, kind:'status', module:'ecocollect', title: c.title || ('Collection ' + (c.ref || c.id.slice(-6))), body:'Status: ' + (c.statusId || 'unknown'), ref:c.id, refType:'collection' });
+    if((c.statusId||'').toUpperCase() === 'COMPLETED') feed.push({ ts: c.verifiedAt || c.updatedAt || c.createdAt, kind:'verify', module:'ecocollect', title: c.title || ('Collection ' + (c.ref || c.id.slice(-6))), body:'Verified weight: ' + (c.actualWeight || 0) + ' kg', ref:c.id, refType:'collection' });
+  });
+  var smart = S.modules.smart || {};
+  (smart.devices || []).forEach(function(d){ feed.push({ ts: d.createdAt, kind:'create', module:'ecosmart', title: 'Device registered: ' + d.name, body:(d.type || '') + ' · ' + (d.state || 'pending'), ref:d.id, refType:'device' }); });
+  (smart.alerts || []).forEach(function(a){ feed.push({ ts: a.createdAt, kind:'status', module:'ecosmart', title:'Device alert: ' + a.title, body: a.message + ' · severity ' + a.severity, ref:a.id, refType:'alert' }); });
+  var cn = S.modules.connect || {};
+  Object.keys(cn.profiles || {}).forEach(function(id){ var p = cn.profiles[id]; if(p.createdAt) feed.push({ ts:p.createdAt, kind:'create', module:'ecoconnect', title:'Profile created: ' + p.name, body: p.type + (p.location ? ' · ' + p.location : ''), ref:p.ecoId, refType:'profile' }); });
+  (cn.materials || []).forEach(function(m){ feed.push({ ts:m.createdAt, kind:'create', module:'ecoconnect', title:'Material post: ' + m.title, body:m.kind + ' · ' + (m.materialCategory || ''), ref:m.id, refType:'material_post' }); });
+  (S.modules.wallet || []).forEach(function(e){ feed.push({ ts:e.createdAt, kind:'create', module:'ecowallet', title:'Ledger: ' + (e.description || e.type), body:(e.direction === 'credit' ? '+' : '−') + (e.amountMinor/100).toFixed(2) + ' ' + e.currency, ref:e.transactionId, refType:'transaction' }); });
+  var im = S.modules.impact || {};
+  (im.activities || []).forEach(function(a){ feed.push({ ts:a.createdAt, kind:'create', module:'ecoimpact', title:'Activity: ' + a.title, body:a.type + ' · ' + (a.quantity || 0) + ' ' + (a.unit || ''), ref:a.id, refType:'impact_activity' }); });
+  (im.materials || []).forEach(function(m){ feed.push({ ts:m.createdAt, kind:'create', module:'ecoimpact', title:'Material: ' + (m.material || 'unspecified'), body:(m.quantity || 0) + ' ' + (m.unit || 'kg'), ref:m.id, refType:'impact_material' }); });
+  (S.cmd.audit || []).slice(0, 30).forEach(function(a){ feed.push({ ts:a.ts, kind: a.action.indexOf('reject')!==-1 ? 'reject' : (a.action.indexOf('approve')!==-1 || a.action.indexOf('verify')!==-1) ? 'verify' : 'create', module:'ecocommand', title: a.actorName + ' · ' + a.action, body: a.detail, ref:a.id, refType:'audit' }); });
+  feed.sort(function(a,b){ return b.ts - a.ts; });
+  return feed;
+}
+
+/* ---------- KPIs ---------- */
+function computeKpis(){
+  var col = S.modules.collections || [];
+  var smart = S.modules.smart || {};
+  var cn = S.modules.connect || {};
+  var im = S.modules.impact || {};
+  var mk = S.modules.market || [];
+  var activeCollect = col.filter(function(c){ var s=(c.statusId||'').toUpperCase(); return s!=='COMPLETED' && s!=='CANCELLED' && s!=='DRAFT'; }).length;
+  var pendingCollect = col.filter(function(c){ var s=(c.statusId||'').toUpperCase(); return s==='SUBMITTED'||s==='PENDING'||s==='COLLECTOR_NEEDED'; }).length;
+  var completedCollect = col.filter(function(c){ return (c.statusId||'').toUpperCase()==='COMPLETED'; }).length;
+  var pendingMaterials = (im.materials||[]).filter(function(m){ return m.status==='submitted' || m.status==='under_review'; }).length;
+  var verifiedMaterials = (im.materials||[]).filter(function(m){ return m.status==='verified'; }).length;
+  var activeListings = mk.filter(function(l){ return l.status==='active'; }).length;
+  var pendingOrders = (S.modules.marketOrders||[]).filter(function(o){ return o.status==='pending'; }).length;
+  var pendingTx = (S.modules.wallet||[]).filter(function(e){ return e.status==='pending'; }).length;
+  var completedTx = (S.modules.wallet||[]).filter(function(e){ return e.status==='completed'; }).length;
+  var connectReqs = (cn.connections||[]).filter(function(c){ return c.status==='pending'; }).length;
+  var verifiedPartners = Object.keys(cn.profiles||{}).filter(function(id){ return cn.profiles[id].verified; }).length;
+  var totalDevices = (smart.devices||[]).filter(function(d){ return d.state!=='retired'; }).length;
+  var onlineDevices = (smart.devices||[]).filter(function(d){ return d.state==='connected'; }).length;
+  var offlineDevices = (smart.devices||[]).filter(function(d){ return d.state==='disconnected' || d.state==='error'; }).length;
+  var deviceWarnings = (smart.alerts||[]).filter(function(a){ return a.status==='new' || a.status==='acknowledged'; }).length;
+  var pendingImpact = (im.activities||[]).filter(function(a){ return a.status==='submitted' || a.status==='under_review'; }).length;
+  var verifiedImpact = (im.activities||[]).filter(function(a){ return a.status==='verified'; }).length;
+  var openIncidents = S.cmd.incidents.filter(function(i){ return i.status !== 'resolved' && i.status !== 'closed'; }).length;
+  var openAlerts = S.cmd.alerts.filter(function(a){ return a.status === 'active' || a.status === 'new'; }).length;
+  var openTasks = S.cmd.tasks.filter(function(t){ return t.status === 'open' || t.status === 'in_progress'; }).length;
+  var overdueTasks = S.cmd.tasks.filter(function(t){ return t.status !== 'completed' && t.due && t.due < Date.now(); }).length;
+  var userCount = Object.keys(cn.profiles||{}).length;
+  var verifiedUsers = Object.keys(cn.profiles||{}).filter(function(id){ return cn.profiles[id].verified; }).length;
+  return { userCount, verifiedUsers, activeCollect, pendingCollect, completedCollect, pendingMaterials, verifiedMaterials, activeListings, pendingOrders, pendingTx, completedTx, connectReqs, verifiedPartners, totalDevices, onlineDevices, offlineDevices, deviceWarnings, pendingImpact, verifiedImpact, openIncidents, openAlerts, openTasks, overdueTasks };
+}
+
+/* ---------- RENDER: DASHBOARD ---------- */
+function renderDashboard(){
+  var k = computeKpis();
+  var sources = [];
+  if(S.modules.collections.length) sources.push('EcoCollect: ' + S.modules.collections.length);
+  if(S.modules.wallet.length) sources.push('EcoWallet: ' + S.modules.wallet.length);
+  if(S.modules.impact && S.modules.impact.activities && S.modules.impact.activities.length) sources.push('EcoImpact: ' + S.modules.impact.activities.length);
+  if(S.modules.connect && S.modules.connect.profiles) sources.push('EcoConnect: ' + Object.keys(S.modules.connect.profiles).length);
+  if(S.modules.smart && S.modules.smart.devices) sources.push('EcoSmart: ' + S.modules.smart.devices.length);
+  var dds = document.getElementById('dashDataSources');
+  if(dds) dds.innerHTML = sources.length ? ' <span class="tx-xs t3 mono" style="margin-left:8px">' + sources.join(' · ') + '</span>' : ' <span class="tx-xs t3 mono" style="margin-left:8px">No module records present yet.</span>';
+
+  var kpis = [
+    { lbl:'Total Users', val: k.userCount, sub: k.verifiedUsers + ' verified', ic:'fa-users', cls:'', nav:'connect' },
+    { lbl:'Active Collections', val: k.activeCollect, sub: k.pendingCollect + ' pending', ic:'fa-truck', cls:'', nav:'collections' },
+    { lbl:'Completed Collections', val: k.completedCollect, sub:'all-time', ic:'fa-circle-check', cls:'jade', nav:'collections' },
+    { lbl:'Verified Materials', val: k.verifiedMaterials, sub: k.pendingMaterials + ' pending review', ic:'fa-cubes', cls:'jade', nav:'materials' },
+    { lbl:'Marketplace Listings', val: k.activeListings, sub: k.pendingOrders + ' pending orders', ic:'fa-store', cls:'', nav:'market' },
+    { lbl:'Pending Transactions', val: k.pendingTx, sub: k.completedTx + ' completed', ic:'fa-credit-card', cls: k.pendingTx > 0 ? 'gold' : '', nav:'paytri' },
+    { lbl:'Connection Requests', val: k.connectReqs, sub: k.verifiedPartners + ' verified partners', ic:'fa-network-wired', cls:'', nav:'connect' },
+    { lbl:'Devices', val: k.totalDevices, sub: k.onlineDevices + ' online · ' + k.offlineDevices + ' offline', ic:'fa-microchip', cls: k.offlineDevices > 0 ? 'gold' : 'jade', nav:'smart' },
+    { lbl:'Device Alerts', val: k.deviceWarnings, sub:'unresolved', ic:'fa-triangle-exclamation', cls: k.deviceWarnings > 0 ? 'rose' : '', nav:'alerts' },
+    { lbl:'Pending Impact', val: k.pendingImpact, sub: k.verifiedImpact + ' verified', ic:'fa-seedling', cls:'violet', nav:'impact' },
+    { lbl:'Open Incidents', val: k.openIncidents, sub:'requires attention', ic:'fa-fire', cls: k.openIncidents > 0 ? 'rose' : '', nav:'incidents' },
+    { lbl:'Open Tasks', val: k.openTasks, sub: k.overdueTasks + ' overdue', ic:'fa-clipboard-list', cls: k.overdueTasks > 0 ? 'gold' : '', nav:'tasks' }
+  ];
+  var kg = document.getElementById('kpiGrid');
+  if(kg) kg.innerHTML = kpis.map(function(x){
+    return '<div class="kpi ' + x.cls + '" onclick="showPage(\''+x.nav+'\')">' +
+      '<div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.ic + '"></i></div><div class="kpi-lbl">' + esc(x.lbl) + '</div></div>' +
+      '<div class="kpi-v">' + fmtNum(x.val) + '</div>' +
+      '<div class="kpi-sub">' + esc(x.sub) + '</div>' +
+    '</div>';
+  }).join('');
+
+  var health = [
+    { m:'EcoCollect', count: S.modules.collections.length, ic:'fa-truck', nav:'collections', state: S.modules.collections.length ? 'ok' : 'empty' },
+    { m:'EcoWallet', count: S.modules.wallet.length, ic:'fa-wallet', nav:'wallet', state: S.modules.wallet.length ? 'ok' : 'empty' },
+    { m:'EcoImpact', count: ((S.modules.impact.activities||[]).length + (S.modules.impact.materials||[]).length), ic:'fa-seedling', nav:'impact', state: ((S.modules.impact.activities||[]).length + (S.modules.impact.materials||[]).length) ? 'ok' : 'empty' },
+    { m:'EcoConnect', count: Object.keys((S.modules.connect||{}).profiles||{}).length, ic:'fa-network-wired', nav:'connect', state: Object.keys((S.modules.connect||{}).profiles||{}).length ? 'ok' : 'empty' },
+    { m:'EcoSmart', count: ((S.modules.smart||{}).devices||[]).length, ic:'fa-microchip', nav:'smart', state: ((S.modules.smart||{}).devices||[]).length ? 'ok' : 'empty' },
+    { m:'EcoMarket', count: S.modules.market.length, ic:'fa-store', nav:'market', state: S.modules.market.length ? 'ok' : 'empty' }
+  ];
+  var mhg = document.getElementById('moduleHealthGrid');
+  if(mhg) mhg.innerHTML = health.map(function(h){
+    var tag = h.state === 'ok' ? 'CONNECTED' : 'NO DATA';
+    var tagCls = h.state === 'ok' ? '' : 'off';
+    var icCls = h.state === 'ok' ? '' : 'off';
+    return '<div class="card" onclick="showPage(\''+h.nav+'\')" style="cursor:pointer">' +
+      '<div class="card-hd"><div class="card-ic ' + icCls + '"><i class="fas ' + h.ic + '"></i></div>' +
+      '<div class="card-info"><h4>' + esc(h.m) + '</h4><div class="meta"><span><i class="fas fa-database"></i> ' + fmtNum(h.count) + ' records</span></div></div>' +
+      '<span class="health-tag ' + tagCls + '">' + tag + '</span></div></div>';
+  }).join('');
+
+  var feed = buildUnifiedFeed().slice(0, 6);
+  var df = document.getElementById('dashFeed');
+  if(df) df.innerHTML = feed.length ? feed.map(feedItemHtml).join('') : emptyHtml('No activity yet', 'Events will appear here as modules begin recording real activity.', 'fa-bolt');
+
+  var activeAlerts = S.cmd.alerts.filter(function(a){ return a.status !== 'resolved' && a.status !== 'dismissed'; }).slice(0,3);
+  var da = document.getElementById('dashAlerts');
+  if(da) da.innerHTML = activeAlerts.length ? activeAlerts.map(alertHtml).join('') : emptyHtml('No active alerts', 'Operational alerts from all modules will surface here.', 'fa-bell-slash', 'sm');
+
+  var queues = [
+    { t:'Pending Verification', v: k.pendingMaterials + k.pendingImpact, ic:'fa-shield-check', cls:'gold', nav:'verification', sub:'materials & impact records' },
+    { t:'Open Tasks', v: k.openTasks, ic:'fa-clipboard-list', cls:'', nav:'tasks', sub: k.overdueTasks + ' overdue' },
+    { t:'Open Incidents', v: k.openIncidents, ic:'fa-fire', cls: k.openIncidents > 0 ? 'rose' : '', nav:'incidents', sub:'requires triage' }
+  ];
+  var qs = document.getElementById('queueSnapshots');
+  if(qs) qs.innerHTML = queues.map(function(q){
+    return '<div class="card" onclick="showPage(\''+q.nav+'\')" style="cursor:pointer">' +
+      '<div class="card-hd"><div class="card-ic ' + q.cls + '"><i class="fas ' + q.ic + '"></i></div>' +
+      '<div class="card-info"><h4>' + esc(q.t) + '</h4><div class="meta"><span>' + esc(q.sub) + '</span></div></div></div>' +
+      '<div class="kpi-v ' + q.cls + '" style="font-size:1.5rem">' + fmtNum(q.v) + '</div>' +
+    '</div>';
+  }).join('');
+
+  updateBadges();
+}
+
+/* ---------- FEED ITEM HTML ---------- */
+function feedItemHtml(f){
+  var icons = { create:'fa-plus', update:'fa-pen', verify:'fa-badge-check', reject:'fa-times', status:'fa-arrow-right-arrow-left' };
+  var cls = f.kind === 'verify' ? 'jade' : f.kind === 'reject' ? 'rose' : f.module === 'ecocommand' ? 'violet' : f.module === 'ecosmart' ? 'gold' : '';
+  return '<div class="feed-item" onclick="openRecordFromFeed(\''+f.refType+'\',\''+f.ref+'\')">' +
+    '<div class="feed-ic ' + cls + '"><i class="fas ' + (icons[f.kind] || 'fa-circle') + '"></i></div>' +
+    '<div class="feed-info">' +
+      '<strong>' + esc(f.title) + '</strong>' +
+      (f.body ? '<p>' + esc(f.body) + '</p>' : '') +
+      '<small><span><i class="fas fa-cube"></i> ' + esc(f.module) + '</span><span><i class="fas fa-clock"></i> ' + fmtRel(f.ts) + '</span></small>' +
+    '</div>' +
+  '</div>';
+}
+function emptyHtml(title, body, icon, size){
+  return '<div class="empty ' + (size || '') + '"><i class="fas ' + icon + ' main"></i><h3>' + esc(title) + '</h3><p>' + esc(body) + '</p></div>';
+}
+
+/* ---------- RENDER: ACTIVITY ---------- */
+function renderActivity(){
+  var wrap = document.getElementById('activityWrap');
+  var mod = (document.getElementById('feedModuleFilter')||{}).value;
+  var feed = buildUnifiedFeed();
+  if(mod) feed = feed.filter(function(f){ return f.module === mod; });
+  if(!feed.length){ wrap.innerHTML = emptyHtml('No activity available', 'Events from across EcoCycle X will appear here.', 'fa-bolt'); return; }
+  var grouped = {};
+  feed.forEach(function(f){ var day = new Date(f.ts).toDateString(); if(!grouped[day]) grouped[day] = []; grouped[day].push(f); });
+  var html = '';
+  Object.keys(grouped).sort(function(a,b){ return new Date(b) - new Date(a); }).forEach(function(day){
+    var d = new Date(day);
+    var label = d.toDateString() === new Date().toDateString() ? 'Today' : d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric',year:'numeric'});
+    html += '<div class="sec-title" style="margin-top:12px"><i class="fas fa-calendar-day"></i> ' + esc(label) + ' · ' + grouped[day].length + ' events</div>';
+    html += '<div>' + grouped[day].map(feedItemHtml).join('') + '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+/* ---------- RENDER: MATERIALS ---------- */
+function renderMaterials(){
+  var wrap = document.getElementById('materialsWrap');
+  var materials = [];
+  ((S.modules.impact||{}).materials || []).forEach(function(m){
+    materials.push({ id:m.id, material:m.material||'unspecified', quantity:m.quantity, unit:m.unit||'kg', status:m.status, source:m.sourceModule||'manual', recordedAt:m.recordedAt||m.createdAt, owner:m.createdBy, location:m.location, sourceRef:m.sourceRef });
+  });
+  var smartReadings = ((S.modules.smart||{}).readings || []).filter(function(r){ return r.kind === 'weight' && r.quality === 'verified'; });
+  smartReadings.forEach(function(r){
+    materials.push({ id:r.id, material:r.materialCategory||'unspecified', quantity:r.value, unit:r.unit||'kg', status:'verified', source:'ecosmart', recordedAt:r.recordedAt, owner:null, location:null, sourceRef:r.deviceId });
+  });
+  var typeFilter = document.getElementById('matTypeFilter');
+  var currentTypeVal = typeFilter.value;
+  var types = {};
+  materials.forEach(function(m){ types[m.material] = 1; });
+  typeFilter.innerHTML = '<option value="">All material types</option>' + Object.keys(types).sort().map(function(t){ return '<option value="'+esc(t)+'">'+esc(t)+'</option>'; }).join('');
+  typeFilter.value = currentTypeVal;
+  var q = (document.getElementById('matSearch').value||'').toLowerCase();
+  var tFilter = typeFilter.value;
+  var sFilter = document.getElementById('matStatusFilter').value;
+  var list = materials.slice();
+  if(tFilter) list = list.filter(function(m){ return m.material === tFilter; });
+  if(sFilter) list = list.filter(function(m){
+    if(sFilter === 'pending') return m.status === 'submitted' || m.status === 'under_review' || m.status === 'draft';
+    if(sFilter === 'verified') return m.status === 'verified' || m.status === 'approved';
+    return true;
+  });
+  if(q) list = list.filter(function(m){ return (m.material||'').toLowerCase().indexOf(q)!==-1 || (m.id||'').toLowerCase().indexOf(q)!==-1; });
+  list.sort(function(a,b){ return (b.recordedAt||0) - (a.recordedAt||0); });
+  if(!list.length){ wrap.innerHTML = emptyHtml('No material records available', 'Material records appear here when EcoCollect, EcoSmart, or EcoImpact record materials.', 'fa-cubes'); return; }
+  var totWeight = 0;
+  list.forEach(function(m){ var w = num(m.quantity); if(m.unit === 'g') w /= 1000; else if(m.unit === 't') w *= 1000; else if(m.unit !== 'kg') w = 0; totWeight += w; });
+  wrap.innerHTML = '<div class="banner success"><i class="fas fa-database"></i><span><strong>' + list.length + '</strong> material records · <strong>' + fmtNum(totWeight, 1) + ' kg</strong> total</span></div>' +
+    '<div class="grid g2">' + list.map(function(m){
+      var s = m.status === 'verified' || m.status === 'approved' ? 'verified' : m.status === 'submitted' ? 'pending' : m.status === 'rejected' ? 'rejected' : 'draft';
+      return '<div class="card s-' + s + '">' +
+        '<div class="card-hd"><div class="card-ic"><i class="fas fa-cube"></i></div>' +
+          '<div class="card-info"><h4>' + esc(m.material) + ' · ' + fmtNum(m.quantity, 1) + ' ' + esc(m.unit) + '</h4>' +
+            '<div class="meta"><span><i class="fas fa-clock"></i> ' + fmtRel(m.recordedAt) + '</span>' + (m.owner ? '<span><i class="fas fa-user"></i> ' + esc(m.owner) + '</span>' : '') + '</div>' +
+          '</div><span class="pill p-' + s + '">' + esc(m.status || 'draft') + '</span></div>' +
+        '<div class="card-body"><span class="chip chip-' + (m.source === 'ecosmart' ? 'jade' : 'cy') + ' mono">' + esc(m.source) + '</span>' +
+          (m.sourceRef ? '<span class="chip chip-mute mono">ref: ' + esc(m.sourceRef.slice(-8)) + '</span>' : '') + '</div></div>';
+    }).join('') + '</div>';
+}
+
+/* ---------- RENDER: COLLECTIONS ---------- */
+function setColFilter(f, btn){ S.colFilter = f; var tabs = document.querySelectorAll('#page-collections .tab'); for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active'); if(btn) btn.classList.add('active'); renderCollections(); }
+function renderCollections(){
+  var wrap = document.getElementById('collectionsWrap');
+  var all = S.modules.collections || [];
+  var counts = { all:all.length, pending:0, progress:0, verify:0, completed:0, cancelled:0 };
+  all.forEach(function(c){
+    var s = (c.statusId||'').toUpperCase();
+    if(s === 'COMPLETED') counts.completed++;
+    else if(s === 'CANCELLED' || s === 'REJECTED') counts.cancelled++;
+    else if(s === 'VERIFIED' || s === 'AWAITING_VERIFY') counts.verify++;
+    else if(['COLLECTED','ON_THE_WAY','ARRIVED','IN_PROGRESS','SCHEDULED','HANDOVER_STARTED'].indexOf(s)!==-1) counts.progress++;
+    else counts.pending++;
+  });
+  var cfAll = document.getElementById('cfAll'); if(cfAll) cfAll.textContent = counts.all;
+  var ckg = document.getElementById('collectionKpiGrid');
+  if(ckg) ckg.innerHTML = [
+    { l:'Total', v:counts.all, cls:'', i:'fa-truck' },
+    { l:'Pending', v:counts.pending, cls:'gold', i:'fa-hourglass-half' },
+    { l:'In Progress', v:counts.progress, cls:'', i:'fa-play' },
+    { l:'Awaiting Verification', v:counts.verify, cls:'violet', i:'fa-shield-check' },
+    { l:'Completed', v:counts.completed, cls:'jade', i:'fa-check' },
+    { l:'Cancelled', v:counts.cancelled, cls:'rose', i:'fa-times' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  var list = all.slice();
+  if(S.colFilter !== 'all'){
+    list = list.filter(function(c){
+      var s = (c.statusId||'').toUpperCase();
+      if(S.colFilter === 'pending') return ['DRAFT','SUBMITTED','UNDER_REVIEW','PENDING','COLLECTOR_NEEDED','ACCEPTED'].indexOf(s)!==-1;
+      if(S.colFilter === 'progress') return ['COLLECTOR_ASSIGNED','SCHEDULED','ON_THE_WAY','ARRIVED','HANDOVER_STARTED','COLLECTED','IN_PROGRESS'].indexOf(s)!==-1;
+      if(S.colFilter === 'verify') return ['AWAITING_VERIFY','VERIFIED'].indexOf(s)!==-1;
+      if(S.colFilter === 'completed') return s === 'COMPLETED';
+      if(S.colFilter === 'cancelled') return ['CANCELLED','REJECTED'].indexOf(s)!==-1;
+      return true;
+    });
+  }
+  list.sort(function(a,b){ return (b.updatedAt||b.createdAt||0) - (a.updatedAt||a.createdAt||0); });
+  if(!list.length){ wrap.innerHTML = emptyHtml('No collections available', 'Collection records appear here from EcoCollect.', 'fa-truck'); return; }
+  wrap.innerHTML = '<div class="grid g2">' + list.map(function(c){
+    var s = (c.statusId||'').toUpperCase();
+    var sKey = s === 'COMPLETED' ? 'completed' : s === 'CANCELLED' ? 'cancelled' : (s === 'AWAITING_VERIFY' || s === 'VERIFIED') ? 'verified' : s === 'DRAFT' ? 'draft' : 'in_progress';
+    return '<div class="card s-' + sKey + '" onclick="openCollectionDetail(\'' + c.id + '\')" style="cursor:pointer">' +
+      '<div class="card-hd"><div class="card-ic"><i class="fas fa-truck"></i></div>' +
+      '<div class="card-info"><h4>' + esc(c.title || ('Collection ' + (c.ref || c.id.slice(-6).toUpperCase()))) + '</h4>' +
+      '<div class="meta"><span><i class="fas fa-clock"></i> ' + fmtRel(c.updatedAt || c.createdAt) + '</span>' + (c.approxArea ? '<span><i class="fas fa-map-marker-alt"></i> ' + esc(c.approxArea) + '</span>' : '') + '</div></div>' +
+      '<span class="pill p-' + sKey + '">' + esc(s) + '</span></div>' +
+      '<div class="card-body">' +
+        (c.materialCategory ? '<span class="chip chip-cy">' + esc(c.materialCategory) + '</span>' : '') +
+        (c.estimatedWeight ? '<span class="chip chip-mute">~' + esc(c.estimatedWeight) + ' kg</span>' : '') +
+        (c.actualWeight ? '<span class="chip chip-jade">✓ ' + esc(c.actualWeight) + ' kg</span>' : '') +
+      '</div></div>';
+  }).join('') + '</div>';
+}
+
+/* ---------- RENDER: MARKET ---------- */
+function renderMarket(){
+  var mkg = document.getElementById('marketKpiGrid');
+  if(mkg) mkg.innerHTML = [
+    { l:'Total Listings', v: S.modules.market.length, cls:'', i:'fa-store' },
+    { l:'Active', v: S.modules.market.filter(function(m){ return m.status==='active'; }).length, cls:'jade', i:'fa-circle-check' },
+    { l:'Pending Review', v: S.modules.market.filter(function(m){ return m.status==='pending'; }).length, cls:'gold', i:'fa-clock' },
+    { l:'Sold / Exchanged', v: S.modules.market.filter(function(m){ return ['sold','exchanged','donated'].indexOf(m.status)!==-1; }).length, cls:'jade', i:'fa-check-double' },
+    { l:'Pending Orders', v: (S.modules.marketOrders||[]).filter(function(o){ return o.status==='pending'; }).length, cls:'gold', i:'fa-shopping-cart' },
+    { l:'Disputed', v: S.modules.market.filter(function(m){ return m.status==='disputed'; }).length, cls:'rose', i:'fa-flag' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  var catCounts = {};
+  S.modules.market.forEach(function(l){ var c = l.category || l.materialCategory || 'uncategorized'; catCounts[c] = (catCounts[c]||0) + 1; });
+  var catWrap = document.getElementById('marketByCategory');
+  var catKeys = Object.keys(catCounts);
+  if(catWrap) catWrap.innerHTML = !catKeys.length
+    ? '<p class="tx-sm t2">No listings yet.</p>'
+    : catKeys.map(function(c){ var max = Math.max.apply(null, catKeys.map(function(k){ return catCounts[k]; })); var pct = (catCounts[c] / max) * 100;
+      return '<div style="margin-bottom:12px"><div class="flx jcb aic" style="font-size:0.78rem;margin-bottom:4px"><span style="color:var(--text)">' + esc(c) + '</span><span class="mono t3">' + catCounts[c] + '</span></div><div class="progress"><div class="progress-fill" style="width:' + pct + '%"></div></div></div>'; }).join('');
+  var bars = document.getElementById('marketBars');
+  if(bars){
+    var days = [];
+    for(var i=6;i>=0;i--){ var d = new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0); days.push({ start:d.getTime(), end:d.getTime()+86400000, count:0, label:d.toLocaleDateString([],{weekday:'short'}) }); }
+    S.modules.market.forEach(function(l){ var t = l.createdAt || 0; days.forEach(function(d){ if(t >= d.start && t < d.end) d.count++; }); });
+    var maxCount = Math.max.apply(null, days.map(function(d){ return d.count; }).concat([1]));
+    bars.innerHTML = days.map(function(d){ var h = Math.max(6, (d.count / maxCount) * 100);
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="bar" style="height:' + h + '%;width:100%"></div><div class="bar-lbl">' + esc(d.label) + '</div></div>'; }).join('');
+  }
+}
+
+/* ---------- RENDER: PAYTRI ---------- */
+function renderPaytri(){
+  var pkg = document.getElementById('paytriKpiGrid');
+  if(pkg) pkg.innerHTML = [
+    { l:'Total Transactions', v: S.modules.wallet.length, cls:'', i:'fa-receipt' },
+    { l:'Pending', v: S.modules.wallet.filter(function(t){ return t.status==='pending'; }).length, cls:'gold', i:'fa-hourglass-half' },
+    { l:'Completed', v: S.modules.wallet.filter(function(t){ return t.status==='completed'; }).length, cls:'jade', i:'fa-check' },
+    { l:'Failed', v: S.modules.wallet.filter(function(t){ return t.status==='failed'; }).length, cls:'rose', i:'fa-times' },
+    { l:'Refunds', v: S.modules.wallet.filter(function(t){ return t.type==='refund'; }).length, cls:'violet', i:'fa-rotate-left' },
+    { l:'Provider', v:'OFFLINE', cls:'rose', i:'fa-plug-circle-xmark', text:true }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v" style="' + (x.text?'font-size:1rem':'') + '">' + (x.text ? esc(x.v) : fmtNum(x.v)) + '</div></div>';
+  }).join('');
+  var wrap = document.getElementById('paytriWrap');
+  if(!S.modules.wallet.length){ wrap.innerHTML = emptyHtml('No transactions available', 'PayTri transactions appear here from the EcoWallet ledger.', 'fa-credit-card'); return; }
+  wrap.innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>Transaction ID</th><th>Type</th><th>Amount</th><th>Direction</th><th>Status</th><th>Time</th></tr></thead><tbody>' +
+    S.modules.wallet.slice(0, 50).map(function(t){
+      return '<tr onclick="openTransactionDetail(\'' + t.transactionId + '\')"><td class="cell-mono">' + esc((t.transactionId || '').slice(-12)) + '</td><td>' + esc(t.type) + '</td><td class="mono">' + fmtNum((t.amountMinor||0)/100, 2) + ' ' + esc(t.currency || 'USD') + '</td><td>' + (t.direction === 'credit' ? '<span class="cy">+ Credit</span>' : '<span class="sk">− Debit</span>') + '</td><td><span class="pill p-' + (t.status || 'pending') + '">' + esc(t.status || 'pending') + '</span></td><td class="cell-mono">' + fmtRel(t.createdAt) + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+/* ---------- RENDER: WALLET ---------- */
+function renderWallet(){
+  var bal = { available:0, pending:0, income:0, expenses:0 };
+  S.modules.wallet.forEach(function(e){
+    var amt = Math.abs(e.amountMinor || 0);
+    var isCredit = e.direction === 'credit';
+    if(e.status === 'completed'){ bal.available += isCredit ? amt : -amt; if(isCredit) bal.income += amt; else bal.expenses += amt; }
+    else if(e.status === 'pending'){ bal.pending += isCredit ? amt : -amt; }
+  });
+  var wkg = document.getElementById('walletKpiGrid');
+  if(wkg) wkg.innerHTML = [
+    { l:'Available Balance', v:(bal.available/100).toFixed(2), cls:'jade', i:'fa-wallet', money:true },
+    { l:'Pending', v:(bal.pending/100).toFixed(2), cls:'gold', i:'fa-clock', money:true },
+    { l:'Total Income', v:(bal.income/100).toFixed(2), cls:'jade', i:'fa-arrow-down', money:true },
+    { l:'Total Expenses', v:(bal.expenses/100).toFixed(2), cls:'rose', i:'fa-arrow-up', money:true },
+    { l:'EcoPoints', v:(S.modules.walletPoints||[]).filter(function(p){ return p.status==='completed'; }).reduce(function(s,p){ return s + Math.abs(p.amountMinor||0); }, 0), cls:'violet', i:'fa-star' },
+    { l:'Entries', v: S.modules.wallet.length, cls:'', i:'fa-list' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + (x.money ? '$ ' : '') + esc(x.v) + '</div></div>';
+  }).join('');
+  var wrap = document.getElementById('walletWrap');
+  if(!S.modules.wallet.length){ wrap.innerHTML = emptyHtml('No ledger entries', 'EcoWallet ledger entries will appear here.', 'fa-wallet'); return; }
+  wrap.innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>Entry</th><th>Description</th><th>Amount</th><th>Status</th><th>Time</th></tr></thead><tbody>' +
+    S.modules.wallet.slice().reverse().slice(0, 40).map(function(e){
+      return '<tr><td class="cell-mono">' + esc((e.entryId || '').slice(-10)) + '</td><td>' + esc(e.description || e.type) + '</td><td class="mono">' + (e.direction === 'credit' ? '+' : '−') + fmtNum((e.amountMinor||0)/100, 2) + ' ' + esc(e.currency||'USD') + '</td><td><span class="pill p-' + (e.status||'pending') + '">' + esc(e.status||'pending') + '</span></td><td class="cell-mono">' + fmtRel(e.createdAt) + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+/* ---------- RENDER: CONNECT ---------- */
+function setConnectFilter(f, btn){ S.connectFilter = f; var tabs = document.querySelectorAll('#page-connect .tab'); for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active'); if(btn) btn.classList.add('active'); renderConnect(); }
+function renderConnect(){
+  var cn = S.modules.connect || {};
+  var profiles = cn.profiles || {};
+  var ckg = document.getElementById('connectKpiGrid');
+  if(ckg) ckg.innerHTML = [
+    { l:'Profiles', v: Object.keys(profiles).length, cls:'', i:'fa-user' },
+    { l:'Verified', v: Object.keys(profiles).filter(function(id){ return profiles[id].verified; }).length, cls:'jade', i:'fa-badge-check' },
+    { l:'Connections', v: (cn.connections||[]).filter(function(c){ return c.status==='accepted'; }).length, cls:'', i:'fa-link' },
+    { l:'Pending Requests', v: (cn.connections||[]).filter(function(c){ return c.status==='pending'; }).length, cls:'gold', i:'fa-clock' },
+    { l:'Material Posts', v: (cn.materials||[]).length, cls:'', i:'fa-cubes' },
+    { l:'Opportunities', v: (cn.opportunities||[]).length, cls:'violet', i:'fa-bullhorn' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  var wrap = document.getElementById('connectWrap');
+  var f = S.connectFilter;
+  if(f === 'profiles'){
+    var list = Object.keys(profiles).map(function(id){ return profiles[id]; });
+    if(!list.length){ wrap.innerHTML = emptyHtml('No profiles available', 'EcoConnect profiles appear here.', 'fa-users'); return; }
+    wrap.innerHTML = '<div class="grid g2">' + list.map(function(p){
+      return '<div class="card"><div class="card-hd"><div class="card-ic"><i class="fas fa-user"></i></div>' +
+        '<div class="card-info"><h4>' + esc(p.name || 'Unnamed') + (p.verified ? ' <span class="chip chip-jade mono">✓</span>' : '') + '</h4>' +
+        '<div class="meta"><span><i class="fas fa-tag"></i> ' + esc(p.type || '—') + '</span>' + (p.location ? '<span><i class="fas fa-map-marker-alt"></i> ' + esc(p.location) + '</span>' : '') + '</div></div>' +
+        '<span class="pill p-' + (p.verified ? 'verified' : 'pending') + '">' + (p.verified ? 'Verified' : 'Unverified') + '</span></div></div>';
+    }).join('') + '</div>'; return;
+  }
+  if(f === 'connections'){
+    var cl = cn.connections || [];
+    if(!cl.length){ wrap.innerHTML = emptyHtml('No connections', 'Connection requests appear here.', 'fa-link'); return; }
+    wrap.innerHTML = '<div class="grid g2">' + cl.slice(0, 50).map(function(c){
+      var from = profiles[c.fromId] || {name:c.fromId};
+      var to = profiles[c.toId] || {name:c.toId};
+      return '<div class="card"><div class="card-hd"><div class="card-ic"><i class="fas fa-link"></i></div>' +
+        '<div class="card-info"><h4>' + esc(from.name) + ' ↔ ' + esc(to.name) + '</h4>' +
+        '<div class="meta"><span><i class="fas fa-clock"></i> ' + fmtRel(c.createdAt) + '</span></div></div>' +
+        '<span class="pill p-' + (c.status || 'pending') + '">' + esc(c.status || 'pending') + '</span></div></div>';
+    }).join('') + '</div>'; return;
+  }
+  if(f === 'materials'){
+    var ml = cn.materials || [];
+    if(!ml.length){ wrap.innerHTML = emptyHtml('No material posts', 'Material needs and offers appear here.', 'fa-cubes'); return; }
+    wrap.innerHTML = '<div class="grid g2">' + ml.slice(0, 50).map(function(m){
+      return '<div class="card"><div class="card-hd"><div class="card-ic"><i class="fas fa-cube"></i></div>' +
+        '<div class="card-info"><h4>' + esc(m.title || '—') + '</h4>' +
+        '<div class="meta"><span><i class="fas fa-tag"></i> ' + esc(m.kind||'') + '</span><span><i class="fas fa-clock"></i> ' + fmtRel(m.createdAt) + '</span></div></div>' +
+        '<span class="pill p-' + (m.status || 'active') + '">' + esc(m.status || 'active') + '</span></div></div>';
+    }).join('') + '</div>';
+  }
+}
+
+/* ---------- RENDER: CREATIVE / SCAN / GENIUS ---------- */
+function renderCreative(){ /* empty state stays as-is */ }
+function renderScan(){
+  var skg = document.getElementById('scanKpiGrid');
+  if(skg) skg.innerHTML = [
+    { l:'Total Scans', v:0, cls:'', i:'fa-camera' },
+    { l:'High Confidence', v:0, cls:'jade', i:'fa-check' },
+    { l:'Needs Verification', v:0, cls:'gold', i:'fa-exclamation' },
+    { l:'User Corrections', v:0, cls:'', i:'fa-pen' },
+    { l:'Unsupported', v:0, cls:'rose', i:'fa-ban' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  document.getElementById('scanWrap').innerHTML = emptyHtml('No scan records available', 'EcoScan AI scan records appear here when scans are performed.', 'fa-camera');
+}
+function renderGenius(){ document.getElementById('geniusSessions').textContent = '0'; document.getElementById('geniusFeedback').textContent = '—'; document.getElementById('geniusSafety').textContent = '0'; }
+
+/* ---------- RENDER: SMART ---------- */
+function renderSmart(){
+  var smart = S.modules.smart || {};
+  var devices = smart.devices || [];
+  var alerts = smart.alerts || [];
+  var skg = document.getElementById('smartKpiGrid');
+  if(skg) skg.innerHTML = [
+    { l:'Total Devices', v: devices.filter(function(d){ return d.state!=='retired'; }).length, cls:'', i:'fa-server' },
+    { l:'Online', v: devices.filter(function(d){ return d.state==='connected'; }).length, cls:'jade', i:'fa-circle' },
+    { l:'Offline', v: devices.filter(function(d){ return d.state==='disconnected' || d.state==='error'; }).length, cls:'rose', i:'fa-circle-xmark' },
+    { l:'Warnings', v: alerts.filter(function(a){ return a.status==='new' || a.status==='acknowledged'; }).length, cls:'gold', i:'fa-triangle-exclamation' },
+    { l:'Readings', v: (smart.readings||[]).length, cls:'', i:'fa-chart-line' },
+    { l:'Maintenance', v: (smart.maintenanceTasks||[]).filter(function(t){ return ['planned','assigned','in_progress','awaiting_parts'].indexOf(t.status)!==-1; }).length, cls:'violet', i:'fa-wrench' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  var wrap = document.getElementById('smartWrap');
+  if(!devices.length){ wrap.innerHTML = emptyHtml('No devices registered', 'Device records from EcoSmart appear here.', 'fa-microchip'); return; }
+  wrap.innerHTML = '<div class="grid g2">' + devices.map(function(d){
+    var sKey = d.state === 'connected' ? 'verified' : d.state === 'disconnected' ? 'offline' : d.state === 'error' ? 'failed' : d.state;
+    return '<div class="card"><div class="card-hd"><div class="card-ic"><i class="fas fa-microchip"></i></div>' +
+      '<div class="card-info"><h4>' + esc(d.name) + (d.test?' <span class="chip chip-violet mono">TEST</span>':'') + '</h4>' +
+      '<div class="meta"><span><i class="fas fa-tag"></i> ' + esc(d.type) + '</span><span><i class="fas fa-clock"></i> ' + (d.lastSeen ? fmtRel(d.lastSeen) : 'never seen') + '</span></div></div>' +
+      '<span class="pill p-' + sKey + '">' + esc(d.state || 'pending') + '</span></div>' +
+      '<div class="card-body">' +
+        (d.location && d.location.label ? '<span class="chip chip-mute"><i class="fas fa-map-marker-alt"></i> ' + esc(d.location.label) + '</span>' : '') +
+        (d.batteryPct != null ? '<span class="chip chip-mute">🔋 ' + d.batteryPct + '%</span>' : '') +
+      '</div></div>';
+  }).join('') + '</div>';
+}
+
+/* ---------- RENDER: IMPACT ---------- */
+function setImpactFilter(f, btn){ S.impactFilter = f; var tabs = document.querySelectorAll('#page-impact .tab'); for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active'); if(btn) btn.classList.add('active'); renderImpact(); }
+function renderImpact(){
+  var im = S.modules.impact || {};
+  var acts = im.activities || [];
+  var mats = im.materials || [];
+  var reuse = im.reuse || [];
+  var comm = im.community || [];
+  var verifiedWeight = mats.filter(function(m){ return m.status === 'verified'; }).reduce(function(s,m){ var w = num(m.quantity); if(m.unit === 'g') w /= 1000; else if(m.unit === 't') w *= 1000; else if(m.unit !== 'kg') w = 0; return s + w; }, 0);
+  var ikg = document.getElementById('impactKpiGrid');
+  if(ikg) ikg.innerHTML = [
+    { l:'Verified Material', v: fmtNum(verifiedWeight, 1), cls:'jade', i:'fa-weight-hanging', suffix:'kg' },
+    { l:'Verified Activities', v: acts.filter(function(a){ return a.status==='verified'; }).length, cls:'jade', i:'fa-circle-check' },
+    { l:'Pending Verification', v: acts.filter(function(a){ return a.status==='submitted'||a.status==='under_review'; }).length, cls:'gold', i:'fa-clock' },
+    { l:'Items Reused', v: reuse.filter(function(r){ return r.status==='verified'; }).reduce(function(s,r){ return s + num(r.quantity||1); },0), cls:'', i:'fa-screwdriver-wrench' },
+    { l:'Community Events', v: comm.filter(function(c){ return c.status==='verified'; }).length, cls:'violet', i:'fa-people-group' },
+    { l:'Projects', v: (im.projects||[]).length, cls:'', i:'fa-diagram-project' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + esc(x.v) + (x.suffix ? '<small>' + x.suffix + '</small>' : '') + '</div></div>';
+  }).join('');
+  var wrap = document.getElementById('impactWrap');
+  var f = S.impactFilter;
+  var list = acts.slice();
+  if(f === 'verified') list = list.filter(function(a){ return a.status === 'verified'; });
+  else if(f === 'pending') list = list.filter(function(a){ return a.status === 'submitted' || a.status === 'under_review'; });
+  else if(f === 'rejected') list = list.filter(function(a){ return a.status === 'rejected'; });
+  list.sort(function(a,b){ return (b.recordedAt||b.createdAt||0) - (a.recordedAt||a.createdAt||0); });
+  if(!list.length){ wrap.innerHTML = emptyHtml('No verified impact data available', 'Impact activities appear here after they are recorded and verified.', 'fa-seedling'); return; }
+  wrap.innerHTML = '<div class="grid g2">' + list.slice(0, 40).map(function(a){
+    return '<div class="card"><div class="card-hd"><div class="card-ic jade"><i class="fas fa-seedling"></i></div>' +
+      '<div class="card-info"><h4>' + esc(a.title) + '</h4>' +
+      '<div class="meta"><span><i class="fas fa-tag"></i> ' + esc(a.type) + '</span><span><i class="fas fa-clock"></i> ' + fmtRel(a.recordedAt) + '</span></div></div>' +
+      '<span class="pill p-' + (a.status === 'verified' ? 'verified' : a.status === 'rejected' ? 'rejected' : 'pending') + '">' + esc(a.status) + '</span></div>' +
+      '<div class="card-body">' + (a.quantity ? '<span class="chip chip-jade">' + fmtNum(a.quantity, 1) + ' ' + esc(a.unit||'') + '</span>' : '') + (a.material ? '<span class="chip chip-cy">' + esc(a.material) + '</span>' : '') + (a.test ? '<span class="chip chip-violet mono">TEST</span>' : '') + '</div></div>';
+  }).join('') + '</div>';
+}
+
+/* ---------- RENDER: VERIFICATION ---------- */
+function setVerifFilter(f, btn){ S.verifFilter = f; var tabs = document.querySelectorAll('#page-verification .tab'); for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active'); if(btn) btn.classList.add('active'); renderVerification(); }
+function renderVerification(){
+  var im = S.modules.impact || {};
+  var all = [];
+  ['activities','materials','reuse','community'].forEach(function(k){ (im[k]||[]).forEach(function(r){ all.push({ record:r, kind:k }); }); });
+  var pending = all.filter(function(x){ return x.record.status === 'submitted'; });
+  var review = all.filter(function(x){ return x.record.status === 'under_review'; });
+  var approved = all.filter(function(x){ return x.record.status === 'verified' || x.record.status === 'approved'; });
+  var rejected = all.filter(function(x){ return x.record.status === 'rejected'; });
+  var vfP = document.getElementById('vfPending'); if(vfP) vfP.textContent = pending.length;
+  var vkg = document.getElementById('verifKpiGrid');
+  if(vkg) vkg.innerHTML = [
+    { l:'Pending', v: pending.length, cls:'gold', i:'fa-hourglass-half' },
+    { l:'Under Review', v: review.length, cls:'', i:'fa-magnifying-glass' },
+    { l:'Approved', v: approved.length, cls:'jade', i:'fa-check' },
+    { l:'Rejected', v: rejected.length, cls:'rose', i:'fa-times' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  var list = [];
+  if(S.verifFilter === 'pending') list = pending;
+  else if(S.verifFilter === 'approved') list = approved;
+  else if(S.verifFilter === 'rejected') list = rejected;
+  list.sort(function(a,b){ return (b.record.submittedAt||b.record.updatedAt||b.record.createdAt||0) - (a.record.submittedAt||a.record.updatedAt||a.record.createdAt||0); });
+  var wrap = document.getElementById('verifWrap');
+  if(!list.length){ wrap.innerHTML = emptyHtml('Nothing in this queue', 'Verification queue will populate as records are submitted.', 'fa-shield-check'); return; }
+  wrap.innerHTML = '<div class="grid g2">' + list.slice(0, 50).map(function(x){
+    var r = x.record;
+    var title = r.title || r.name || r.itemCategory || r.id;
+    return '<div class="card s-pending"><div class="card-hd"><div class="card-ic violet"><i class="fas fa-shield-check"></i></div>' +
+      '<div class="card-info"><h4>' + esc(title) + '</h4>' +
+      '<div class="meta"><span><i class="fas fa-tag"></i> ' + esc(x.kind) + '</span><span><i class="fas fa-clock"></i> ' + fmtRel(r.submittedAt || r.updatedAt || r.createdAt) + '</span></div></div>' +
+      '<span class="pill p-' + (r.status === 'verified' ? 'verified' : 'pending') + '">' + esc(r.status) + '</span></div>' +
+      '<div class="card-body">' + ((r.evidence||[]).length ? '<span class="chip chip-jade"><i class="fas fa-paperclip"></i> ' + r.evidence.length + ' evidence</span>' : '<span class="chip chip-gold"><i class="fas fa-exclamation"></i> No evidence</span>') + '</div>' +
+      '<div class="card-actions"><button class="btn btn-primary btn-sm" onclick="openVerifyModal(\'' + x.kind + '\',\'' + r.id + '\')" type="button"><i class="fas fa-gavel"></i> Review</button></div></div>';
+  }).join('') + '</div>';
+}
+function openVerifyModal(kind, id){
+  if(S.user.role !== 'verification_officer' && S.user.role !== 'super_admin' && S.user.role !== 'ops_manager'){ toast('Verification officer role required', 'error'); return; }
+  var im = S.modules.impact || {};
+  var list = im[kind] || [];
+  var rec = list.find(function(r){ return r.id === id; });
+  if(!rec) return;
+  var ev = (rec.evidence||[]).map(function(e){
+    return '<div style="padding:10px 12px;border-radius:8px;background:var(--bg-3);border:1px solid var(--line-2);margin-bottom:6px">' +
+      '<div style="font-size:0.83rem;color:var(--white);font-weight:700">' + esc(e.name) + '</div>' +
+      '<div class="tx-xs t3 mono">' + esc(e.type) + ' · ' + (e.reference ? esc(e.reference) + ' · ' : '') + fmtRel(e.createdAt) + '</div></div>';
+  }).join('') || '<p class="tx-xs t3">No evidence attached.</p>';
+  document.getElementById('mDetailBody').innerHTML =
+    '<button class="mdl-close" onclick="closeM(\'mDetail\')" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-gavel"></i></div>' +
+      '<div class="mdl-hd-txt"><h2>Review Record</h2><p>' + esc(id) + '</p></div></div>' +
+    '<p class="mdl-sub">Approve to mark verified, reject to remove, or dispute to flag.</p>' +
+    '<div style="padding:14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line-2);margin-bottom:14px">' +
+      '<div class="det-row"><span class="k">Type</span><span class="v">' + esc(kind) + '</span></div>' +
+      '<div class="det-row"><span class="k">Title</span><span class="v">' + esc(rec.title || rec.itemCategory || rec.id) + '</span></div>' +
+      (rec.quantity ? '<div class="det-row"><span class="k">Quantity</span><span class="v">' + fmtNum(rec.quantity, 2) + ' ' + esc(rec.unit || '') + '</span></div>' : '') +
+    '</div>' +
+    '<div class="sec-title"><i class="fas fa-paperclip"></i> Evidence</div>' + ev +
+    '<div class="fg mt-3"><label class="fl">Review note</label><textarea class="ft" id="rvNote" placeholder="Explain your decision…"></textarea></div>' +
+    '<div class="flx g-2 mt-3 wrap">' +
+      '<button class="btn btn-success flx-1" onclick="decideVerification(\''+kind+'\',\''+id+'\',\'verified\')" type="button"><i class="fas fa-check"></i> Approve</button>' +
+      '<button class="btn btn-danger flx-1" onclick="decideVerification(\''+kind+'\',\''+id+'\',\'rejected\')" type="button"><i class="fas fa-times"></i> Reject</button>' +
+      '<button class="btn btn-ghost flx-1" onclick="decideVerification(\''+kind+'\',\''+id+'\',\'disputed\')" type="button"><i class="fas fa-flag"></i> Flag</button>' +
+    '</div>';
+  openM('mDetail');
+}
+function decideVerification(kind, id, decision){
+  var im = S.modules.impact || {};
+  var list = im[kind] || [];
+  var rec = list.find(function(r){ return r.id === id; });
+  if(!rec) return;
+  var note = (document.getElementById('rvNote')||{}).value || '';
+  rec.status = decision;
+  rec.verifiedAt = decision === 'verified' ? now() : null;
+  rec.verifiedBy = S.user.ecoId;
+  rec.reviewNote = note;
+  lsSet(K.impact, im);
+  auditAction('verification.' + decision, kind + ':' + id + (note ? ' — ' + note : ''));
+  toast('Record ' + decision);
+  closeM('mDetail');
+  loadAllModules();
+  renderVerification();
+  renderDashboard();
+  // Sync decisions back to backend
+  if(window.EcoSync && window.EcoSync.pushEntity){
+    try{
+      window.EcoSync.pushEntity('activities', im.activities);
+      window.EcoSync.pushEntity('materials',  im.materials);
+    }catch(e){}
+  }
+}
+
+/* ---------- RENDER: ALERTS ---------- */
+function setAlertFilter(f, btn){ S.alertFilter = f; var tabs = document.querySelectorAll('#page-alerts .tab'); for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active'); if(btn) btn.classList.add('active'); renderAlerts(); }
+function alertHtml(a){
+  var sev = a.severity || 'medium';
+  var ic = sev === 'critical' ? 'fa-fire' : sev === 'high' ? 'fa-exclamation-triangle' : sev === 'low' ? 'fa-info' : 'fa-exclamation';
+  return '<div class="alert-item sev-' + sev + '"><div class="alert-ic ' + sev + '"><i class="fas ' + ic + '"></i></div>' +
+    '<div class="alert-info"><strong>' + esc(a.title) + '</strong>' +
+      (a.message ? '<p>' + esc(a.message) + '</p>' : '') +
+      '<small><span>SEV: ' + sev.toUpperCase() + '</span>' + (a.module ? '<span>· ' + esc(a.module) + '</span>' : '') + '<span>· ' + fmtRel(a.createdAt) + '</span></small>' +
+      (a.status === 'active' || a.status === 'new' ? '<div class="alert-actions">' +
+        '<button class="btn btn-xs btn-outline" onclick="acknowledgeAlert(\'' + a.id + '\')" type="button"><i class="fas fa-check"></i> Acknowledge</button>' +
+        '<button class="btn btn-xs btn-ghost" onclick="resolveAlert(\'' + a.id + '\')" type="button">Resolve</button>' +
+        '<button class="btn btn-xs btn-ghost" onclick="escalateToIncident(\'' + a.id + '\')" type="button"><i class="fas fa-fire"></i> Escalate</button>' +
+      '</div>' : '') +
+    '</div></div>';
+}
+function renderAlerts(){
+  var all = S.cmd.alerts || [];
+  var active = all.filter(function(a){ return a.status === 'active' || a.status === 'new'; });
+  var afA = document.getElementById('afActive'); if(afA) afA.textContent = active.length;
+  var list = all.slice();
+  if(S.alertFilter === 'active') list = active;
+  else if(S.alertFilter === 'critical') list = list.filter(function(a){ return a.severity === 'critical'; });
+  else if(S.alertFilter === 'acknowledged') list = list.filter(function(a){ return a.status === 'acknowledged'; });
+  else if(S.alertFilter === 'resolved') list = list.filter(function(a){ return a.status === 'resolved'; });
+  list.sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
+  var wrap = document.getElementById('alertsWrap');
+  if(!list.length){ wrap.innerHTML = emptyHtml(active.length === 0 ? 'No active alerts' : 'No matching alerts', 'Operational alerts from all modules will surface here.', 'fa-bell-slash'); return; }
+  wrap.innerHTML = list.map(alertHtml).join('');
+}
+function acknowledgeAlert(id){
+  var a = S.cmd.alerts.find(function(x){ return x.id === id; });
+  if(!a) return;
+  a.status = 'acknowledged'; a.acknowledgedAt = now(); a.acknowledgedBy = S.user.ecoId;
+  auditAction('alert.acknowledge', id); saveCommandDB(); toast('Alert acknowledged');
+  renderAlerts(); renderDashboard(); updateBadges();
+}
+function resolveAlert(id){
+  var a = S.cmd.alerts.find(function(x){ return x.id === id; });
+  if(!a) return;
+  a.status = 'resolved'; a.resolvedAt = now(); a.resolvedBy = S.user.ecoId;
+  auditAction('alert.resolve', id); saveCommandDB(); toast('Alert resolved', 'info');
+  renderAlerts(); renderDashboard(); updateBadges();
+}
+function markAllAlertsAcknowledged(){
+  S.cmd.alerts.forEach(function(a){ if(a.status === 'active' || a.status === 'new'){ a.status = 'acknowledged'; a.acknowledgedAt = now(); a.acknowledgedBy = S.user.ecoId; } });
+  auditAction('alert.acknowledge_all', 'Bulk acknowledge'); saveCommandDB(); toast('All alerts acknowledged');
+  renderAlerts(); renderDashboard(); updateBadges();
+}
+function escalateToIncident(alertId){
+  var a = S.cmd.alerts.find(function(x){ return x.id === alertId; });
+  if(!a) return;
+  var inc = { id: uid('inc'), title:'ESCALATED: ' + a.title, description:a.message || '', severity:a.severity || 'high', source:a.module || 'unknown', sourceAlertId:alertId, status:'open', assignedTo:null, createdBy: S.user.ecoId, createdAt: now(), history:[{ts:now(), action:'created', by:S.user.ecoId, note:'Escalated from alert ' + alertId}] };
+  S.cmd.incidents.unshift(inc);
+  a.status = 'escalated'; a.escalatedTo = inc.id;
+  auditAction('incident.create', 'Escalated from alert ' + alertId); saveCommandDB();
+  toast('Escalated to incident'); renderAlerts(); renderIncidents(); updateBadges();
+}
+
+/* ---------- RENDER: INCIDENTS ---------- */
+function renderIncidents(){
+  var open = S.cmd.incidents.filter(function(i){ return i.status === 'open' || i.status === 'investigating'; });
+  var resolved = S.cmd.incidents.filter(function(i){ return i.status === 'resolved' || i.status === 'closed'; });
+  var ikg = document.getElementById('incidentsKpiGrid');
+  if(ikg) ikg.innerHTML = [
+    { l:'Open', v: open.length, cls: open.length ? 'rose' : '', i:'fa-fire' },
+    { l:'Resolved', v: resolved.length, cls:'jade', i:'fa-check' },
+    { l:'Critical', v: S.cmd.incidents.filter(function(i){ return i.severity==='critical' && i.status!=='resolved'; }).length, cls:'rose', i:'fa-triangle-exclamation' },
+    { l:'Total', v: S.cmd.incidents.length, cls:'', i:'fa-list' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + fmtNum(x.v) + '</div></div>';
+  }).join('');
+  var wrap = document.getElementById('incidentsWrap');
+  if(!S.cmd.incidents.length){ wrap.innerHTML = emptyHtml('No incidents', 'Incidents are created manually or escalated from alerts.', 'fa-triangle-exclamation'); return; }
+  wrap.innerHTML = '<div class="grid g2">' + S.cmd.incidents.map(function(i){
+    return '<div class="card s-' + (i.status === 'open' ? 'critical' : i.status === 'investigating' ? 'in_progress' : 'verified') + '">' +
+      '<div class="card-hd"><div class="card-ic rose"><i class="fas fa-fire"></i></div>' +
+      '<div class="card-info"><h4>' + esc(i.title) + '</h4>' +
+      '<div class="meta"><span><i class="fas fa-clock"></i> ' + fmtRel(i.createdAt) + '</span><span><i class="fas fa-tag"></i> ' + esc(i.source || 'manual') + '</span></div></div>' +
+      '<span class="pill p-' + (i.status === 'open' ? 'critical' : i.status === 'investigating' ? 'in_progress' : 'verified') + '">' + esc(i.status) + '</span></div>' +
+      (i.description ? '<p class="tx-sm t2" style="line-height:1.5">' + esc(i.description) + '</p>' : '') +
+      '<div class="card-actions">' +
+        (i.status === 'open' ? '<button class="btn btn-outline btn-sm" onclick="investigateIncident(\'' + i.id + '\')" type="button">Investigate</button>' : '') +
+        (i.status === 'investigating' ? '<button class="btn btn-success btn-sm" onclick="resolveIncident(\'' + i.id + '\')" type="button"><i class="fas fa-check"></i> Resolve</button>' : '') +
+      '</div></div>';
+  }).join('') + '</div>';
+}
+function investigateIncident(id){
+  var i = S.cmd.incidents.find(function(x){ return x.id === id; });
+  if(!i) return;
+  i.status = 'investigating'; i.history.push({ts: now(), action:'investigating', by: S.user.ecoId, note:''});
+  auditAction('incident.investigate', id); saveCommandDB(); toast('Incident marked as investigating'); renderIncidents();
+}
+function resolveIncident(id){
+  var i = S.cmd.incidents.find(function(x){ return x.id === id; });
+  if(!i) return;
+  i.status = 'resolved'; i.resolvedAt = now(); i.resolvedBy = S.user.ecoId;
+  i.history.push({ts: now(), action:'resolved', by: S.user.ecoId, note:''});
+  auditAction('incident.resolve', id); saveCommandDB(); toast('Incident resolved'); renderIncidents(); updateBadges();
+}
+function openIncidentForm(){
+  document.getElementById('mIncidentBody').innerHTML =
+    '<button class="mdl-close" onclick="closeM(\'mIncident\')" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-fire"></i></div><div class="mdl-hd-txt"><h2>Open Incident</h2><p>Structured incident record</p></div></div>' +
+    '<div class="fg"><label class="fl">Title <span class="req">*</span></label><input class="fi" id="incTitle" placeholder="Brief description"></div>' +
+    '<div class="fg"><label class="fl">Severity</label><select class="fs" id="incSev"><option value="critical">Critical</option><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></div>' +
+    '<div class="fg"><label class="fl">Source module</label><select class="fs" id="incSource">' + ['ecocollect','ecomarket','ecowallet','ecoconnect','ecosmart','ecoimpact','ecoscan','ecocommand'].map(function(m){ return '<option value="'+m+'">'+m+'</option>'; }).join('') + '</select></div>' +
+    '<div class="fg"><label class="fl">Description</label><textarea class="ft" id="incDesc" placeholder="What happened…"></textarea></div>' +
+    '<button class="btn btn-primary btn-block mt-3" onclick="createIncident()" type="button"><i class="fas fa-save"></i> Create Incident</button>';
+  openM('mIncident');
+}
+function createIncident(){
+  var title = document.getElementById('incTitle').value.trim();
+  if(!title){ toast('Title is required', 'error'); return; }
+  var inc = { id: uid('inc'), title, severity: document.getElementById('incSev').value, source: document.getElementById('incSource').value, description: document.getElementById('incDesc').value.trim(), status:'open', createdBy: S.user.ecoId, createdAt: now(), history:[{ts:now(), action:'created', by:S.user.ecoId, note:''}] };
+  S.cmd.incidents.unshift(inc);
+  auditAction('incident.create', title); saveCommandDB(); closeM('mIncident'); toast('Incident created');
+  renderIncidents(); updateBadges();
+  if(window.EcoSync && window.EcoSync.pushEntity) try{ window.EcoSync.pushEntity('incidents', S.cmd.incidents); }catch(e){}
+}
+
+/* ---------- RENDER: TASKS ---------- */
+function setTaskFilter(f, btn){ S.taskFilter = f; var tabs = document.querySelectorAll('#page-tasks .tab'); for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active'); if(btn) btn.classList.add('active'); renderTasks(); }
+function renderTasks(){
+  var all = S.cmd.tasks;
+  var open = all.filter(function(t){ return t.status === 'open'; });
+  var progress = all.filter(function(t){ return t.status === 'in_progress'; });
+  var done = all.filter(function(t){ return t.status === 'completed'; });
+  var overdue = all.filter(function(t){ return t.status !== 'completed' && t.due && t.due < Date.now(); });
+  var tfO = document.getElementById('tfOpen'); if(tfO) tfO.textContent = open.length;
+  var list = all.slice();
+  if(S.taskFilter === 'open') list = open;
+  else if(S.taskFilter === 'progress') list = progress;
+  else if(S.taskFilter === 'overdue') list = overdue;
+  else if(S.taskFilter === 'done') list = done;
+  list.sort(function(a,b){ return (a.due || 9999999999999) - (b.due || 9999999999999); });
+  var wrap = document.getElementById('tasksWrap');
+  if(!list.length){ wrap.innerHTML = emptyHtml(all.length === 0 ? 'No tasks' : 'No matching tasks', 'Operational tasks appear here.', 'fa-clipboard-list'); return; }
+  wrap.innerHTML = '<div class="grid g2">' + list.map(function(t){
+    var overdue = t.status !== 'completed' && t.due && t.due < Date.now();
+    var sKey = overdue ? 'rejected' : t.status === 'completed' ? 'verified' : t.status === 'in_progress' ? 'in_progress' : 'pending';
+    return '<div class="card s-' + sKey + '"><div class="card-hd"><div class="card-ic ' + (overdue ? 'rose' : '') + '"><i class="fas fa-clipboard-list"></i></div>' +
+      '<div class="card-info"><h4>' + esc(t.title) + '</h4>' +
+      '<div class="meta">' + (t.module ? '<span><i class="fas fa-cube"></i> ' + esc(t.module) + '</span>' : '') + (t.due ? '<span><i class="fas fa-clock"></i> due ' + fmtTime(t.due) + '</span>' : '') + '</div></div>' +
+      '<span class="pill p-' + sKey + '">' + (overdue ? 'OVERDUE' : esc(t.status)) + '</span></div>' +
+      (t.description ? '<p class="tx-sm t2" style="line-height:1.5">' + esc(t.description) + '</p>' : '') +
+      '<div class="card-actions">' +
+        (t.status === 'open' ? '<button class="btn btn-outline btn-sm" onclick="startTask(\'' + t.id + '\')" type="button"><i class="fas fa-play"></i> Start</button>' : '') +
+        (t.status === 'in_progress' ? '<button class="btn btn-success btn-sm" onclick="completeTask(\'' + t.id + '\')" type="button"><i class="fas fa-check"></i> Complete</button>' : '') +
+      '</div></div>';
+  }).join('') + '</div>';
+}
+function startTask(id){ var t = S.cmd.tasks.find(function(x){ return x.id === id; }); if(!t) return; t.status = 'in_progress'; t.startedAt = now(); auditAction('task.start', id); saveCommandDB(); toast('Task started'); renderTasks(); updateBadges(); }
+function completeTask(id){ var t = S.cmd.tasks.find(function(x){ return x.id === id; }); if(!t) return; t.status = 'completed'; t.completedAt = now(); t.completedBy = S.user.ecoId; auditAction('task.complete', id); saveCommandDB(); toast('Task completed'); renderTasks(); renderDashboard(); updateBadges(); }
+function openTaskForm(){
+  document.getElementById('mTaskBody').innerHTML =
+    '<button class="mdl-close" onclick="closeM(\'mTask\')" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-clipboard-list"></i></div><div class="mdl-hd-txt"><h2>New Task</h2><p>Operational work item</p></div></div>' +
+    '<div class="fg"><label class="fl">Title <span class="req">*</span></label><input class="fi" id="tkTitle" placeholder="Task description"></div>' +
+    '<div class="frow"><div class="fg"><label class="fl">Module</label><select class="fs" id="tkModule">' +
+      ['ecocollect','ecomarket','ecowallet','ecoconnect','ecosmart','ecoimpact','ecoscan','ecocommand'].map(function(m){ return '<option value="'+m+'">'+m+'</option>'; }).join('') +
+    '</select></div><div class="fg"><label class="fl">Due date</label><input class="fi" id="tkDue" type="date"></div></div>' +
+    '<div class="fg"><label class="fl">Description</label><textarea class="ft" id="tkDesc"></textarea></div>' +
+    '<button class="btn btn-primary btn-block mt-3" onclick="createTask()" type="button"><i class="fas fa-save"></i> Create Task</button>';
+  openM('mTask');
+}
+function createTask(){
+  var title = document.getElementById('tkTitle').value.trim();
+  if(!title){ toast('Title is required', 'error'); return; }
+  var due = document.getElementById('tkDue').value;
+  S.cmd.tasks.unshift({ id: uid('tsk'), title, module: document.getElementById('tkModule').value, due: due ? new Date(due).getTime() : null, description: document.getElementById('tkDesc').value.trim(), status:'open', createdBy: S.user.ecoId, createdAt: now() });
+  auditAction('task.create', title); saveCommandDB(); closeM('mTask'); toast('Task created');
+  renderTasks(); updateBadges();
+  if(window.EcoSync && window.EcoSync.pushEntity) try{ window.EcoSync.pushEntity('tasks', S.cmd.tasks); }catch(e){}
+}
+
+/* ---------- RENDER: REPORTS ---------- */
+function renderReports(){
+  var period = document.getElementById('reportPeriod').value;
+  var cutoff = period === 'all' ? 0 : (Date.now() - parseInt(period) * 86400000);
+  var col = (S.modules.collections || []).filter(function(c){ return (c.createdAt||0) >= cutoff; });
+  var im = S.modules.impact || {};
+  var mats = (im.materials || []).filter(function(m){ return (m.recordedAt||m.createdAt||0) >= cutoff; });
+  var acts = (im.activities || []).filter(function(a){ return (a.recordedAt||a.createdAt||0) >= cutoff; });
+  var totalWeight = 0;
+  mats.forEach(function(m){ var w = num(m.quantity); if(m.unit === 'g') w /= 1000; else if(m.unit === 't') w *= 1000; else if(m.unit !== 'kg') w = 0; totalWeight += w; });
+  var rkg = document.getElementById('reportKpiGrid');
+  if(rkg) rkg.innerHTML = [
+    { l:'Collections', v: col.length, cls:'', i:'fa-truck' },
+    { l:'Verified Weight', v: fmtNum(totalWeight, 1), cls:'jade', i:'fa-weight-hanging', suffix:'kg' },
+    { l:'Impact Activities', v: acts.length, cls:'violet', i:'fa-seedling' },
+    { l:'Users Active', v: Object.keys((S.modules.connect||{}).profiles||{}).length, cls:'', i:'fa-users' },
+    { l:'Ledger Entries', v: S.modules.wallet.length, cls:'gold', i:'fa-receipt' },
+    { l:'Devices', v: ((S.modules.smart||{}).devices||[]).length, cls:'', i:'fa-microchip' }
+  ].map(function(x){
+    return '<div class="kpi ' + x.cls + '"><div class="kpi-hd"><div class="kpi-ic ' + x.cls + '"><i class="fas ' + x.i + '"></i></div><div class="kpi-lbl">' + esc(x.l) + '</div></div><div class="kpi-v">' + esc(x.v) + (x.suffix ? '<small>' + x.suffix + '</small>' : '') + '</div></div>';
+  }).join('');
+  var days = [];
+  for(var i=6;i>=0;i--){ var d = new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0); days.push({ start:d.getTime(), end:d.getTime()+86400000, count:0, label:d.toLocaleDateString([],{weekday:'short'}) }); }
+  col.forEach(function(c){ var t = c.createdAt || 0; days.forEach(function(d){ if(t >= d.start && t < d.end) d.count++; }); });
+  var max = Math.max.apply(null, days.map(function(d){ return d.count; }).concat([1]));
+  var rb = document.getElementById('reportBarsCollections');
+  if(rb) rb.innerHTML = days.map(function(d){ var h = Math.max(6, (d.count / max) * 100);
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="bar" style="height:' + h + '%;width:100%"></div><div class="bar-lbl">' + esc(d.label) + '</div></div>'; }).join('');
+  var verifDays = days.map(function(d){ return {start:d.start,end:d.end,count:0,label:d.label}; });
+  mats.filter(function(m){ return m.status === 'verified'; }).forEach(function(m){ var t = m.verifiedAt || m.updatedAt || 0; verifDays.forEach(function(d){ if(t >= d.start && t < d.end) d.count++; }); });
+  var maxV = Math.max.apply(null, verifDays.map(function(d){ return d.count; }).concat([1]));
+  var rbv = document.getElementById('reportBarsVerif');
+  if(rbv) rbv.innerHTML = verifDays.map(function(d){ var h = Math.max(6, (d.count / maxV) * 100);
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="bar jade" style="height:' + h + '%;width:100%"></div><div class="bar-lbl">' + esc(d.label) + '</div></div>'; }).join('');
+  var rs = document.getElementById('reportSnapshot');
+  if(rs) rs.innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>Module</th><th>Records</th><th>Verified</th><th>Pending</th><th>Range</th></tr></thead><tbody>' +
+    '<tr><td>EcoCollect</td><td>' + col.length + '</td><td>' + col.filter(function(c){ return (c.statusId||'').toUpperCase()==='COMPLETED'; }).length + '</td><td>' + col.filter(function(c){ return ['SUBMITTED','PENDING'].indexOf((c.statusId||'').toUpperCase())!==-1; }).length + '</td><td class="mono">' + period + 'd</td></tr>' +
+    '<tr><td>EcoImpact Materials</td><td>' + mats.length + '</td><td>' + mats.filter(function(m){ return m.status==='verified'; }).length + '</td><td>' + mats.filter(function(m){ return m.status==='submitted'||m.status==='under_review'; }).length + '</td><td class="mono">' + period + 'd</td></tr>' +
+    '<tr><td>EcoImpact Activities</td><td>' + acts.length + '</td><td>' + acts.filter(function(a){ return a.status==='verified'; }).length + '</td><td>' + acts.filter(function(a){ return a.status==='submitted'||a.status==='under_review'; }).length + '</td><td class="mono">' + period + 'd</td></tr>' +
+    '</tbody></table></div>';
+}
+function exportCommandReport(){
+  var period = document.getElementById('reportPeriod').value;
+  var data = { exportedAt: now(), exportedBy: S.user.ecoId, period, modules: S.modules, kpis: computeKpis() };
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'ecocommand-report-' + Date.now() + '.json'; a.click();
+  URL.revokeObjectURL(url); auditAction('report.export', period + 'd'); toast('Report exported');
+}
+
+/* ---------- RENDER: AUDIT ---------- */
+function renderAudit(){
+  var q = (document.getElementById('auditSearch').value || '').toLowerCase();
+  var list = S.cmd.audit.slice();
+  if(q) list = list.filter(function(a){ return (a.action||'').toLowerCase().indexOf(q) !== -1 || (a.detail||'').toLowerCase().indexOf(q) !== -1 || (a.actor||'').toLowerCase().indexOf(q) !== -1; });
+  var wrap = document.getElementById('auditWrap');
+  if(!list.length){ wrap.innerHTML = emptyHtml('No audit entries', 'Administrative and operational actions are logged here.', 'fa-book'); return; }
+  wrap.innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>Time</th><th>Actor</th><th>Role</th><th>Action</th><th>Detail</th></tr></thead><tbody>' +
+    list.slice(0, 200).map(function(a){
+      return '<tr><td class="cell-mono">' + fmtTime(a.ts) + '</td><td class="mono">' + esc(a.actorName || a.actor) + '</td><td><span class="chip chip-mute mono">' + esc(a.role) + '</span></td><td class="mono">' + esc(a.action) + '</td><td class="tx-sm t2">' + esc(a.detail || '') + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+function exportAudit(){
+  var blob = new Blob([JSON.stringify(S.cmd.audit, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'ecocommand-audit-' + Date.now() + '.json'; a.click();
+  URL.revokeObjectURL(url); toast('Audit log exported');
+}
+
+/* ---------- RENDER: SYSTEM ---------- */
+function renderSystem(){
+  var footprint = [
+    { l:'EcoCollect collections', v: S.modules.collections.length },
+    { l:'EcoConnect profiles', v: Object.keys((S.modules.connect||{}).profiles||{}).length },
+    { l:'EcoConnect materials', v: ((S.modules.connect||{}).materials||[]).length },
+    { l:'EcoWallet ledger entries', v: S.modules.wallet.length },
+    { l:'EcoImpact activities', v: ((S.modules.impact||{}).activities||[]).length },
+    { l:'EcoImpact materials', v: ((S.modules.impact||{}).materials||[]).length },
+    { l:'EcoSmart devices', v: ((S.modules.smart||{}).devices||[]).length },
+    { l:'EcoCommand incidents', v: S.cmd.incidents.length },
+    { l:'EcoCommand tasks', v: S.cmd.tasks.length },
+    { l:'EcoCommand audit entries', v: S.cmd.audit.length }
+  ];
+  var df = document.getElementById('dataFootprint');
+  if(df) df.innerHTML = footprint.map(function(f){
+    return '<div class="det-row"><span class="k">' + esc(f.l) + '</span><span class="v">' + fmtNum(f.v) + '</span></div>';
+  }).join('');
+  var integrations = [
+    { n:'EcoAccount / EcoID', status:'Connected', c:true },
+    { n:'EcoCollect', status: S.modules.collections.length ? 'Connected' : 'No data', c: S.modules.collections.length > 0 },
+    { n:'EcoMarket', status: S.modules.market.length ? 'Connected' : 'No data', c: S.modules.market.length > 0 },
+    { n:'EcoWallet Ledger', status: S.modules.wallet.length ? 'Connected' : 'No data', c: S.modules.wallet.length > 0 },
+    { n:'Payment Provider', status:'Configuration Required', c:false },
+    { n:'EcoConnect', status: Object.keys((S.modules.connect||{}).profiles||{}).length ? 'Connected' : 'No data', c: Object.keys((S.modules.connect||{}).profiles||{}).length > 0 },
+    { n:'EcoScan AI Backend', status:'Integration Pending', c:false },
+    { n:'EcoGenius Backend', status:'Integration Pending', c:false },
+    { n:'EcoSmart IoT Gateway', status: ((S.modules.smart||{}).devices||[]).length ? 'Connected' : 'Integration Pending', c: ((S.modules.smart||{}).devices||[]).length > 0 },
+    { n:'EcoImpact', status: (((S.modules.impact||{}).activities||[]).length + ((S.modules.impact||{}).materials||[]).length) ? 'Connected' : 'No data', c: (((S.modules.impact||{}).activities||[]).length + ((S.modules.impact||{}).materials||[]).length) > 0 },
+    { n:'EcoSync Backend (WebSocket)', status: (window.EcoSync && window.EcoSync.isConnected()) ? 'Connected' : 'Connecting', c: !!(window.EcoSync && window.EcoSync.isConnected()) }
+  ];
+  var is_ = document.getElementById('integrationStatus');
+  if(is_) is_.innerHTML = integrations.map(function(i){
+    return '<div class="health-row"><div class="health-ic ' + (i.c ? '' : 'warn') + '"><i class="fas ' + (i.c ? 'fa-check' : 'fa-plug-circle-xmark') + '"></i></div>' +
+      '<div class="health-info"><strong>' + esc(i.n) + '</strong></div>' +
+      '<span class="health-tag ' + (i.c ? '' : 'warn') + '">' + esc(i.status) + '</span></div>';
+  }).join('');
+  var lm = document.getElementById('liveMetrics');
+  if(lm) lm.innerHTML = [
+    { l:'Storage Entries', v: Object.keys(localStorage).length },
+    { l:'Session Uptime', v: Math.floor((Date.now() - S.sessionStart) / 60000) + 'm' },
+    { l:'EcoSync State', v: (window.EcoSync ? window.EcoSync.getStatus() : 'initialising') }
+  ].map(function(m){
+    return '<div class="card"><div class="sec-title">' + esc(m.l) + '</div><div class="kpi-v">' + esc(m.v) + '</div></div>';
+  }).join('');
+}
+
+/* ---------- RENDER: INTEGRATIONS ---------- */
+function renderIntegrations(){
+  var integrations = [
+    { n:'EcoAccount / EcoID', d:'Shared user identity', status:'connected', i:'fa-id-card' },
+    { n:'EcoCollect', d:'Collection requests', status: S.modules.collections.length ? 'connected' : 'pending', i:'fa-truck' },
+    { n:'EcoMarket', d:'Listings and orders', status: S.modules.market.length ? 'connected' : 'pending', i:'fa-store' },
+    { n:'EcoWallet', d:'Immutable payment ledger', status: S.modules.wallet.length ? 'connected' : 'pending', i:'fa-wallet' },
+    { n:'PayTri Payment Provider', d:'External card / mobile money', status:'config_required', i:'fa-credit-card' },
+    { n:'EcoConnect', d:'Partner network', status: Object.keys((S.modules.connect||{}).profiles||{}).length ? 'connected' : 'pending', i:'fa-network-wired' },
+    { n:'EcoScan AI', d:'Material identification service', status:'pending', i:'fa-camera' },
+    { n:'EcoGenius', d:'AI assistant backend', status:'pending', i:'fa-robot' },
+    { n:'EcoSmart IoT', d:'Device telemetry via MQTT / HTTPS', status: ((S.modules.smart||{}).devices||[]).length ? 'connected' : 'pending', i:'fa-microchip' },
+    { n:'EcoImpact', d:'Verified environmental impact records', status: (((S.modules.impact||{}).activities||[]).length + ((S.modules.impact||{}).materials||[]).length) ? 'connected' : 'pending', i:'fa-seedling' },
+    { n:'EcoSync WebSocket Backend', d:'Real-time sync to Java backend', status: (window.EcoSync && window.EcoSync.isConnected()) ? 'connected' : 'pending', i:'fa-plug' },
+    { n:'Notification Provider', d:'Email / SMS / push delivery', status:'config_required', i:'fa-bell' }
+  ];
+  var wrap = document.getElementById('integrationsWrap');
+  if(wrap) wrap.innerHTML = integrations.map(function(i){
+    var map = { connected:{cls:'', label:'Connected', icon:'fa-check'}, pending:{cls:'warn', label:'Integration Pending'}, config_required:{cls:'err', label:'Configuration Required'}, unavailable:{cls:'off', label:'Unavailable'} };
+    var st = map[i.status] || map.pending;
+    return '<div class="health-row"><div class="health-ic ' + st.cls + '"><i class="fas ' + i.i + '"></i></div>' +
+      '<div class="health-info"><strong>' + esc(i.n) + '</strong><small>' + esc(i.d) + '</small></div>' +
+      '<span class="health-tag ' + st.cls + '">' + esc(st.label) + '</span></div>';
+  }).join('');
+}
+
+/* ---------- RENDER: SETTINGS ---------- */
+function renderSettings(){
+  var d1 = document.getElementById('setDisplayName'); if(d1) d1.value = S.user.name;
+  var d2 = document.getElementById('setRole'); if(d2) d2.value = S.user.role;
+  var d3 = document.getElementById('setEcoId'); if(d3) d3.textContent = S.user.ecoId;
+  var d4 = document.getElementById('setSessionStart'); if(d4) d4.textContent = fmtTime(S.sessionStart);
+  var d5 = document.getElementById('setEnv'); if(d5) d5.textContent = (window.EcoSync && window.EcoSync.isConnected()) ? 'Connected to EcoSync backend' : 'Local (EcoSync offline)';
+}
+function saveCommandSettings(){
+  S.user.name = document.getElementById('setDisplayName').value.trim() || S.user.name;
+  S.user.role = document.getElementById('setRole').value;
+  S.settings.displayName = S.user.name;
+  S.settings.role = S.user.role;
+  lsSet(K.user, S.user);
+  lsSet(K.command + '_settings', S.settings);
+  auditAction('settings.save', 'role:' + S.user.role);
+  toast('Settings saved');
+  updateUserChip();
+  // Push role update to backend
+  if(window.EcoSync && window.EcoSync.pushSetting){
+    try{ window.EcoSync.pushSetting('commandRole', S.user.role); }catch(e){}
+  }
+}
+function secureLogout(){
+  if(!confirm('Sign out of EcoCommand?')) return;
+  auditAction('session.logout', '');
+  toast('Signed out — local session ended', 'info');
+  setTimeout(function(){ location.href = 'dashboard.html'; }, 900);
+}
+function exportCommandData(){
+  var data = { exportedAt: now(), by: S.user.ecoId, modules: S.modules, command: S.cmd };
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'ecocommand-export-' + Date.now() + '.json'; a.click();
+  URL.revokeObjectURL(url); toast('Data exported');
+}
+function clearCommandCache(){
+  if(!confirm('Clear EcoCommand local cache?')) return;
+  S.cmd = { incidents:[], tasks:[], alerts:[], audit:[], notes:[] };
+  saveCommandDB(); toast('Local cache cleared'); renderPage('dashboard'); updateBadges();
+}
+
+/* ---------- DETAIL MODALS ---------- */
+function openCollectionDetail(id){
+  var c = (S.modules.collections || []).find(function(x){ return x.id === id; });
+  if(!c) return;
+  var s = (c.statusId||'').toUpperCase();
+  document.getElementById('mDetailBody').innerHTML =
+    '<button class="mdl-close" onclick="closeM(\'mDetail\')" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-truck"></i></div>' +
+      '<div class="mdl-hd-txt"><h2>' + esc(c.title || 'Collection ' + (c.ref || '')) + '</h2><p>' + esc(c.id) + '</p></div></div>' +
+    '<p class="mdl-sub"><span class="pill p-' + (s === 'COMPLETED' ? 'verified' : 'pending') + '">' + esc(s) + '</span></p>' +
+    '<div style="padding:14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line-2);margin-bottom:14px">' +
+      '<div class="det-row"><span class="k">Reference</span><span class="v">' + esc(c.ref || c.id.slice(-8)) + '</span></div>' +
+      '<div class="det-row"><span class="k">Material</span><span class="v">' + esc(c.materialCategory || '—') + '</span></div>' +
+      (c.estimatedWeight ? '<div class="det-row"><span class="k">Estimated weight</span><span class="v">' + c.estimatedWeight + ' kg</span></div>' : '') +
+      (c.actualWeight ? '<div class="det-row"><span class="k">Verified weight</span><span class="v">' + c.actualWeight + ' kg</span></div>' : '') +
+      (c.approxArea ? '<div class="det-row"><span class="k">Location</span><span class="v">' + esc(c.approxArea) + '</span></div>' : '') +
+      (c.requesterName ? '<div class="det-row"><span class="k">Requester</span><span class="v">' + esc(c.requesterName) + '</span></div>' : '') +
+      (c.collectorName ? '<div class="det-row"><span class="k">Collector</span><span class="v">' + esc(c.collectorName) + '</span></div>' : '') +
+      '<div class="det-row"><span class="k">Created</span><span class="v">' + fmtTime(c.createdAt) + '</span></div>' +
+    '</div>' +
+    '<div class="sec-title"><i class="fas fa-info-circle"></i> Source</div>' +
+    '<p class="tx-sm t2">This record is managed by <strong>EcoCollect</strong>.</p>' +
+    '<div class="flx g-2 mt-3 wrap">' +
+      '<a class="btn btn-outline" href="ecocollect.html" target="_blank"><i class="fas fa-external-link"></i> Open in EcoCollect</a>' +
+    '</div>';
+  openM('mDetail');
+}
+function openTransactionDetail(id){
+  var t = (S.modules.wallet || []).find(function(x){ return x.transactionId === id; });
+  if(!t) return;
+  document.getElementById('mDetailBody').innerHTML =
+    '<button class="mdl-close" onclick="closeM(\'mDetail\')" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-receipt"></i></div>' +
+      '<div class="mdl-hd-txt"><h2>Transaction</h2><p>' + esc(id) + '</p></div></div>' +
+    '<p class="mdl-sub"><span class="pill p-' + (t.status === 'completed' ? 'verified' : 'pending') + '">' + esc(t.status) + '</span></p>' +
+    '<div style="padding:14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line-2)">' +
+      '<div class="det-row"><span class="k">Type</span><span class="v">' + esc(t.type) + '</span></div>' +
+      '<div class="det-row"><span class="k">Amount</span><span class="v">' + (t.direction === 'credit' ? '+' : '−') + fmtNum((t.amountMinor||0)/100, 2) + ' ' + esc(t.currency||'USD') + '</span></div>' +
+      '<div class="det-row"><span class="k">Description</span><span class="v">' + esc(t.description || '—') + '</span></div>' +
+      '<div class="det-row"><span class="k">Provider</span><span class="v rs">Not connected</span></div>' +
+      '<div class="det-row"><span class="k">Created</span><span class="v">' + fmtTime(t.createdAt) + '</span></div>' +
+    '</div>';
+  openM('mDetail');
+}
+
+/* ---------- GLOBAL SEARCH ---------- */
+function runGlobalSearch(){
+  var q = document.getElementById('globalSearch').value.trim().toLowerCase();
+  if(!q){ return; }
+  var results = [];
+  (S.modules.collections || []).forEach(function(c){
+    if((c.title||'').toLowerCase().indexOf(q)!==-1 || (c.id||'').toLowerCase().indexOf(q)!==-1){ results.push({ module:'EcoCollect', title: c.title || c.id, sub: c.ref || c.id, icon:'fa-truck' }); }
+  });
+  Object.keys((S.modules.connect||{}).profiles||{}).forEach(function(id){ var p = S.modules.connect.profiles[id]; if((p.name||'').toLowerCase().indexOf(q)!==-1){ results.push({ module:'EcoConnect', title: p.name, sub: p.type || '', icon:'fa-user' }); } });
+  ((S.modules.impact||{}).activities || []).forEach(function(a){ if((a.title||'').toLowerCase().indexOf(q)!==-1){ results.push({ module:'EcoImpact', title: a.title, sub: a.type || '', icon:'fa-seedling' }); } });
+  S.cmd.incidents.forEach(function(i){ if((i.title||'').toLowerCase().indexOf(q)!==-1){ results.push({ module:'Incidents', title: i.title, sub: i.status, icon:'fa-fire' }); } });
+  S.cmd.tasks.forEach(function(t){ if((t.title||'').toLowerCase().indexOf(q)!==-1){ results.push({ module:'Tasks', title: t.title, sub: t.status, icon:'fa-clipboard-list' }); } });
+  if(!results.length){
+    document.getElementById('mSearchBody').innerHTML = '<button class="mdl-close" onclick="closeM(\'mSearch\')" type="button"><i class="fas fa-times"></i></button>' +
+      '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-search"></i></div><div class="mdl-hd-txt"><h2>Search Results</h2><p>"' + esc(q) + '"</p></div></div>' +
+      emptyHtml('No matches found', 'Try a different search term.', 'fa-search');
+    openM('mSearch'); return;
+  }
+  document.getElementById('mSearchBody').innerHTML = '<button class="mdl-close" onclick="closeM(\'mSearch\')" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><div class="mdl-hd-ic"><i class="fas fa-search"></i></div><div class="mdl-hd-txt"><h2>Search Results</h2><p>' + results.length + ' matches for "' + esc(q) + '"</p></div></div>' +
+    '<div class="mt-3">' + results.slice(0, 40).map(function(r){
+      return '<div class="feed-item"><div class="feed-ic"><i class="fas ' + r.icon + '"></i></div><div class="feed-info"><strong>' + esc(r.title) + '</strong><small><span>' + esc(r.module) + '</span><span>' + esc(r.sub) + '</span></small></div></div>';
+    }).join('') + '</div>';
+  openM('mSearch');
+}
+function openRecordFromFeed(type, id){ if(type === 'collection'){ openCollectionDetail(id); return; } if(type === 'transaction'){ openTransactionDetail(id); return; } showPage('activity'); }
+
+/* ---------- BADGES ---------- */
+function updateBadges(){
+  var activeAlerts = S.cmd.alerts.filter(function(a){ return a.status === 'active' || a.status === 'new'; }).length;
+  var openTasks = S.cmd.tasks.filter(function(t){ return t.status === 'open' || t.status === 'in_progress'; }).length;
+  var pendingVerif = 0;
+  var im = S.modules.impact || {};
+  ['activities','materials','reuse','community'].forEach(function(k){ (im[k]||[]).forEach(function(r){ if(r.status === 'submitted' || r.status === 'under_review') pendingVerif++; }); });
+  var a1 = document.getElementById('nvAlerts'); if(a1) a1.textContent = activeAlerts;
+  var a2 = document.getElementById('nvVerif'); if(a2) a2.textContent = pendingVerif;
+  var a3 = document.getElementById('nvMaterials'); if(a3) a3.textContent = ((im.materials||[]).length);
+  var a4 = document.getElementById('nvCollections'); if(a4) a4.textContent = (S.modules.collections||[]).length;
+  var ab = document.getElementById('tbAlertBadge'); if(ab){ ab.textContent = activeAlerts; ab.style.display = activeAlerts > 0 ? 'flex' : 'none'; }
+  var tb = document.getElementById('tbTaskBadge'); if(tb){ tb.textContent = openTasks; tb.style.display = openTasks > 0 ? 'flex' : 'none'; }
+  var sys = document.getElementById('sysStat');
+  if(sys){
+    var degraded = activeAlerts > 0 || S.cmd.incidents.filter(function(i){ return i.status === 'open' && i.severity === 'critical'; }).length > 0;
+    sys.classList.toggle('degraded', degraded);
+    var lbl = sys.querySelector('span:last-child'); if(lbl) lbl.textContent = degraded ? 'Attention Required' : 'All Systems Nominal';
+  }
+}
+
+/* ---------- USER CHIP ---------- */
+function updateUserChip(){
+  var av = document.getElementById('tbUserAv'); var nm = document.getElementById('tbUserName'); var role = document.getElementById('tbUserRole');
+  if(av) av.textContent = initials(S.user.name);
+  if(nm) nm.textContent = S.user.name;
+  if(role){
+    var labels = { super_admin:'SUPER ADMIN', ops_manager:'OPS MANAGER', finance_admin:'FINANCE', verification_officer:'VERIFIER', moderator:'MODERATOR', device_admin:'DEVICE ADMIN' };
+    role.textContent = labels[S.user.role] || S.user.role.toUpperCase();
+  }
+}
+
+/* ---------- REFRESH ---------- */
+function refreshAll(){ loadAllModules(); loadCommandDB(); renderAll(); toast('Refreshed', 'info'); }
+function renderAll(){
+  var active = document.querySelector('.page.active');
+  if(!active) return;
+  var id = active.id.replace('page-','');
+  renderPage(id);
+  updateBadges();
+  updateUserChip();
+}
+
+/* ---------- BOOT ---------- */
+function boot(){
+  loadUser();
+  loadSettings();
+  loadAllModules();
+  loadCommandDB();
+  initRealtime();
+  window.addEventListener('scroll', function(){
+    var h = document.getElementById('topbar');
+    if(!h) return;
+    h.classList.toggle('scrolled', window.scrollY > 8);
+  });
+  renderAll();
+  renderDashboard();
+  console.log('[EcoCommand] Ready. Modules loaded:', Object.keys(S.modules).length);
+}
+
+/* ---------- EXPOSE ---------- */
+window.showPage = showPage;
+window.openSidenav = openSidenav;
+window.closeSidenav = closeSidenav;
+window.toast = toast;
+window.closeM = closeM;
+window.refreshAll = refreshAll;
+window.openIncidentForm = openIncidentForm;
+window.createIncident = createIncident;
+window.investigateIncident = investigateIncident;
+window.resolveIncident = resolveIncident;
+window.openTaskForm = openTaskForm;
+window.createTask = createTask;
+window.startTask = startTask;
+window.completeTask = completeTask;
+window.setTaskFilter = setTaskFilter;
+window.setAlertFilter = setAlertFilter;
+window.acknowledgeAlert = acknowledgeAlert;
+window.resolveAlert = resolveAlert;
+window.markAllAlertsAcknowledged = markAllAlertsAcknowledged;
+window.escalateToIncident = escalateToIncident;
+window.setVerifFilter = setVerifFilter;
+window.openVerifyModal = openVerifyModal;
+window.decideVerification = decideVerification;
+window.setColFilter = setColFilter;
+window.setImpactFilter = setImpactFilter;
+window.setConnectFilter = setConnectFilter;
+window.openCollectionDetail = openCollectionDetail;
+window.openTransactionDetail = openTransactionDetail;
+window.openRecordFromFeed = openRecordFromFeed;
+window.runGlobalSearch = runGlobalSearch;
+window.exportCommandReport = exportCommandReport;
+window.exportAudit = exportAudit;
+window.exportCommandData = exportCommandData;
+window.saveCommandSettings = saveCommandSettings;
+window.secureLogout = secureLogout;
+window.clearCommandCache = clearCommandCache;
+
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ECOSYNC CLIENT — real-time bridge between EcoCommand and the
+   EcoCycle X Java backend.
+
+   Backend endpoints:
+     REST:      http://localhost:8080/api/*
+     WebSocket: ws://localhost:8080/ws/ecosync
+
+   Responsibilities:
+     1. Auto-register a session (dev convenience)
+     2. Open WebSocket and subscribe to relevant modules
+     3. Push activities / materials / projects / goals / methods to backend
+     4. Receive inbound events and re-render EcoCommand
+     5. Show a live status pill in the topbar (never fakes "Live")
+   ═══════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  var ECO_BACKEND = window.ECOCYCLE_API || 'http://localhost:8080';
+  var ECO_WS      = ECO_BACKEND.replace(/^http/, 'ws') + '/ws/ecosync';
+
+  var token    = localStorage.getItem('ecocycle_token') || null;
+  var authUser = null;
+  var ws       = null;
+  var wsState  = 'offline';   // offline|connecting|connected|synced|reconnecting|error
+  var attempts = 0;
+  var listeners = new Set();
+  var heartbeat = null;
+  var lastPong = 0;
+
+  /* ---------- Outbox (offline queue, persisted) ---------- */
+  var OUTBOX_KEY = 'ecocycle_ecosync_outbox_v1';
+  var OUTBOX_MAX = 500;
+
+  function outboxLoad(){ try{ return JSON.parse(localStorage.getItem(OUTBOX_KEY)||'[]'); }catch(e){ return []; } }
+  function outboxSave(v){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(v.slice(-OUTBOX_MAX))); }catch(e){} }
+  function outboxPush(msg){ var q = outboxLoad(); q.push(Object.assign({ _enqueuedAt: Date.now() }, msg)); outboxSave(q); }
+  function outboxFlush(){
+    if(wsState !== 'connected' && wsState !== 'synced') return;
+    var q = outboxLoad();
+    if(!q.length) return;
+    var sent = 0;
+    for(var i=0; i<q.length; i++){
+      try{ ws.send(JSON.stringify(q[i])); sent++; }catch(e){ break; }
+    }
+    if(sent === q.length) outboxSave([]);
+    else outboxSave(q.slice(sent));
+  }
+
+  /* ---------- REST helper ---------- */
+  function ecoApi(path, opts){
+    opts = opts || {};
+    var headers = Object.assign({'Content-Type':'application/json'}, opts.headers || {});
+    if(token) headers['Authorization'] = 'Bearer ' + token;
+    return fetch(ECO_BACKEND + path, Object.assign({}, opts, { headers: headers }))
+      .then(function(r){
+        return r.json().catch(function(){ return {}; }).then(function(data){
+          if(!r.ok) return { ok:false, status: r.status, error: data.error || r.statusText };
+          return { ok:true, status: r.status, data: data.data !== undefined ? data.data : data };
+        });
+      })
+      .catch(function(e){ return { ok:false, error: e.message, offline: true }; });
+  }
+
+  /* ---------- Session ---------- */
+  function ensureSession(){
+    if(token){
+      return ecoApi('/api/auth/me').then(function(r){
+        if(r.ok){ authUser = r.data; return true; }
+        token = null; localStorage.removeItem('ecocycle_token');
+        return registerFresh();
+      });
+    }
+    return registerFresh();
+  }
+  function registerFresh(){
+    var email = 'command_' + Date.now() + '_' + Math.random().toString(36).slice(2,6) + '@ecocycle.local';
+    var pass  = 'c_' + Math.random().toString(36).slice(2, 14);
+    return ecoApi('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email: email, password: pass, displayName: 'EcoCommand Operator' })
+    }).then(function(r){
+      if(r.ok && r.data && r.data.token){
+        token = r.data.token; authUser = r.data.user;
+        localStorage.setItem('ecocycle_token', token);
+        localStorage.setItem('ecocycle_user', JSON.stringify(authUser));
+        return true;
+      }
+      return false;
+    });
+  }
+
+  /* ---------- WebSocket ---------- */
+  function connect(){
+    if(ws && (ws.readyState === 0 || ws.readyState === 1)) return;
+    setWs('connecting');
+    try { ws = new WebSocket(ECO_WS); }
+    catch(e){ setWs('offline'); scheduleReconnect(); return; }
+
+    ws.onopen = function(){
+      setWs('connected');
+      attempts = 0;
+      lastPong = Date.now();
+
+      /* Subscribe to the modules EcoCommand cares about */
+      ['ecocommand','activities','materials','projects','goals','methods','settings','notifications','*'].forEach(function(m){
+        try{ ws.send(JSON.stringify({ action:'subscribe', module:m })); }catch(e){}
+      });
+
+      /* Flush any queued outbound messages */
+      outboxFlush();
+
+      /* Bulk snapshot push — activities / materials / projects / goals / methods */
+      bulkSyncAll();
+
+      /* Pull current server-side settings and merge locally */
+      ecoApi('/api/settings').then(function(r){
+        if(r.ok && r.data){
+          var stored = JSON.parse(localStorage.getItem('ecocycle_command_v1_settings') || '{}');
+          Object.keys(r.data).forEach(function(k){ if(r.data[k] !== undefined) stored[k] = r.data[k]; });
+          localStorage.setItem('ecocycle_command_v1_settings', JSON.stringify(stored));
+          if(window.refreshAll) window.refreshAll();
+        }
+      });
+
+      /* Heartbeat every 15s */
+      if(heartbeat) clearInterval(heartbeat);
+      heartbeat = setInterval(function(){
+        if(!ws || ws.readyState !== 1) return;
+        try{ ws.send(JSON.stringify({ action:'ping', ts: Date.now() })); }catch(e){}
+        if(Date.now() - lastPong > 40000){
+          // No pong in 40s → force reconnect
+          try{ ws.close(); }catch(e){}
+        }
+      }, 15000);
+
+      setWs('synced');
+    };
+
+    ws.onmessage = function(evt){
+      try{
+        var msg = JSON.parse(evt.data);
+        if(msg.type === 'pong'){ lastPong = Date.now(); return; }
+        handleEvent(msg);
+        listeners.forEach(function(fn){ try{ fn(msg); }catch(e){} });
+      }catch(e){}
+    };
+
+    ws.onclose = function(){ setWs('reconnecting'); scheduleReconnect(); };
+    ws.onerror = function(){ setWs('error'); };
+  }
+
+  function scheduleReconnect(){
+    attempts++;
+    var base = Math.min(30000, 1000 * Math.pow(2, Math.min(attempts, 5)));
+    var jitter = Math.floor(Math.random() * 500);
+    setTimeout(connect, base + jitter);
+  }
+
+  /* ---------- Inbound event handling ---------- */
+  function handleEvent(msg){
+    if(!msg || !msg.type) return;
+
+    /* Settings synced from other devices */
+    if(msg.type === 'settings.updated' && msg.payload && msg.payload.settings){
+      var stored = JSON.parse(localStorage.getItem('ecocycle_command_v1_settings') || '{}');
+      Object.keys(msg.payload.settings).forEach(function(k){ stored[k] = msg.payload.settings[k]; });
+      localStorage.setItem('ecocycle_command_v1_settings', JSON.stringify(stored));
+      if(window.refreshAll) window.refreshAll();
+      window.dispatchEvent(new CustomEvent('ecosync:settings', { detail: msg.payload.settings }));
+    }
+
+    /* Notifications → toast */
+    if(msg.type === 'notification.created' && msg.payload){
+      if(window.toast) window.toast(msg.payload.title || 'New notification', 'info');
+      window.dispatchEvent(new CustomEvent('ecosync:notification', { detail: msg.payload }));
+    }
+
+    /* Inbound activities / materials / projects / goals / methods */
+    ['activity','activities','material','materials','project','projects','goal','goals','method','methods'].forEach(function(scope){
+      if(msg.type && msg.type.indexOf(scope + '.') === 0){
+        applyEntityFromBackend(scope, msg.payload);
+      }
+    });
+
+    /* Inbound command-specific state (incidents / tasks / alerts) */
+    ['incident','task','alert'].forEach(function(scope){
+      if(msg.type && msg.type.indexOf(scope + '.') === 0){
+        applyCommandEntityFromBackend(scope, msg.payload);
+      }
+    });
+  }
+
+  function applyEntityFromBackend(scope, payload){
+    if(!payload) return;
+    var im = JSON.parse(localStorage.getItem('ecocycle_impact_db_v1') || 'null') ||
+             { activities:[], materials:[], reuse:[], community:[], projects:[], goals:[], methods:[], evidence:[], qualityFlags:[], reports:[], stories:[], disputes:[], feed:[], auditLog:[] };
+
+    var key = null;
+    if(scope === 'activity' || scope === 'activities') key = 'activities';
+    if(scope === 'material' || scope === 'materials') key = 'materials';
+    if(scope === 'project'  || scope === 'projects')  key = 'projects';
+    if(scope === 'goal'     || scope === 'goals')     key = 'goals';
+    if(scope === 'method'   || scope === 'methods')   key = 'methods';
+    if(!key) return;
+
+    if(!Array.isArray(im[key])) im[key] = [];
+    var items = Array.isArray(payload) ? payload : [payload];
+    items.forEach(function(item){
+      if(!item || !item.id) return;
+      var idx = im[key].findIndex(function(x){ return x.id === item.id; });
+      if(idx >= 0) im[key][idx] = Object.assign(im[key][idx], item);
+      else im[key].unshift(item);
+    });
+    localStorage.setItem('ecocycle_impact_db_v1', JSON.stringify(im));
+    if(window.refreshAll) window.refreshAll();
+  }
+
+  function applyCommandEntityFromBackend(scope, payload){
+    if(!payload) return;
+    var cmd = JSON.parse(localStorage.getItem('ecocycle_command_v1') || 'null') || { incidents:[], tasks:[], alerts:[], audit:[], notes:[] };
+    var key = scope === 'incident' ? 'incidents' : scope === 'task' ? 'tasks' : 'alerts';
+    if(!Array.isArray(cmd[key])) cmd[key] = [];
+    var items = Array.isArray(payload) ? payload : [payload];
+    items.forEach(function(item){
+      if(!item || !item.id) return;
+      var idx = cmd[key].findIndex(function(x){ return x.id === item.id; });
+      if(idx >= 0) cmd[key][idx] = Object.assign(cmd[key][idx], item);
+      else cmd[key].unshift(item);
+    });
+    localStorage.setItem('ecocycle_command_v1', JSON.stringify(cmd));
+    if(window.refreshAll) window.refreshAll();
+  }
+
+  /* ---------- Outbound: bulk snapshot + pushEntity ---------- */
+  function bulkSyncAll(){
+    try{
+      var im = JSON.parse(localStorage.getItem('ecocycle_impact_db_v1') || 'null') || {};
+      pushEntity('activities', im.activities);
+      pushEntity('materials',  im.materials);
+      pushEntity('projects',   im.projects);
+      pushEntity('goals',      im.goals);
+      pushEntity('methods',    im.methods);
+      var cmd = JSON.parse(localStorage.getItem('ecocycle_command_v1') || 'null') || {};
+      pushEntity('incidents', cmd.incidents);
+      pushEntity('tasks',     cmd.tasks);
+    }catch(e){}
+  }
+
+  function pushEntity(entity, payload){
+    if(!entity) return Promise.resolve({ ok:false });
+    var body = {
+      entity: entity,
+      items: Array.isArray(payload) ? payload : (payload ? [payload] : []),
+      correlationId: uid('corr'),
+      idempotencyKey: uid('idem'),
+      ecoId: (window.EcoCommand && window.EcoCommand.getUser && window.EcoCommand.getUser().ecoId) ||
+             (JSON.parse(localStorage.getItem('ecocycle_user_v1')||'{}').ecoId) || 'ECO-COMMAND',
+      emittedAt: Date.now()
+    };
+    if(!body.items.length) return Promise.resolve({ ok:true, skipped:true });
+
+    // Prefer WebSocket (real-time), fall back to REST
+    if(ws && ws.readyState === 1){
+      try{ ws.send(JSON.stringify({ action:'sync', entity: entity, items: body.items, ts: Date.now() })); }
+      catch(e){ outboxPush({ action:'sync', entity: entity, items: body.items, ts: Date.now() }); }
+    } else {
+      outboxPush({ action:'sync', entity: entity, items: body.items, ts: Date.now() });
+    }
+
+    // Also REST for durability when authenticated
+    if(token){
+      return ecoApi('/api/sync/' + entity, { method:'POST', body: JSON.stringify(body) })
+        .then(function(r){
+          if(r && r.ok){ setWs('synced'); return r; }
+          return r;
+        });
+    }
+    return Promise.resolve({ ok:true, queued:true });
+  }
+
+  function uid(p){ return (p||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+  /* ---------- Setting push ---------- */
+  function pushSetting(key, value){
+    if(!token) return Promise.resolve({ ok:false, error:'not_authenticated' });
+    var body = {}; body[key] = value;
+    return ecoApi('/api/settings', { method:'PATCH', body: JSON.stringify(body) });
+  }
+
+  /* ---------- Live pill ---------- */
+  function setWs(state){
+    wsState = state;
+    var pill = document.getElementById('hdrLive');
+    var text = document.getElementById('hdrLiveText');
+    if(pill){
+      pill.setAttribute('data-state', state);
+    }
+    if(text){
+      var label =
+        state === 'connected'    ? 'Live' :
+        state === 'synced'       ? 'Synced' :
+        state === 'connecting'   ? 'Connecting' :
+        state === 'syncing'      ? 'Syncing' :
+        state === 'reconnecting' ? 'Reconnecting' :
+        state === 'error'        ? 'Error' :
+        state === 'offline'      ? 'Offline' : 'Unavailable';
+      text.textContent = label;
+    }
+  }
+
+  /* ---------- Window events ---------- */
+  window.addEventListener('offline', function(){ setWs('offline'); });
+  window.addEventListener('online',  function(){
+    setWs('reconnecting');
+    setTimeout(function(){ connect(); }, 800);
+  });
+
+  /* Listen for other modules' BroadcastChannels and push to backend */
+  try{
+    ['ecocycle_impact_v1','ecocycle_smart_v1','ecocycle_connect_v1','ecocycle_wallet_v1'].forEach(function(chName){
+      var ch = new BroadcastChannel(chName);
+      ch.onmessage = function(ev){
+        try{
+          var im = JSON.parse(localStorage.getItem('ecocycle_impact_db_v1') || 'null') || {};
+          pushEntity('activities', im.activities);
+          pushEntity('materials',  im.materials);
+          pushEntity('projects',   im.projects);
+          pushEntity('goals',      im.goals);
+          pushEntity('methods',    im.methods);
+        }catch(e){}
+      };
+    });
+  }catch(e){}
+
+  /* ---------- Public API ---------- */
+  window.EcoSync = {
+    isConnected: function(){ return wsState === 'connected' || wsState === 'synced'; },
+    getStatus:   function(){ return wsState; },
+    getMode:     function(){ return 'websocket'; },
+    api: ecoApi,
+    reconnect:   function(){ try{ if(ws) ws.close(); }catch(e){} attempts = 0; connect(); },
+    pushSetting: pushSetting,
+    pushEntity:  pushEntity,
+    pushLedger:  function(){ return Promise.resolve({ ok:false }); },
+    bulkSyncAll: bulkSyncAll,
+    user: function(){ return authUser; },
+    onEvent: function(fn){ listeners.add(fn); return function(){ listeners.delete(fn); }; }
+  };
+
+  /* ---------- Boot client ---------- */
+  (function bootClient(){
+    ensureSession().then(function(){ connect(); });
+    /* Periodic outbox flush in case first attempts fail */
+    setInterval(outboxFlush, 20000);
+  })();
+
+})();
+</script>
+</body>
+</html>

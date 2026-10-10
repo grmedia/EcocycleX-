@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0e12">
+<meta name="description" content="EcoCollect — From Listing to Collection. Real-time collection and logistics within EcoCycle X.">
+<title>EcoCollect — From Listing to Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#0A0E12;--bg-2:#0F1419;--bg-3:#141A21;--bg-4:#1B222B;
+  --emerald:#10b981;--emerald-d:#047857;--emerald-glow:rgba(16,185,129,0.35);
+  --neon:#00FF87;--cyan:#00E5FF;--sky:#38bdf8;--gold:#fbbf24;--violet:#a78bfa;--rose:#fb7185;
+  --line:rgba(255,255,255,0.08);--line-2:rgba(255,255,255,0.14);
+  --glow:rgba(0,255,135,0.28);
+  --text:#e2e8f0;--text-2:#94a3b8;--text-3:#64748b;--white:#fff;
+  --r-sm:10px;--r-md:16px;--r-lg:22px;--r-full:9999px;
+  --tx:0.24s cubic-bezier(0.4,0,0.2,1);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --hdr:64px;
+  --grad:linear-gradient(135deg,#10b981,#047857);
+  --grad-accent:linear-gradient(135deg,#00FF87,#00E5FF);
+  --grad-gold:linear-gradient(135deg,#fbbf24,#f59e0b);
+  --grad-violet:linear-gradient(135deg,#a78bfa,#8b5cf6);
+  --shadow-md:0 8px 28px rgba(0,0,0,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;font-size:15px;position:relative}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 10% 0%,rgba(16,185,129,0.08) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(0,229,255,0.05) 0%,transparent 60%)}
+a{color:inherit;text-decoration:none;transition:var(--tx)}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;font-size:inherit}
+img{max-width:100%;display:block}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+input:focus,textarea:focus,select:focus{outline:none}
+::selection{background:var(--emerald);color:#000}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg-2)}
+::-webkit-scrollbar-thumb{background:#1e293b;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#334155}
+
+/* ============ HEADER (SIMPLIFIED) ============ */
+.hdr{position:sticky;top:0;left:0;right:0;z-index:100;height:var(--hdr);background:rgba(10,14,18,0.92);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 16px;transition:var(--tx)}
+.hdr.scrolled{background:rgba(6,10,14,0.96);border-bottom-color:var(--glow);box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+.hdr-back{width:42px;height:42px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--text);transition:var(--tx);cursor:pointer}
+.hdr-back:hover{background:rgba(0,255,135,0.1);border-color:var(--glow);color:var(--neon);transform:translateX(-2px)}
+.hdr-title{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15rem;color:#fff;letter-spacing:-0.03em;flex-shrink:0;user-select:none}
+.hdr-title-ic{width:38px;height:38px;border-radius:11px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;box-shadow:0 4px 18px var(--emerald-glow);flex-shrink:0}
+.hdr-title span{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* ============ ECO LIVE PILL ============ */
+.hdr-live{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 12px;border-radius:var(--r-full);
+  background:rgba(148,163,184,0.08);
+  border:1px solid rgba(148,163,184,0.25);
+  color:var(--text-3);
+  font-size:0.66rem;font-weight:800;letter-spacing:0.06em;
+  text-transform:uppercase;cursor:pointer;transition:var(--tx);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  user-select:none;white-space:nowrap;
+}
+.hdr-live:hover{background:rgba(0,255,135,0.08);border-color:var(--glow)}
+.hdr-live .ldot{width:7px;height:7px;border-radius:50%;background:var(--text-3);flex-shrink:0;transition:var(--tx)}
+.hdr-live[data-state="connected"],
+.hdr-live[data-state="synced"]{
+  background:rgba(0,255,135,0.1);
+  border-color:var(--glow);color:var(--neon);
+}
+.hdr-live[data-state="connected"] .ldot,
+.hdr-live[data-state="synced"] .ldot{background:var(--neon);box-shadow:0 0 10px var(--neon)}
+.hdr-live[data-state="connecting"],
+.hdr-live[data-state="syncing"]{
+  background:rgba(251,191,36,0.1);
+  border-color:rgba(251,191,36,0.3);color:var(--gold);
+}
+.hdr-live[data-state="connecting"] .ldot,
+.hdr-live[data-state="syncing"] .ldot{background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pulse 1.2s infinite}
+.hdr-live[data-state="reconnecting"]{
+  background:rgba(245,158,11,0.1);
+  border-color:rgba(245,158,11,0.35);color:#f59e0b;
+}
+.hdr-live[data-state="reconnecting"] .ldot{background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:pulse 1.2s infinite}
+.hdr-live[data-state="offline"]{
+  background:rgba(148,163,184,0.08);
+  border-color:rgba(148,163,184,0.25);color:var(--text-3);
+}
+.hdr-live[data-state="error"],
+.hdr-live[data-state="unavailable"]{
+  background:rgba(244,63,94,0.1);
+  border-color:rgba(244,63,94,0.35);color:var(--rose);
+}
+.hdr-live[data-state="error"] .ldot,
+.hdr-live[data-state="unavailable"] .ldot{background:var(--rose);box-shadow:0 0 8px var(--rose)}
+@media(max-width:640px){.hdr-live span.lbl{display:none}.hdr-live{padding:7px 10px;font-size:0.6rem}}
+
+.hdr-menu{width:42px;height:42px;border-radius:12px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--text);transition:var(--tx);cursor:pointer}
+.hdr-menu:hover{background:rgba(0,255,135,0.1);border-color:var(--glow)}
+.hdr-menu span{width:20px;height:2px;background:currentColor;border-radius:2px;transition:var(--tx)}
+@media(max-width:640px){.hdr-title{font-size:1rem}.hdr-title-ic{width:34px;height:34px;font-size:0.9rem}}
+
+/* ============ DRAWER ============ */
+.drwr-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.35s}
+.drwr-overlay.open{opacity:1;pointer-events:auto}
+.drwr{position:fixed;top:0;right:-360px;width:340px;max-width:92vw;height:100vh;background:linear-gradient(180deg,rgba(15,20,25,0.99),rgba(10,14,18,0.99));border-left:1px solid var(--line);z-index:200;transition:right 0.4s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;padding:20px;overflow-y:auto;box-shadow:-32px 0 80px rgba(0,0,0,0.8);overscroll-behavior:contain}
+.drwr.open{right:0}
+.drwr-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.drwr-title{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.05rem;color:#fff;letter-spacing:-0.02em}
+.drwr-title-ic{width:34px;height:34px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#fff;box-shadow:0 4px 14px var(--emerald-glow)}
+.drwr-title span{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.drwr-close{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text-2);transition:var(--tx);cursor:pointer}
+.drwr-close:hover{background:rgba(244,63,94,0.15);color:var(--rose);transform:rotate(90deg)}
+.drwr-user{padding:14px;border-radius:var(--r-md);background:rgba(0,255,135,0.05);border:1px solid var(--glow);margin-bottom:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:var(--tx)}
+.drwr-user:hover{background:rgba(0,255,135,0.1)}
+.drwr-user-av{width:44px;height:44px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.05rem;flex-shrink:0;box-shadow:0 4px 14px var(--emerald-glow)}
+.drwr-user-info{flex:1;min-width:0}
+.drwr-user-info strong{display:block;color:#fff;font-weight:700;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drwr-user-info small{color:var(--neon);font-size:0.7rem;font-weight:700}
+.drwr-sec{margin-bottom:12px}
+.drwr-sec-t{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);padding:8px 12px 6px;font-weight:800}
+.drwr-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;color:var(--text-2);font-weight:500;font-size:0.88rem;cursor:pointer;transition:var(--tx);width:100%;text-align:left;border:1px solid transparent}
+.drwr-item:hover{background:rgba(0,255,135,0.06);color:var(--neon);transform:translateX(3px)}
+.drwr-item.active{background:rgba(0,255,135,0.1);color:var(--neon);font-weight:700;border-color:var(--glow)}
+.drwr-item i{width:20px;text-align:center;flex-shrink:0;font-size:0.95rem}
+.drwr-item .pill{margin-left:auto;background:var(--emerald);color:#000;font-size:0.62rem;font-weight:800;padding:2px 7px;border-radius:9px;min-width:18px;text-align:center;display:none}
+.drwr-item .pill.show{display:inline-block}
+
+/* ============ LAYOUT ============ */
+.page{display:none;min-height:calc(100vh - var(--hdr));position:relative;z-index:1}
+.page.active{display:block;animation:fadeUp 0.35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.wrap{max-width:1440px;margin:0 auto;padding:24px 16px 110px;width:100%}
+@media(min-width:900px){.wrap{padding:28px 24px 110px}}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:36px 0 30px;overflow:hidden;background:radial-gradient(ellipse 80% 60% at 15% 0%,rgba(16,185,129,0.14) 0%,transparent 55%),radial-gradient(ellipse 70% 55% at 90% 100%,rgba(0,229,255,0.08) 0%,transparent 55%)}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,black 25%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,black 25%,transparent 75%);opacity:0.65}
+.hero-inner{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:var(--r-full);background:rgba(0,255,135,0.08);border:1px solid var(--glow);color:var(--neon);font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:clamp(1.8rem,5vw,2.7rem);font-weight:900;letter-spacing:-0.04em;line-height:1.08;color:#fff;margin-bottom:14px;max-width:720px}
+.hero h1 .g{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
+.hero p{font-size:clamp(0.94rem,2vw,1.05rem);color:rgba(226,232,240,0.7);max-width:640px;line-height:1.7}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-full);font-weight:600;font-size:0.86rem;transition:var(--tx);cursor:pointer;border:1px solid transparent;white-space:nowrap;min-height:44px;text-align:center;text-decoration:none;user-select:none;position:relative;overflow:hidden}
+.btn:active{transform:scale(0.96)}
+.btn-primary{background:var(--grad);color:#fff;font-weight:700;box-shadow:0 4px 18px rgba(16,185,129,0.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(16,185,129,0.55)}
+.btn-outline{background:rgba(0,255,135,0.06);color:#fff;border-color:var(--glow)}
+.btn-outline:hover{background:rgba(0,255,135,0.12);border-color:var(--emerald);transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,0.05);color:var(--text);border-color:var(--line)}
+.btn-ghost:hover{background:rgba(255,255,255,0.1);color:#fff;transform:translateY(-2px)}
+.btn-danger{background:rgba(244,63,94,0.15);color:var(--rose);border-color:rgba(244,63,94,0.35)}
+.btn-danger:hover{background:rgba(244,63,94,0.25);transform:translateY(-2px)}
+.btn-gold{background:var(--grad-gold);color:#1a1a1a;font-weight:800}
+.btn-violet{background:var(--grad-violet);color:#fff}
+.btn-block{width:100%}
+.btn-lg{padding:14px 26px;font-size:0.94rem;min-height:52px}
+.btn-sm{padding:8px 14px;font-size:0.78rem;min-height:36px}
+
+/* ============ STATS ============ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{padding:16px 18px;border-radius:var(--r-md);background:var(--bg-2);border:1px solid var(--line);transition:var(--tx);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:0;transition:var(--tx)}
+.stat:hover{border-color:var(--glow);transform:translateY(-2px)}
+.stat:hover::before{opacity:1}
+.stat-v{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:-0.02em;line-height:1.1}
+.stat-v small{font-size:0.6em;color:var(--text-3);font-weight:600;margin-left:2px}
+.stat-l{font-size:0.68rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;font-weight:800;margin-top:6px}
+.stat.green{border-color:var(--glow)}.stat.green .stat-v{color:var(--neon)}
+.stat.gold{border-color:rgba(251,191,36,0.25)}.stat.gold .stat-v{color:var(--gold)}
+.stat.violet{border-color:rgba(167,139,250,0.25)}.stat.violet .stat-v{color:var(--violet)}
+.stat.sky{border-color:rgba(56,189,248,0.25)}.stat.sky .stat-v{color:var(--sky)}
+.stat.rose{border-color:rgba(251,113,133,0.25)}.stat.rose .stat-v{color:var(--rose)}
+
+/* ============ BANNERS ============ */
+.info-banner{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;border-radius:var(--r-md);background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.22);color:var(--sky);font-size:0.78rem;font-weight:600;margin-bottom:18px;line-height:1.5}
+.warn-banner{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;border-radius:var(--r-md);background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.22);color:var(--gold);font-size:0.78rem;font-weight:600;margin-bottom:18px;line-height:1.5}
+.info-banner i,.warn-banner i{font-size:0.95rem;flex-shrink:0;margin-top:2px}
+
+/* ============ TABS ============ */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 0 12px;margin-bottom:14px;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--r-full);background:var(--bg-2);border:1px solid var(--line);color:var(--text-2);font-size:0.8rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--tx);flex-shrink:0}
+.tab:hover{border-color:var(--glow);color:var(--neon)}
+.tab.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(16,185,129,0.4)}
+.tab .n{font-size:0.65rem;font-weight:700;padding:1px 7px;background:rgba(255,255,255,0.1);border-radius:9px;margin-left:2px}
+.tab.active .n{background:rgba(0,0,0,0.25)}
+
+/* ============ TOOLBAR ============ */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.toolbar h2{font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-0.02em;margin:0;display:flex;align-items:center;gap:8px}
+.toolbar h2 i{color:var(--emerald)}
+.toolbar .spacer{flex:1}
+.search-sm{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:var(--r-full);background:var(--bg-2);border:1px solid var(--line);transition:var(--tx);min-width:200px}
+.search-sm:focus-within{border-color:var(--glow);background:rgba(0,255,135,0.04);box-shadow:0 0 0 3px rgba(16,185,129,0.12)}
+.search-sm i{color:var(--text-2);font-size:0.85rem}
+.search-sm input{background:none;border:0;color:#fff;width:100%;font-size:0.84rem;min-width:0}
+.search-sm input::placeholder{color:var(--text-3)}
+.sort-sel{padding:9px 34px 9px 14px;border-radius:var(--r-full);background:var(--bg-2);border:1px solid var(--line);color:var(--text);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--tx);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* ============ GRID + CARDS ============ */
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+@media(max-width:600px){.grid-3,.grid-2{grid-template-columns:1fr}}
+.crd{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;transition:var(--tx);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+.crd:hover{border-color:var(--glow);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.crd.priority-urgent{border-left:3px solid var(--rose)}
+.crd.priority-high{border-left:3px solid var(--gold)}
+.crd.priority-normal{border-left:3px solid var(--emerald)}
+.crd.priority-low{border-left:3px solid var(--text-3)}
+.crd-hd{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.crd-ic{width:46px;height:46px;border-radius:12px;background:rgba(0,255,135,0.08);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;color:var(--emerald)}
+.crd-info{flex:1;min-width:0}
+.crd-info h4{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3;letter-spacing:-0.01em;word-break:break-word}
+.crd-info .meta{font-size:0.74rem;color:var(--text-3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crd-info .meta i{font-size:0.68rem}
+.crd-body{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:3px 10px;border-radius:var(--r-full);font-size:0.65rem;font-weight:700;letter-spacing:0.02em;white-space:nowrap}
+.chip-mat{background:rgba(0,255,135,0.1);color:var(--neon);border:1px solid var(--glow)}
+.chip-weight{background:rgba(251,191,36,0.12);color:var(--gold);border:1px solid rgba(251,191,36,0.25)}
+.chip-cond{background:rgba(255,255,255,0.05);color:var(--text-2);border:1px solid var(--line)}
+.chip-loc{background:rgba(56,189,248,0.1);color:var(--sky);border:1px solid rgba(56,189,248,0.2)}
+.chip-verified{background:rgba(0,255,135,0.15);color:var(--neon);border:1px solid var(--glow)}
+.crd-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.crd-actions .btn{flex:1;min-width:0;padding:9px 12px;font-size:0.78rem}
+
+/* ============ STATUS ============ */
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:var(--r-full);font-size:0.66rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap}
+.status-pill i{font-size:0.55rem}
+.st-draft{background:rgba(148,163,184,0.15);color:#cbd5e1;border:1px solid rgba(148,163,184,0.3)}
+.st-submitted{background:rgba(56,189,248,0.15);color:var(--sky);border:1px solid rgba(56,189,248,0.3)}
+.st-pending{background:rgba(251,191,36,0.15);color:var(--gold);border:1px solid rgba(251,191,36,0.3)}
+.st-accepted{background:rgba(0,255,135,0.15);color:var(--neon);border:1px solid var(--glow)}
+.st-scheduled{background:rgba(0,229,255,0.15);color:var(--cyan);border:1px solid rgba(0,229,255,0.3)}
+.st-progress{background:rgba(0,255,135,0.2);color:var(--neon);border:1px solid var(--glow);animation:pulse 2s infinite}
+.st-collected{background:rgba(56,189,248,0.2);color:var(--sky);border:1px solid rgba(56,189,248,0.35)}
+.st-verified{background:rgba(0,255,135,0.2);color:var(--neon);border:1px solid var(--glow)}
+.st-completed{background:rgba(0,255,135,0.25);color:var(--neon);border:1px solid var(--glow)}
+.st-cancelled{background:rgba(244,63,94,0.15);color:var(--rose);border:1px solid rgba(244,63,94,0.3)}
+.st-disputed{background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+
+/* ============ EMPTY ============ */
+.empty{text-align:center;padding:70px 24px;border-radius:var(--r-lg);background:var(--bg-2);border:1px dashed var(--line)}
+.empty i{font-size:3rem;color:var(--text-3);margin-bottom:16px;display:block;opacity:0.6}
+.empty h3{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-0.01em}
+.empty p{font-size:0.86rem;color:var(--text-2);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6}
+.empty-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* ============ MODAL ============ */
+.ovl{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;overscroll-behavior:contain}
+.ovl.open{display:flex;animation:fadeIn 0.22s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mdl{background:linear-gradient(180deg,#131A22,#0F1419);border:1px solid var(--line-2);border-radius:var(--r-lg);width:100%;max-width:640px;padding:26px;position:relative;box-shadow:0 32px 100px rgba(0,0,0,0.85);animation:mUp 0.35s cubic-bezier(0.34,1.56,0.64,1);margin:auto}
+.mdl-lg{max-width:800px}
+@keyframes mUp{from{opacity:0;transform:translateY(34px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mdl-hd{display:flex;align-items:center;gap:10px;margin-bottom:6px;padding-right:44px}
+.mdl-hd h2{font-size:1.18rem;font-weight:800;color:#fff;letter-spacing:-0.02em;margin:0}
+.mdl-hd i{color:var(--emerald)}
+.mdl-sub{font-size:0.84rem;color:var(--text-2);margin-bottom:20px;line-height:1.55}
+.mdl-close{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text-2);transition:var(--tx);cursor:pointer;border:1px solid transparent}
+.mdl-close:hover{background:rgba(244,63,94,0.12);color:var(--rose);transform:rotate(90deg);border-color:rgba(244,63,94,0.3)}
+
+/* ============ FORM ============ */
+.fg{margin-bottom:16px}
+.fl{display:block;font-size:0.72rem;font-weight:800;color:var(--text-2);margin-bottom:7px;letter-spacing:0.05em;text-transform:uppercase}
+.fl .req{color:var(--rose)}
+.fl .hint{font-weight:500;color:var(--text-3);text-transform:none;letter-spacing:0;font-size:0.72rem}
+.fi,.fs,.ft{width:100%;padding:12px 15px;border-radius:var(--r-sm);background:var(--bg-3);border:1px solid var(--line);color:#fff;font-size:0.9rem;outline:none;transition:var(--tx);-webkit-appearance:none;appearance:none}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--glow);background:rgba(0,255,135,0.04);box-shadow:0 0 0 3px rgba(16,185,129,0.14)}
+.ft{resize:vertical;min-height:100px;font-family:inherit;line-height:1.55}
+.fs{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;padding-right:40px}
+.fi::placeholder,.ft::placeholder{color:var(--text-3)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.frow{grid-template-columns:1fr}}
+
+/* ============ TYPE PICKER ============ */
+.tpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.topt{padding:14px 10px;border-radius:var(--r-md);text-align:center;cursor:pointer;background:var(--bg-3);border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:7px;transition:var(--tx);color:inherit}
+.topt:hover{border-color:var(--glow);background:rgba(0,255,135,0.04);transform:translateY(-2px)}
+.topt.sel{border-color:var(--neon);background:rgba(0,255,135,0.1);box-shadow:0 0 0 3px rgba(16,185,129,0.12)}
+.topt i{font-size:1.35rem;color:var(--emerald)}
+.topt .lbl{font-size:0.72rem;font-weight:800;color:#fff}
+
+/* ============ TIMELINE ============ */
+.timeline{position:relative;padding:8px 0}
+.tl-item{position:relative;padding-left:32px;padding-bottom:20px;border-left:2px solid var(--line);margin-left:10px}
+.tl-item:last-child{border-left-color:transparent;padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--bg-2);border:2px solid var(--text-3);transition:var(--tx)}
+.tl-item.done::before{border-color:var(--neon);background:var(--neon);box-shadow:0 0 12px rgba(0,255,135,0.5)}
+.tl-item.active::before{border-color:var(--emerald);background:var(--bg-2);animation:pulse 2s infinite}
+.tl-item .tl-time{font-size:0.7rem;color:var(--text-3);font-weight:600;margin-bottom:2px}
+.tl-item .tl-title{font-size:0.86rem;font-weight:700;color:#fff;margin-bottom:2px}
+.tl-item .tl-desc{font-size:0.8rem;color:var(--text-2);line-height:1.5}
+
+/* ============ TOAST ============ */
+.toasts{position:fixed;top:80px;right:18px;z-index:4000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:340px;width:100%}
+.tst{padding:14px 18px;border-radius:var(--r-md);background:rgba(6,20,14,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glow);color:#fff;font-size:0.85rem;font-weight:500;box-shadow:0 16px 44px rgba(0,0,0,0.6);display:flex;align-items:flex-start;gap:11px;animation:tIn 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:auto}
+.tst.err{border-color:rgba(244,63,94,0.5)}
+.tst.info{border-color:rgba(56,189,248,0.4)}
+.tst.warn{border-color:rgba(251,191,36,0.4)}
+.tst i{font-size:1.05rem;flex-shrink:0;margin-top:1px}
+.tst i.ok{color:var(--neon)}.tst i.er{color:var(--rose)}.tst i.in{color:var(--sky)}.tst i.wn{color:var(--gold)}
+.tst span{flex:1;line-height:1.5}
+@keyframes tIn{from{opacity:0;transform:translateX(50px) scale(0.9)}to{opacity:1;transform:translateX(0) scale(1)}}
+@media(max-width:600px){.toasts{left:12px;right:12px;max-width:none;top:72px}}
+
+/* ============ FAB ============ */
+.fab{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 10px 36px rgba(16,185,129,0.55);z-index:90;transition:var(--tx);cursor:pointer;border:2px solid rgba(255,255,255,0.18)}
+.fab:hover{transform:scale(1.1);box-shadow:0 14px 44px rgba(16,185,129,0.75)}
+@media(min-width:901px){.fab{display:none}}
+
+/* ============ UTILS ============ */
+.hidden{display:none!important}
+.flx{display:flex}.flx-1{flex:1}.ai-c{align-items:center}.jc-b{justify-content:space-between}.jc-c{justify-content:center}
+.g-2{gap:8px}.g-3{gap:12px}.g-4{gap:16px}
+.f-wrap{flex-wrap:wrap}
+.tx-c{text-align:center}
+.mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:14px}.mt-4{margin-top:20px}
+.mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:14px}.mb-4{margin-bottom:20px}
+.txt-2{color:var(--text-2)}.txt-3{color:var(--text-3)}
+.gr{color:var(--neon)}.gd{color:var(--gold)}.vi{color:var(--violet)}.sk{color:var(--sky)}.rs{color:var(--rose)}
+.tx-xs{font-size:0.72rem}.tx-sm{font-size:0.85rem}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.det-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:0.86rem;border-bottom:1px dashed rgba(255,255,255,0.06)}
+.det-row:last-child{border-bottom:0}
+.det-row .k{color:var(--text-3);font-weight:700;font-size:0.78rem;letter-spacing:0.02em;flex-shrink:0}
+.det-row .v{color:#fff;font-weight:600;text-align:right;word-break:break-word}
+
+@media(max-width:600px){
+  .wrap{padding:16px 12px 100px}
+  .hero{padding:26px 0 22px}
+  .hero h1{font-size:1.6rem}
+  .mdl{padding:20px;border-radius:16px}
+  .btn{padding:10px 16px;font-size:0.82rem;min-height:42px}
+  .stat-v{font-size:1.25rem}
+  .search-sm{min-width:0;flex:1}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="hdr" id="hdr">
+  <button class="hdr-back" onclick="location.href='dashboard.html'" aria-label="Back to Dashboard" title="Back to Dashboard" type="button">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <div class="hdr-title">
+    <div class="hdr-title-ic"><i class="fas fa-truck"></i></div>
+    <div>ECO<span>COLLECT</span></div>
+  </div>
+  <div class="hdr-actions">
+    <!-- EcoSync live pill -->
+    <button class="hdr-live" id="hdrLive" data-state="offline" onclick="EcoSync && EcoSync.reconnect && EcoSync.reconnect()" title="EcoSync real-time connection — click to reconnect" type="button">
+      <span class="ldot"></span>
+      <span class="lbl" id="hdrLiveText">Connecting</span>
+    </button>
+    <button class="hdr-menu" onclick="toggleDrawer(event)" aria-label="Menu" title="Menu" type="button">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- DRAWER OVERLAY -->
+<div class="drwr-overlay" id="drwrOverlay" onclick="toggleDrawer(event)"></div>
+
+<!-- DRAWER -->
+<aside class="drwr" id="drwr" role="navigation">
+  <div class="drwr-hd">
+    <div class="drwr-title">
+      <div class="drwr-title-ic"><i class="fas fa-truck"></i></div>
+      <div>ECO<span>COLLECT</span></div>
+    </div>
+    <button class="drwr-close" onclick="toggleDrawer(event)" aria-label="Close" type="button"><i class="fas fa-times"></i></button>
+  </div>
+
+  <div class="drwr-user" onclick="showPage('account')">
+    <div class="drwr-user-av" id="drwrAv">U</div>
+    <div class="drwr-user-info">
+      <strong id="drwrName">User</strong>
+      <small id="drwrEcoId">ECO-GUEST</small>
+    </div>
+    <i class="fas fa-chevron-right" style="color:var(--text-3);font-size:0.72rem"></i>
+  </div>
+
+  <div class="drwr-sec">
+    <div class="drwr-sec-t">Collections</div>
+    <button class="drwr-item active" data-nav="dashboard" onclick="showPage('dashboard')" type="button"><i class="fas fa-th-large"></i> Dashboard</button>
+    <button class="drwr-item" data-nav="request" onclick="openRequestForm()" type="button"><i class="fas fa-plus-circle"></i> New Request</button>
+    <button class="drwr-item" data-nav="collections" onclick="showPage('collections')" type="button"><i class="fas fa-list"></i> My Collections <span class="pill" id="pillCollections">0</span></button>
+    <button class="drwr-item" data-nav="collector" onclick="showPage('collector')" type="button"><i class="fas fa-user-tie"></i> Collector View <span class="pill" id="pillCollector">0</span></button>
+    <button class="drwr-item" data-nav="ecohubs" onclick="showPage('ecohubs')" type="button"><i class="fas fa-warehouse"></i> EcoHubs</button>
+  </div>
+
+  <div class="drwr-sec">
+    <div class="drwr-sec-t">EcoCycle X</div>
+    <button class="drwr-item" onclick="location.href='dashboard.html'" type="button"><i class="fas fa-chart-pie"></i> Main Dashboard</button>
+    <button class="drwr-item" onclick="location.href='ecoscan.html'" type="button"><i class="fas fa-camera"></i> EcoScan AI</button>
+    <button class="drwr-item" onclick="location.href='ecomarket.html'" type="button"><i class="fas fa-store"></i> EcoMarket</button>
+    <button class="drwr-item" onclick="location.href='ecowallet.html'" type="button"><i class="fas fa-wallet"></i> EcoWallet</button>
+    <button class="drwr-item" onclick="location.href='ecoimpact.html'" type="button"><i class="fas fa-leaf"></i> EcoImpact</button>
+    <button class="drwr-item" onclick="location.href='ecoconnect.html'" type="button"><i class="fas fa-network-wired"></i> EcoConnect</button>
+  </div>
+
+  <div class="drwr-sec">
+    <div class="drwr-sec-t">Account</div>
+    <button class="drwr-item" data-nav="account" onclick="showPage('account')" type="button"><i class="fas fa-id-card"></i> EcoAccount</button>
+    <button class="drwr-item" data-nav="settings" onclick="showPage('settings')" type="button"><i class="fas fa-cog"></i> Settings</button>
+    <button class="drwr-item" data-nav="help" onclick="showPage('help')" type="button"><i class="fas fa-question-circle"></i> Help</button>
+  </div>
+</aside>
+
+<!-- ============================================================
+     PAGES
+     ============================================================ -->
+
+<!-- DASHBOARD -->
+<main class="page active" id="page-dashboard">
+  <div class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-badge"><i class="fas fa-truck"></i> From Listing to Collection</div>
+      <h1>Request. Match. Schedule. <span class="g">Collect. Verify. Transform.</span></h1>
+      <p>Real-time collection and logistics for recyclable materials, reusable products, donations and bulk waste across Zimbabwe.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="openRequestForm()" type="button"><i class="fas fa-plus"></i> Request Collection</button>
+        <button class="btn btn-outline" onclick="location.href='ecoscan.html'" type="button"><i class="fas fa-camera"></i> Scan Waste</button>
+        <button class="btn btn-ghost" onclick="location.href='ecomarket.html'" type="button"><i class="fas fa-store"></i> Browse Market</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="info-banner" id="connBanner">
+      <i class="fas fa-circle" id="connDot" style="color:var(--text-3);font-size:0.55rem;margin-top:6px"></i>
+      <span id="connText"><strong>Connecting to EcoSync backend…</strong> Local data remains available.</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat green"><div class="stat-v" id="stActive">0</div><div class="stat-l">Active Requests</div></div>
+      <div class="stat gold"><div class="stat-v" id="stPending">0</div><div class="stat-l">Pending Action</div></div>
+      <div class="stat sky"><div class="stat-v" id="stProgress">0</div><div class="stat-l">In Progress</div></div>
+      <div class="stat violet"><div class="stat-v" id="stCompleted">0</div><div class="stat-l">Completed</div></div>
+      <div class="stat"><div class="stat-v" id="stWeight">0<small>kg</small></div><div class="stat-l">Materials Recovered</div></div>
+    </div>
+
+    <div class="toolbar">
+      <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('collections')" type="button">View all <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div id="dashActivity"></div>
+  </div>
+
+  <button class="fab" onclick="openRequestForm()" aria-label="New Request" type="button">
+    <i class="fas fa-plus"></i>
+  </button>
+</main>
+
+<!-- MY COLLECTIONS -->
+<main class="page" id="page-collections">
+  <div class="wrap">
+    <div class="toolbar">
+      <h2><i class="fas fa-list"></i> My Collections</h2>
+      <div class="spacer"></div>
+      <div class="search-sm">
+        <i class="fas fa-search"></i>
+        <input type="text" id="colSearch" placeholder="Search…" oninput="renderCollections()">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openRequestForm()" type="button"><i class="fas fa-plus"></i> New</button>
+    </div>
+
+    <div class="tabs" id="colTabs">
+      <button class="tab active" data-filter="all" onclick="setColFilter('all',this)" type="button">All <span class="n" id="tabAll">0</span></button>
+      <button class="tab" data-filter="draft" onclick="setColFilter('draft',this)" type="button">Drafts <span class="n" id="tabDraft">0</span></button>
+      <button class="tab" data-filter="pending" onclick="setColFilter('pending',this)" type="button">Pending <span class="n" id="tabPending">0</span></button>
+      <button class="tab" data-filter="scheduled" onclick="setColFilter('scheduled',this)" type="button">Scheduled <span class="n" id="tabScheduled">0</span></button>
+      <button class="tab" data-filter="progress" onclick="setColFilter('progress',this)" type="button">In Progress <span class="n" id="tabProgress">0</span></button>
+      <button class="tab" data-filter="completed" onclick="setColFilter('completed',this)" type="button">Completed <span class="n" id="tabCompleted">0</span></button>
+      <button class="tab" data-filter="cancelled" onclick="setColFilter('cancelled',this)" type="button">Cancelled <span class="n" id="tabCancelled">0</span></button>
+    </div>
+
+    <div id="colWrap"></div>
+  </div>
+</main>
+
+<!-- COLLECTOR VIEW -->
+<main class="page" id="page-collector">
+  <div class="wrap">
+    <div class="warn-banner">
+      <i class="fas fa-user-shield"></i>
+      <span><strong>Collector view.</strong> Requests available for verified collectors. Assignment requires backend confirmation.</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat green"><div class="stat-v" id="cstAvailable">0</div><div class="stat-l">Available</div></div>
+      <div class="stat gold"><div class="stat-v" id="cstAssigned">0</div><div class="stat-l">Assigned</div></div>
+      <div class="stat sky"><div class="stat-v" id="cstInProgress">0</div><div class="stat-l">In Progress</div></div>
+      <div class="stat violet"><div class="stat-v" id="cstCompleted">0</div><div class="stat-l">Completed</div></div>
+    </div>
+
+    <div id="collectorWrap"></div>
+  </div>
+</main>
+
+<!-- ECOHUBS -->
+<main class="page" id="page-ecohubs">
+  <div class="wrap">
+    <div class="info-banner">
+      <i class="fas fa-warehouse"></i>
+      <span><strong>Verified EcoHub directory.</strong> Only real, verified EcoHubs from EcoConnect appear here. No locations shown until verified.</span>
+    </div>
+    <div id="hubWrap"></div>
+  </div>
+</main>
+
+<!-- ACCOUNT -->
+<main class="page" id="page-account">
+  <div class="wrap" style="max-width:780px">
+    <div class="toolbar"><h2><i class="fas fa-id-card"></i> EcoAccount</h2></div>
+    <div class="crd">
+      <div class="crd-hd">
+        <div class="crd-ic" style="width:64px;height:64px;font-size:1.5rem;color:#fff;background:var(--grad)" id="accAv">U</div>
+        <div class="crd-info">
+          <h4 id="accName">User</h4>
+          <div class="meta">
+            <span><i class="fas fa-id-badge"></i> <span id="accEcoId">ECO-GUEST</span></span>
+            <span><i class="fas fa-user-tag"></i> <span id="accType">Individual</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="det-row"><span class="k">Total Requests</span><span class="v" id="accTotal">0</span></div>
+      <div class="det-row"><span class="k">Completed</span><span class="v" id="accCompleted">0</span></div>
+      <div class="det-row"><span class="k">Materials Recovered</span><span class="v" id="accWeight">0 kg</span></div>
+      <div class="det-row"><span class="k">EcoPoints</span><span class="v gr" id="accPoints">0</span></div>
+    </div>
+  </div>
+</main>
+
+<!-- SETTINGS -->
+<main class="page" id="page-settings">
+  <div class="wrap" style="max-width:780px">
+    <div class="toolbar"><h2><i class="fas fa-cog"></i> Settings</h2></div>
+
+    <div class="crd">
+      <div style="font-size:0.68rem;font-weight:800;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Account</div>
+      <div class="fg">
+        <label class="fl" for="setName">Display name</label>
+        <input class="fi" id="setName" placeholder="Your name">
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl" for="setType">Account type</label>
+          <select class="fs" id="setType">
+            <option value="individual">Individual</option>
+            <option value="family">Family / Household</option>
+            <option value="student">Student</option>
+            <option value="school">School / Eco Club</option>
+            <option value="business">Business</option>
+            <option value="collector">Waste Collector</option>
+            <option value="recycler">Recycling Company</option>
+            <option value="ngo">NGO / Organisation</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl" for="setLoc">Approximate area</label>
+          <input class="fi" id="setLoc" placeholder="e.g. Avondale, Harare">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl" for="setRole">Current role</label>
+        <select class="fs" id="setRole">
+          <option value="requester">Requester</option>
+          <option value="collector">Verified Collector</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="crd mt-3">
+      <div style="font-size:0.68rem;font-weight:800;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Backend</div>
+      <div class="det-row"><span class="k">EcoSync</span><span class="v" id="cfgWsState">—</span></div>
+      <div class="det-row"><span class="k">Backend URL</span><span class="v" id="cfgBackend">—</span></div>
+      <div class="det-row"><span class="k">Last sync</span><span class="v" id="cfgLastSync">—</span></div>
+      <div class="det-row"><span class="k">Outbox pending</span><span class="v" id="cfgOutbox">0</span></div>
+      <button class="btn btn-outline btn-sm mt-2" onclick="EcoSync.reconnect()" type="button"><i class="fas fa-rotate"></i> Force reconnect</button>
+    </div>
+
+    <div class="crd mt-3">
+      <div style="font-size:0.68rem;font-weight:800;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Data</div>
+      <p class="tx-sm txt-2 mb-3">Data is stored locally and synced to the EcoSync backend when connected.</p>
+      <div class="flx g-2 f-wrap">
+        <button class="btn btn-ghost btn-sm" onclick="exportData()" type="button"><i class="fas fa-download"></i> Export Data</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmClear()" type="button"><i class="fas fa-trash"></i> Clear All</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-lg btn-block mt-3" onclick="saveSettings()" type="button"><i class="fas fa-save"></i> Save Settings</button>
+  </div>
+</main>
+
+<!-- HELP -->
+<main class="page" id="page-help">
+  <div class="wrap" style="max-width:780px">
+    <div class="toolbar"><h2><i class="fas fa-question-circle"></i> Help</h2></div>
+    <div class="crd">
+      <div style="font-size:0.68rem;font-weight:800;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">How EcoCollect Works</div>
+      <div class="det-row"><span class="k">1. Request</span><span class="v">Describe what needs collecting</span></div>
+      <div class="det-row"><span class="k">2. Match</span><span class="v">System identifies available collectors</span></div>
+      <div class="det-row"><span class="k">3. Schedule</span><span class="v">Confirm date and time window</span></div>
+      <div class="det-row"><span class="k">4. Collect</span><span class="v">Collector picks up materials</span></div>
+      <div class="det-row"><span class="k">5. Verify</span><span class="v">Weight and condition confirmed</span></div>
+      <div class="det-row"><span class="k">6. Transform</span><span class="v">Materials recycled, reused or donated</span></div>
+    </div>
+    <div class="crd mt-3">
+      <div style="font-size:0.68rem;font-weight:800;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Support</div>
+      <p class="tx-sm txt-2">Contact: <strong class="gr">support@ecocyclex.com</strong></p>
+    </div>
+  </div>
+</main>
+
+<!-- MODALS -->
+<div class="ovl" id="mRequest" role="dialog" aria-modal="true"><div class="mdl mdl-lg" id="mRequestBody"></div></div>
+<div class="ovl" id="mDetail" role="dialog" aria-modal="true"><div class="mdl mdl-lg" id="mDetailBody"></div></div>
+
+<!-- TOASTS -->
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   ECOCOLLECT — WORKING APPLICATION
+   Local persistence + BroadcastChannel + EcoSync backend bridge.
+   ============================================================ */
+(function(){
+'use strict';
+
+/* ---------- Storage keys ---------- */
+var K = {
+  user:'ecocycle_user_v1',
+  collections:'ecocycle_collections_v2',
+  settings:'ecocycle_collect_settings_v1',
+  seeded:'ecocycle_collect_seeded_v1'
+};
+
+/* ---------- Materials ---------- */
+var MATERIALS = [
+  {id:'plastic',n:'Plastic',i:'fa-wine-bottle'},
+  {id:'paper',n:'Paper & Cardboard',i:'fa-copy'},
+  {id:'metal',n:'Scrap Metal',i:'fa-cube'},
+  {id:'glass',n:'Glass',i:'fa-wine-glass'},
+  {id:'ewaste',n:'Electronics & E-Waste',i:'fa-laptop'},
+  {id:'textiles',n:'Textiles & Clothing',i:'fa-tshirt'},
+  {id:'furniture',n:'Furniture',i:'fa-couch'},
+  {id:'construction',n:'Construction Materials',i:'fa-tools'},
+  {id:'tools',n:'Tools & Spare Parts',i:'fa-wrench'},
+  {id:'organic',n:'Organic & Compost',i:'fa-seedling'},
+  {id:'school',n:'School & Office',i:'fa-book'},
+  {id:'household',n:'Household Items',i:'fa-home'},
+  {id:'other',n:'Other',i:'fa-ellipsis-h'}
+];
+
+/* ---------- Collection types ---------- */
+var COLLECTION_TYPES = [
+  {id:'marketplace',n:'Marketplace Pickup',i:'fa-store'},
+  {id:'recycling',n:'Recycling Collection',i:'fa-recycle'},
+  {id:'donation',n:'Donation Collection',i:'fa-gift'},
+  {id:'reuse',n:'Reuse Collection',i:'fa-redo'},
+  {id:'ecohub',n:'EcoHub Drop-off',i:'fa-warehouse'},
+  {id:'business',n:'Business Collection',i:'fa-briefcase'},
+  {id:'school',n:'School / Community',i:'fa-school'},
+  {id:'bulk',n:'Bulk Collection',i:'fa-truck-loading'},
+  {id:'recurring',n:'Scheduled Recurring',i:'fa-redo-alt'},
+  {id:'specialist',n:'Specialist Handling',i:'fa-biohazard'}
+];
+
+/* ---------- Status ---------- */
+var STATUS = {
+  DRAFT:              {label:'Draft',               cls:'st-draft',       stage:0, group:'draft'},
+  SUBMITTED:          {label:'Submitted',           cls:'st-submitted',   stage:1, group:'pending'},
+  UNDER_REVIEW:       {label:'Under Review',        cls:'st-pending',     stage:1, group:'pending'},
+  AWAITING_INFO:      {label:'Awaiting Info',       cls:'st-pending',     stage:1, group:'pending'},
+  PENDING:            {label:'Pending Acceptance',  cls:'st-pending',     stage:2, group:'pending'},
+  ACCEPTED:           {label:'Accepted',            cls:'st-accepted',    stage:3, group:'accepted'},
+  COLLECTOR_NEEDED:   {label:'Collector Needed',    cls:'st-pending',     stage:2, group:'pending'},
+  COLLECTOR_ASSIGNED: {label:'Collector Assigned',  cls:'st-accepted',    stage:3, group:'accepted'},
+  SCHEDULED:          {label:'Scheduled',           cls:'st-scheduled',   stage:4, group:'scheduled'},
+  RESCHEDULED:        {label:'Rescheduled',         cls:'st-scheduled',   stage:4, group:'scheduled'},
+  CONFIRMED:          {label:'Confirmed',           cls:'st-scheduled',   stage:4, group:'scheduled'},
+  ON_THE_WAY:         {label:'On the Way',          cls:'st-progress',    stage:5, group:'progress'},
+  ARRIVED:            {label:'Arrived',             cls:'st-progress',    stage:5, group:'progress'},
+  HANDOVER_STARTED:   {label:'Handover Started',    cls:'st-progress',    stage:5, group:'progress'},
+  COLLECTED:          {label:'Collected',           cls:'st-collected',   stage:6, group:'progress'},
+  AWAITING_VERIFY:    {label:'Awaiting Verification',cls:'st-collected',  stage:6, group:'progress'},
+  VERIFIED:           {label:'Verified',            cls:'st-verified',    stage:7, group:'verified'},
+  DELIVERED:          {label:'Delivered',           cls:'st-verified',    stage:7, group:'verified'},
+  PROCESSED:          {label:'Processed',           cls:'st-verified',    stage:7, group:'verified'},
+  REUSED:             {label:'Reused',              cls:'st-verified',    stage:7, group:'verified'},
+  REPAIRED:           {label:'Repaired',            cls:'st-verified',    stage:7, group:'verified'},
+  RECYCLED:           {label:'Recycled',            cls:'st-verified',    stage:7, group:'verified'},
+  DONATED:            {label:'Donated',             cls:'st-verified',    stage:7, group:'verified'},
+  COMPLETED:          {label:'Completed',           cls:'st-completed',   stage:8, group:'completed'},
+  CANCELLED:          {label:'Cancelled',           cls:'st-cancelled',   stage:-1, group:'cancelled'},
+  REJECTED:           {label:'Rejected',            cls:'st-cancelled',   stage:-1, group:'cancelled'},
+  EXPIRED:            {label:'Expired',             cls:'st-cancelled',   stage:-1, group:'cancelled'},
+  DISPUTED:           {label:'Disputed',            cls:'st-disputed',    stage:-1, group:'disputed'}
+};
+
+var PRIORITY = {
+  low:    {label:'Low',    cls:'priority-low'},
+  normal: {label:'Normal', cls:'priority-normal'},
+  high:   {label:'High',   cls:'priority-high'},
+  urgent: {label:'Urgent', cls:'priority-urgent'}
+};
+
+/* ---------- State ---------- */
+var S = {
+  user:{name:'Guest User', ecoId:'ECO-GUEST', type:'individual', role:'requester', location:'', phone:''},
+  settings:{role:'requester'},
+  collections:[],
+  colFilter:'all',
+  channel:null,
+  connState:'connecting',
+  requestDraft:null
+};
+
+/* ---------- Storage helpers ---------- */
+function lsGet(k,fb){ try{ var r=localStorage.getItem(k); return r?JSON.parse(r):fb; }catch(e){ return fb; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+/* ---------- Utils ---------- */
+function uid(p){ return (p||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function now(){ return Date.now(); }
+function fmtTime(t){ try{ return new Date(t).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function fmtRel(t){
+  var d = Date.now() - t;
+  if (d < 60000) return 'just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return Math.floor(d/86400000) + 'd ago';
+}
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function matById(id){ for(var i=0;i<MATERIALS.length;i++) if(MATERIALS[i].id===id) return MATERIALS[i]; return {n:id,i:'fa-cube'}; }
+function ctById(id){ for(var i=0;i<COLLECTION_TYPES.length;i++) if(COLLECTION_TYPES[i].id===id) return COLLECTION_TYPES[i]; return {n:id,i:'fa-truck'}; }
+function statusById(id){ return STATUS[id] || {label:id,cls:'st-draft',stage:0,group:'draft'}; }
+function isGroup(statusId, group){ return statusById(statusId).group === group; }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(msg, type){
+  type = type || 'success';
+  var stack = document.getElementById('toasts');
+  if (!stack) return;
+  var el = document.createElement('div');
+  el.className = 'tst' + (type==='error'?' err':type==='info'?' info':type==='warn'?' warn':'');
+  var icons = {error:'fa-exclamation-circle',warn:'fa-exclamation-triangle',info:'fa-info-circle',success:'fa-check-circle'};
+  var clss = {error:'er',warn:'wn',info:'in',success:'ok'};
+  el.setAttribute('role','alert');
+  el.innerHTML = '<i class="fas '+icons[type]+' '+clss[type]+'"></i><span>'+esc(msg)+'</span>';
+  stack.appendChild(el);
+  setTimeout(function(){
+    el.style.transition='all 0.3s';
+    el.style.opacity='0';
+    el.style.transform='translateX(30px)';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 300);
+  }, 3200);
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+function openM(id){ var m=document.getElementById(id); if(m){ m.classList.add('open'); document.body.style.overflow='hidden'; } }
+function closeM(id){ var m=document.getElementById(id); if(m){ m.classList.remove('open'); document.body.style.overflow=''; } }
+
+document.addEventListener('click', function(e){
+  if(e.target && e.target.classList && e.target.classList.contains('ovl')){
+    e.target.classList.remove('open');
+    document.body.style.overflow='';
+  }
+});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){
+    var ovls = document.querySelectorAll('.ovl.open');
+    for(var i=0;i<ovls.length;i++) ovls[i].classList.remove('open');
+    document.body.style.overflow='';
+    var d=document.getElementById('drwr'); if(d) d.classList.remove('open');
+    var ov=document.getElementById('drwrOverlay'); if(ov) ov.classList.remove('open');
+  }
+});
+
+/* ============================================================
+   DRAWER
+   ============================================================ */
+function toggleDrawer(e){
+  if(e && e.preventDefault) e.preventDefault();
+  if(e && e.stopPropagation) e.stopPropagation();
+  var d = document.getElementById('drwr');
+  var ov = document.getElementById('drwrOverlay');
+  if(!d) return;
+  if(d.classList.contains('open')){ d.classList.remove('open'); if(ov) ov.classList.remove('open'); }
+  else { d.classList.add('open'); if(ov) ov.classList.add('open'); }
+}
+
+/* ============================================================
+   PAGE NAVIGATION
+   ============================================================ */
+function showPage(p){
+  var pages = document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove('active');
+  var el = document.getElementById('page-'+p);
+  if(el) el.classList.add('active');
+
+  var items = document.querySelectorAll('.drwr-item');
+  for(var j=0;j<items.length;j++) items[j].classList.toggle('active', items[j].getAttribute('data-nav')===p);
+
+  var d=document.getElementById('drwr'); if(d) d.classList.remove('open');
+  var ov=document.getElementById('drwrOverlay'); if(ov) ov.classList.remove('open');
+
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if(p==='dashboard') renderDashboard();
+  if(p==='collections') renderCollections();
+  if(p==='collector') renderCollector();
+  if(p==='ecohubs') renderEcoHubs();
+  if(p==='account') renderAccount();
+  if(p==='settings') loadSettingsForm();
+
+  updatePills();
+}
+
+/* ============================================================
+   UPDATE PILLS
+   ============================================================ */
+function updatePills(){
+  var mine = S.collections.filter(function(c){ return c.requesterEcoId === S.user.ecoId; });
+  var active = mine.filter(function(c){ return !isGroup(c.statusId,'completed') && !isGroup(c.statusId,'cancelled') && c.statusId !== 'DRAFT'; });
+  var available = S.collections.filter(function(c){ return isGroup(c.statusId,'pending') || c.statusId === 'COLLECTOR_NEEDED'; });
+
+  var p1 = document.getElementById('pillCollections');
+  var p2 = document.getElementById('pillCollector');
+  if(p1){ p1.textContent = active.length; p1.classList.toggle('show', active.length>0); }
+  if(p2){ p2.textContent = available.length; p2.classList.toggle('show', available.length>0); }
+
+  var drAv=document.getElementById('drwrAv'); if(drAv) drAv.textContent = S.user.name.charAt(0).toUpperCase();
+  var drName=document.getElementById('drwrName'); if(drName) drName.textContent = S.user.name;
+  var drId=document.getElementById('drwrEcoId'); if(drId) drId.textContent = S.user.ecoId;
+}
+
+/* ============================================================
+   LOAD DATA
+   ============================================================ */
+function loadUser(){
+  var u = lsGet(K.user, null);
+  if(u) S.user = Object.assign(S.user, u);
+  else {
+    S.user.ecoId = 'ECO-' + Math.random().toString(36).slice(2,8).toUpperCase();
+    lsSet(K.user, S.user);
+  }
+}
+function loadSettings(){
+  var st = lsGet(K.settings, null);
+  if(st) S.settings = Object.assign(S.settings, st);
+  if(S.settings.role) S.user.role = S.settings.role;
+}
+function loadCollections(){
+  S.collections = lsGet(K.collections, []);
+  S.collections.forEach(function(c){
+    if(!c.statusId) c.statusId = 'SUBMITTED';
+    if(!c.history) c.history = [{ts:c.createdAt||now(), status:c.statusId, by:S.user.ecoId, note:'Loaded'}];
+  });
+}
+function saveCollections(){ lsSet(K.collections, S.collections); }
+
+/* ============================================================
+   REAL-TIME (cross-tab via BroadcastChannel)
+   ============================================================ */
+var channel = null;
+function initRealtime(){
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      channel = new BroadcastChannel('ecocycle_collect_v1');
+      channel.onmessage = function(e){
+        var evt = e.data;
+        if(!evt || !evt.type) return;
+        loadCollections();
+        renderAll();
+      };
+      // Cross-listen to other modules so cross-module changes appear here
+      if(typeof BroadcastChannel !== 'undefined'){
+        S.otherChannels = [
+          new BroadcastChannel('ecocycle_impact_v1'),
+          new BroadcastChannel('ecocycle_wallet_v1'),
+          new BroadcastChannel('ecocycle_command_v1'),
+          new BroadcastChannel('ecocycle_connect_v1'),
+          new BroadcastChannel('ecocycle_smart_v1'),
+          new BroadcastChannel('ecocycle_x')
+        ];
+        S.otherChannels.forEach(function(ch){
+          ch.onmessage = function(){
+            // no-op for local state, but triggers a refresh of the connection banner
+            updateConnBanner();
+          };
+        });
+      }
+      setConnState('local');
+    } else {
+      setConnState('offline');
+    }
+  } catch(err){
+    console.warn('[EcoCollect] BroadcastChannel unavailable', err);
+    setConnState('offline');
+  }
+}
+function publishEvent(type, payload){
+  if (channel) { try { channel.postMessage({type:type, payload:payload||{}, ts:Date.now()}); } catch(e){} }
+}
+function setConnState(s){ S.connState = s; updateConnBanner(); }
+
+function updateConnBanner(){
+  var dot = document.getElementById('connDot');
+  var text = document.getElementById('connText');
+  if(!dot || !text) return;
+
+  var syncState = window.EcoSync ? EcoSync.getStatus() : 'offline';
+  var syncOK = (syncState === 'connected' || syncState === 'synced');
+
+  if(syncOK){
+    dot.style.color = 'var(--neon)';
+    dot.style.background = 'var(--neon)';
+    dot.style.boxShadow = '0 0 8px var(--neon)';
+    text.innerHTML = '<strong>Live — synced with EcoSync backend.</strong> Changes here sync to every authorised session in real time.';
+  } else if(syncState === 'connecting' || syncState === 'reconnecting' || syncState === 'syncing'){
+    dot.style.color = 'var(--gold)';
+    dot.style.background = 'var(--gold)';
+    dot.style.boxShadow = '0 0 8px var(--gold)';
+    text.innerHTML = '<strong>' + (syncState === 'connecting' ? 'Connecting' : 'Reconnecting') + ' to EcoSync backend…</strong> Local data remains available and will sync automatically.';
+  } else {
+    dot.style.color = 'var(--rose)';
+    dot.style.background = 'var(--rose)';
+    dot.style.boxShadow = '0 0 8px var(--rose)';
+    text.innerHTML = '<strong>Backend offline.</strong> Running locally. Changes queue in the outbox and will sync automatically when the backend is reachable.';
+  }
+}
+
+/* ============================================================
+   RENDER ALL
+   ============================================================ */
+function renderAll(){
+  if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
+  if(document.getElementById('page-collections').classList.contains('active')) renderCollections();
+  if(document.getElementById('page-collector').classList.contains('active')) renderCollector();
+  if(document.getElementById('page-ecohubs').classList.contains('active')) renderEcoHubs();
+  if(document.getElementById('page-account').classList.contains('active')) renderAccount();
+  if(document.getElementById('page-settings').classList.contains('active')) loadSettingsForm();
+  updatePills();
+  updateConnBanner();
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  var mine = S.collections.filter(function(c){ return c.requesterEcoId === S.user.ecoId; });
+  var active = mine.filter(function(c){ return !isGroup(c.statusId,'completed') && !isGroup(c.statusId,'cancelled') && c.statusId !== 'DRAFT'; });
+  var pending = mine.filter(function(c){ return isGroup(c.statusId,'pending'); });
+  var progress = mine.filter(function(c){ return isGroup(c.statusId,'progress'); });
+  var completed = mine.filter(function(c){ return isGroup(c.statusId,'completed'); });
+  var weight = completed.reduce(function(a,c){ return a + (c.actualWeight || c.estimatedWeight || 0); }, 0);
+
+  document.getElementById('stActive').textContent = active.length;
+  document.getElementById('stPending').textContent = pending.length;
+  document.getElementById('stProgress').textContent = progress.length;
+  document.getElementById('stCompleted').textContent = completed.length;
+  document.getElementById('stWeight').innerHTML = Math.round(weight) + '<small>kg</small>';
+
+  var recent = mine.slice().sort(function(a,b){ return (b.updatedAt||b.createdAt) - (a.updatedAt||a.createdAt); }).slice(0, 4);
+  var wrap = document.getElementById('dashActivity');
+  if(!recent.length){
+    wrap.innerHTML = '<div class="empty">' +
+      '<i class="fas fa-truck"></i>' +
+      '<h3>No collections yet</h3>' +
+      '<p>Request your first collection to start earning EcoPoints and tracking your environmental impact.</p>' +
+      '<div class="empty-actions">' +
+        '<button class="btn btn-primary" onclick="openRequestForm()" type="button"><i class="fas fa-plus"></i> Request Collection</button>' +
+        '<button class="btn btn-outline" onclick="location.href=\'ecoscan.html\'" type="button"><i class="fas fa-camera"></i> Scan Waste</button>' +
+      '</div>' +
+    '</div>';
+    return;
+  }
+  wrap.innerHTML = '<div class="grid grid-2">' + recent.map(collectionCard).join('') + '</div>';
+}
+
+/* ============================================================
+   COLLECTION CARD
+   ============================================================ */
+function collectionCard(c){
+  var ct = ctById(c.collectionType);
+  var st = statusById(c.statusId);
+  var pr = PRIORITY[c.priority] || PRIORITY.normal;
+  var mat = matById(c.materialCategory);
+  var weightHtml = c.actualWeight
+    ? '<span class="chip chip-verified"><i class="fas fa-check"></i> ' + c.actualWeight + ' kg verified</span>'
+    : c.estimatedWeight
+      ? '<span class="chip chip-weight"><i class="fas fa-weight-hanging"></i> ~' + c.estimatedWeight + ' kg</span>'
+      : '';
+
+  var mine = c.requesterEcoId === S.user.ecoId;
+  var canAccept = S.user.role === 'collector' && (isGroup(c.statusId,'pending') || c.statusId === 'COLLECTOR_NEEDED');
+
+  return '<article class="crd ' + pr.cls + '">' +
+    '<div class="crd-hd">' +
+      '<div class="crd-ic"><i class="fas ' + ct.i + '"></i></div>' +
+      '<div class="crd-info">' +
+        '<h4>' + esc(ct.n) + ' · ' + esc(mat.n) + '</h4>' +
+        '<div class="meta">' +
+          '<span><i class="fas fa-hashtag"></i> ' + esc(c.ref || c.id.slice(-6).toUpperCase()) + '</span>' +
+          '<span><i class="fas fa-clock"></i> ' + fmtRel(c.updatedAt||c.createdAt) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<span class="status-pill ' + st.cls + '"><i class="fas fa-circle"></i> ' + esc(st.label) + '</span>' +
+    '</div>' +
+    '<div class="crd-body">' +
+      weightHtml +
+      (c.approxArea ? '<span class="chip chip-loc"><i class="fas fa-map-marker-alt"></i> ' + esc(c.approxArea) + '</span>' : '') +
+      (c.quantity ? '<span class="chip chip-cond">' + esc(c.quantity) + ' ' + esc(c.unit||'') + '</span>' : '') +
+    '</div>' +
+    (c.description ? '<p class="tx-sm txt-2" style="line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + esc(c.description) + '</p>' : '') +
+    '<div class="crd-actions">' +
+      '<button class="btn btn-outline btn-sm" onclick="openDetail(\'' + c.id + '\')" type="button"><i class="fas fa-eye"></i> View</button>' +
+      (canAccept ? '<button class="btn btn-primary btn-sm" onclick="acceptCollection(\'' + c.id + '\')" type="button"><i class="fas fa-check"></i> Accept</button>' : '') +
+      (mine && c.statusId === 'DRAFT' ? '<button class="btn btn-primary btn-sm" onclick="submitCollection(\'' + c.id + '\')" type="button"><i class="fas fa-paper-plane"></i> Submit</button>' : '') +
+      (mine && !isGroup(c.statusId,'completed') && !isGroup(c.statusId,'cancelled') ? '<button class="btn btn-ghost btn-sm" onclick="cancelCollection(\'' + c.id + '\')" type="button"><i class="fas fa-times"></i> Cancel</button>' : '') +
+      (c.collectorEcoId === S.user.ecoId && c.statusId === 'COLLECTOR_ASSIGNED' ? '<button class="btn btn-primary btn-sm" onclick="updateStatus(\'' + c.id + '\',\'SCHEDULED\')" type="button"><i class="fas fa-calendar-check"></i> Schedule</button>' : '') +
+      (c.collectorEcoId === S.user.ecoId && c.statusId === 'SCHEDULED' ? '<button class="btn btn-primary btn-sm" onclick="updateStatus(\'' + c.id + '\',\'ON_THE_WAY\')" type="button"><i class="fas fa-truck"></i> On Way</button>' : '') +
+      (c.collectorEcoId === S.user.ecoId && c.statusId === 'ON_THE_WAY' ? '<button class="btn btn-primary btn-sm" onclick="updateStatus(\'' + c.id + '\',\'ARRIVED\')" type="button"><i class="fas fa-map-marker-alt"></i> Arrived</button>' : '') +
+      (c.collectorEcoId === S.user.ecoId && c.statusId === 'ARRIVED' ? '<button class="btn btn-primary btn-sm" onclick="openHandover(\'' + c.id + '\')" type="button"><i class="fas fa-handshake"></i> Handover</button>' : '') +
+      (mine && c.statusId === 'AWAITING_VERIFY' ? '<button class="btn btn-primary btn-sm" onclick="verifyCollection(\'' + c.id + '\')" type="button"><i class="fas fa-check-double"></i> Verify</button>' : '') +
+      (mine && c.statusId === 'VERIFIED' ? '<button class="btn btn-primary btn-sm" onclick="updateStatus(\'' + c.id + '\',\'COMPLETED\')" type="button"><i class="fas fa-flag-checkered"></i> Complete</button>' : '') +
+    '</div>' +
+  '</article>';
+}
+
+/* ============================================================
+   MY COLLECTIONS
+   ============================================================ */
+function setColFilter(f, btn){
+  S.colFilter = f;
+  var tabs = document.querySelectorAll('#colTabs .tab');
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+  if(btn) btn.classList.add('active');
+  renderCollections();
+}
+
+function renderCollections(){
+  var wrap = document.getElementById('colWrap');
+  if(!wrap) return;
+
+  var mine = S.collections.filter(function(c){ return c.requesterEcoId === S.user.ecoId; });
+  var counts = {
+    all: mine.length,
+    draft: mine.filter(function(c){ return isGroup(c.statusId,'draft'); }).length,
+    pending: mine.filter(function(c){ return isGroup(c.statusId,'pending'); }).length,
+    scheduled: mine.filter(function(c){ return isGroup(c.statusId,'scheduled'); }).length,
+    progress: mine.filter(function(c){ return isGroup(c.statusId,'progress'); }).length,
+    completed: mine.filter(function(c){ return isGroup(c.statusId,'completed'); }).length,
+    cancelled: mine.filter(function(c){ return isGroup(c.statusId,'cancelled'); }).length
+  };
+  Object.keys(counts).forEach(function(k){
+    var el = document.getElementById('tab' + k.charAt(0).toUpperCase() + k.slice(1));
+    if(el) el.textContent = counts[k];
+  });
+
+  var list = mine.slice();
+  if(S.colFilter !== 'all') list = list.filter(function(c){ return isGroup(c.statusId, S.colFilter); });
+
+  var searchEl = document.getElementById('colSearch');
+  var search = (searchEl ? searchEl.value : '').toLowerCase().trim();
+  if(search){
+    list = list.filter(function(c){
+      return (c.ref||'').toLowerCase().indexOf(search)!==-1 ||
+             (c.description||'').toLowerCase().indexOf(search)!==-1 ||
+             (c.approxArea||'').toLowerCase().indexOf(search)!==-1 ||
+             (matById(c.materialCategory).n||'').toLowerCase().indexOf(search)!==-1;
+    });
+  }
+
+  list.sort(function(a,b){ return b.createdAt - a.createdAt; });
+
+  if(!list.length){
+    wrap.innerHTML = '<div class="empty">' +
+      '<i class="fas fa-inbox"></i>' +
+      '<h3>No collections' + (S.colFilter !== 'all' ? ' in this state' : '') + '</h3>' +
+      '<p>' + (S.colFilter === 'all' ? 'Create your first collection request to get started.' : 'Try a different filter or create a new request.') + '</p>' +
+      '<div class="empty-actions">' +
+        '<button class="btn btn-primary" onclick="openRequestForm()" type="button"><i class="fas fa-plus"></i> New Request</button>' +
+      '</div>' +
+    '</div>';
+    return;
+  }
+  wrap.innerHTML = '<div class="grid grid-2">' + list.map(collectionCard).join('') + '</div>';
+}
+
+/* ============================================================
+   COLLECTOR VIEW
+   ============================================================ */
+function renderCollector(){
+  var wrap = document.getElementById('collectorWrap');
+  if(!wrap) return;
+
+  var available = S.collections.filter(function(c){
+    return isGroup(c.statusId,'pending') || c.statusId === 'COLLECTOR_NEEDED';
+  });
+  var assigned = S.collections.filter(function(c){
+    return c.collectorEcoId === S.user.ecoId && !isGroup(c.statusId,'completed') && !isGroup(c.statusId,'cancelled');
+  });
+  var inProgress = assigned.filter(function(c){ return isGroup(c.statusId,'progress'); });
+  var completedByMe = S.collections.filter(function(c){
+    return c.collectorEcoId === S.user.ecoId && isGroup(c.statusId,'completed');
+  });
+
+  document.getElementById('cstAvailable').textContent = available.length;
+  document.getElementById('cstAssigned').textContent = assigned.length;
+  document.getElementById('cstInProgress').textContent = inProgress.length;
+  document.getElementById('cstCompleted').textContent = completedByMe.length;
+
+  if(!available.length && !assigned.length){
+    wrap.innerHTML = '<div class="empty">' +
+      '<i class="fas fa-inbox"></i>' +
+      '<h3>No available requests</h3>' +
+      '<p>There are no pending collection requests matching your service area. New requests appear in real time as they are created.</p>' +
+    '</div>';
+    return;
+  }
+
+  var html = '';
+  if(assigned.length){
+    html += '<div class="toolbar"><h2 style="font-size:1rem"><i class="fas fa-user-check"></i> Assigned to Me</h2></div>';
+    html += '<div class="grid grid-2 mb-4">' + assigned.map(collectionCard).join('') + '</div>';
+  }
+  if(available.length){
+    html += '<div class="toolbar"><h2 style="font-size:1rem"><i class="fas fa-inbox"></i> Available Requests</h2></div>';
+    html += '<div class="grid grid-2">' + available.map(collectionCard).join('') + '</div>';
+  }
+  wrap.innerHTML = html;
+}
+
+/* ============================================================
+   ECOHUBS
+   ============================================================ */
+function renderEcoHubs(){
+  var wrap = document.getElementById('hubWrap');
+  if(!wrap) return;
+  wrap.innerHTML = '<div class="empty">' +
+    '<i class="fas fa-warehouse"></i>' +
+    '<h3>No verified EcoHubs yet</h3>' +
+    '<p>EcoHubs are added through EcoConnect when a recycling centre, drop-off point, or partner is verified. Connect the EcoConnect backend to see real locations here.</p>' +
+    '<div class="empty-actions">' +
+      '<button class="btn btn-outline" onclick="location.href=\'ecoconnect.html\'" type="button"><i class="fas fa-network-wired"></i> Open EcoConnect</button>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ============================================================
+   ACCOUNT
+   ============================================================ */
+function renderAccount(){
+  var mine = S.collections.filter(function(c){ return c.requesterEcoId === S.user.ecoId; });
+  var completed = mine.filter(function(c){ return isGroup(c.statusId,'completed'); });
+  var weight = completed.reduce(function(a,c){ return a + (c.actualWeight || c.estimatedWeight || 0); }, 0);
+
+  var av = document.getElementById('accAv'); if(av) av.textContent = S.user.name.charAt(0).toUpperCase();
+  var n = document.getElementById('accName'); if(n) n.textContent = S.user.name;
+  var e = document.getElementById('accEcoId'); if(e) e.textContent = S.user.ecoId;
+  var t = document.getElementById('accType'); if(t) t.textContent = (S.user.type||'individual').charAt(0).toUpperCase() + (S.user.type||'individual').slice(1);
+  var at = document.getElementById('accTotal'); if(at) at.textContent = mine.length;
+  var ac = document.getElementById('accCompleted'); if(ac) ac.textContent = completed.length;
+  var aw = document.getElementById('accWeight'); if(aw) aw.textContent = Math.round(weight) + ' kg';
+  var ap = document.getElementById('accPoints'); if(ap) ap.textContent = Math.round(weight * 5);
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function loadSettingsForm(){
+  var el;
+  el = document.getElementById('setName'); if(el) el.value = S.user.name;
+  el = document.getElementById('setType'); if(el) el.value = S.user.type || 'individual';
+  el = document.getElementById('setLoc'); if(el) el.value = S.user.location || '';
+  el = document.getElementById('setRole'); if(el) el.value = S.settings.role || 'requester';
+
+  if(window.EcoSync){
+    var ws = document.getElementById('cfgWsState'); if(ws) ws.textContent = EcoSync.getStatus().toUpperCase();
+    var be = document.getElementById('cfgBackend'); if(be) be.textContent = EcoSync.getBackendUrl();
+    var ls = document.getElementById('cfgLastSync'); if(ls) ls.textContent = EcoSync.getLastSync() ? fmtRel(EcoSync.getLastSync()) : '—';
+    var ob = document.getElementById('cfgOutbox'); if(ob) ob.textContent = String(EcoSync.getOutboxSize());
+  }
+}
+function saveSettings(){
+  var el;
+  el = document.getElementById('setName'); if(el) S.user.name = el.value.trim() || S.user.name;
+  el = document.getElementById('setType'); if(el) S.user.type = el.value;
+  el = document.getElementById('setLoc'); if(el) S.user.location = el.value.trim();
+  el = document.getElementById('setRole'); if(el) { S.settings.role = el.value; S.user.role = el.value; }
+
+  lsSet(K.user, S.user);
+  lsSet(K.settings, S.settings);
+  toast('Settings saved');
+
+  if(window.EcoSync && EcoSync.pushSetting){
+    try{
+      EcoSync.pushSetting('collectRole', S.user.role);
+      EcoSync.pushSetting('collectLocation', S.user.location);
+    }catch(e){}
+  }
+  updatePills();
+  renderAll();
+}
+function exportData(){
+  var data = {user:S.user, settings:S.settings, collections:S.collections, exportedAt: now()};
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'ecocollect-export-' + Date.now() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Export downloaded');
+}
+function confirmClear(){
+  if(!confirm('This will permanently delete ALL your EcoCollect data from this browser. Continue?')) return;
+  localStorage.removeItem(K.collections);
+  localStorage.removeItem(K.seeded);
+  S.collections = [];
+  saveCollections();
+  toast('All data cleared');
+  showPage('dashboard');
+  renderAll();
+}
+
+/* ============================================================
+   REQUEST FORM
+   ============================================================ */
+function openRequestForm(prefillType){
+  var type = prefillType || 'recycling';
+  S.requestDraft = {
+    id: uid('col'),
+    ref: 'EC-' + Math.random().toString(36).slice(2,7).toUpperCase(),
+    collectionType: type,
+    materialCategory: 'plastic',
+    specificMaterial: '',
+    description: '',
+    quantity: '',
+    unit: 'kg',
+    estimatedWeight: '',
+    condition: '',
+    contamination: 'low',
+    packaging: '',
+    collectionMethod: 'pickup',
+    preferredDate: '',
+    preferredTimeWindow: 'morning',
+    approxArea: S.user.location || '',
+    privateHandover: '',
+    destination: '',
+    urgency: 'normal',
+    contactPreference: 'in-app',
+    safetyInfo: ''
+  };
+  renderRequestForm();
+  openM('mRequest');
+}
+
+function setRequestField(field, value){
+  if(!S.requestDraft) return;
+  S.requestDraft[field] = value;
+  if(field === 'collectionType' || field === 'materialCategory') renderRequestForm();
+}
+
+function renderRequestForm(){
+  var d = S.requestDraft;
+  if(!d) return;
+
+  var html = '<button class="mdl-close" onclick="closeM(\'mRequest\')" aria-label="Close" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><h2><i class="fas fa-plus-circle"></i> Request Collection</h2></div>' +
+    '<p class="mdl-sub">Describe what you need collected. All details stay on this device and sync to the backend.</p>' +
+
+    '<div class="fg"><label class="fl">Collection type <span class="req">*</span></label></div>' +
+    '<div class="tpick">' +
+      COLLECTION_TYPES.map(function(ct){
+        return '<button class="topt' + (d.collectionType===ct.id?' sel':'') + '" onclick="setRequestField(\'collectionType\',\'' + ct.id + '\')" type="button">' +
+          '<i class="fas ' + ct.i + '"></i><span class="lbl">' + esc(ct.n) + '</span>' +
+        '</button>';
+      }).join('') +
+    '</div>' +
+
+    '<div class="frow mt-3">' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfMat">Material category <span class="req">*</span></label>' +
+        '<select class="fs" id="rfMat" onchange="setRequestField(\'materialCategory\', this.value)">' +
+          MATERIALS.map(function(m){
+            return '<option value="' + m.id + '"' + (d.materialCategory===m.id?' selected':'') + '>' + esc(m.n) + '</option>';
+          }).join('') +
+        '</select>' +
+      '</div>' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfSpecific">Specific material</label>' +
+        '<input class="fi" id="rfSpecific" placeholder="e.g. PET, HDPE" value="' + esc(d.specificMaterial) + '" oninput="setRequestField(\'specificMaterial\', this.value)">' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="frow">' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfQty">Quantity</label>' +
+        '<input class="fi" id="rfQty" type="number" placeholder="e.g. 15" value="' + esc(d.quantity) + '" oninput="setRequestField(\'quantity\', this.value)">' +
+      '</div>' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfUnit">Unit</label>' +
+        '<select class="fs" id="rfUnit" onchange="setRequestField(\'unit\', this.value)">' +
+          '<option value="kg"' + (d.unit==='kg'?' selected':'') + '>Kilograms (kg)</option>' +
+          '<option value="items"' + (d.unit==='items'?' selected':'') + '>Items</option>' +
+          '<option value="bags"' + (d.unit==='bags'?' selected':'') + '>Bags</option>' +
+          '<option value="boxes"' + (d.unit==='boxes'?' selected':'') + '>Boxes</option>' +
+          '<option value="litres"' + (d.unit==='litres'?' selected':'') + '>Litres</option>' +
+        '</select>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="fg">' +
+      '<label class="fl" for="rfWeight">Estimated weight (kg) <span class="hint">AI estimate or your own</span></label>' +
+      '<input class="fi" id="rfWeight" type="number" step="0.1" placeholder="e.g. 15" value="' + esc(d.estimatedWeight) + '" oninput="setRequestField(\'estimatedWeight\', this.value)">' +
+    '</div>' +
+
+    '<div class="fg">' +
+      '<label class="fl" for="rfDesc">Description</label>' +
+      '<textarea class="ft" id="rfDesc" placeholder="Describe the materials, condition, packaging…" oninput="setRequestField(\'description\', this.value)">' + esc(d.description) + '</textarea>' +
+    '</div>' +
+
+    '<div class="frow">' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfCond">Condition</label>' +
+        '<input class="fi" id="rfCond" placeholder="e.g. Clean, Dry, Mixed" value="' + esc(d.condition) + '" oninput="setRequestField(\'condition\', this.value)">' +
+      '</div>' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfCont">Contamination</label>' +
+        '<select class="fs" id="rfCont" onchange="setRequestField(\'contamination\', this.value)">' +
+          '<option value="low"' + (d.contamination==='low'?' selected':'') + '>Low / Clean</option>' +
+          '<option value="medium"' + (d.contamination==='medium'?' selected':'') + '>Medium</option>' +
+          '<option value="high"' + (d.contamination==='high'?' selected':'') + '>High — Needs sorting</option>' +
+        '</select>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="frow">' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfArea">Approximate area <span class="req">*</span></label>' +
+        '<input class="fi" id="rfArea" placeholder="e.g. Avondale, Harare" value="' + esc(d.approxArea) + '" oninput="setRequestField(\'approxArea\', this.value)">' +
+      '</div>' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfUrgency">Urgency</label>' +
+        '<select class="fs" id="rfUrgency" onchange="setRequestField(\'urgency\', this.value)">' +
+          '<option value="low"' + (d.urgency==='low'?' selected':'') + '>Low — Flexible</option>' +
+          '<option value="normal"' + (d.urgency==='normal'?' selected':'') + '>Normal</option>' +
+          '<option value="high"' + (d.urgency==='high'?' selected':'') + '>High — Soon</option>' +
+          '<option value="urgent"' + (d.urgency==='urgent'?' selected':'') + '>Urgent — Today</option>' +
+        '</select>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="frow">' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfDate">Preferred date</label>' +
+        '<input class="fi" id="rfDate" type="date" value="' + esc(d.preferredDate) + '" oninput="setRequestField(\'preferredDate\', this.value)">' +
+      '</div>' +
+      '<div class="fg">' +
+        '<label class="fl" for="rfTime">Time window</label>' +
+        '<select class="fs" id="rfTime" onchange="setRequestField(\'preferredTimeWindow\', this.value)">' +
+          '<option value="morning"' + (d.preferredTimeWindow==='morning'?' selected':'') + '>Morning (8–12)</option>' +
+          '<option value="afternoon"' + (d.preferredTimeWindow==='afternoon'?' selected':'') + '>Afternoon (12–17)</option>' +
+          '<option value="evening"' + (d.preferredTimeWindow==='evening'?' selected':'') + '>Evening (17–19)</option>' +
+          '<option value="any"' + (d.preferredTimeWindow==='any'?' selected':'') + '>Any time</option>' +
+        '</select>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="fg">' +
+      '<label class="fl" for="rfHandover">Private handover instructions <span class="hint">(shared only with assigned collector)</span></label>' +
+      '<textarea class="ft" id="rfHandover" placeholder="e.g. Gate code, landmark, contact person…" style="min-height:70px;" oninput="setRequestField(\'privateHandover\', this.value)">' + esc(d.privateHandover) + '</textarea>' +
+    '</div>' +
+
+    '<div class="info-banner" style="margin-top:20px;font-size:0.75rem;">' +
+      '<i class="fas fa-info-circle"></i>' +
+      '<span>By submitting you confirm the information is accurate and materials are safe to handle. Do not include hazardous chemicals, illegal items, or stolen goods.</span>' +
+    '</div>' +
+
+    '<div class="flx g-2 mt-3">' +
+      '<button class="btn btn-ghost flx-1" onclick="saveDraftCollection()" type="button"><i class="fas fa-save"></i> Save Draft</button>' +
+      '<button class="btn btn-primary flx-1" onclick="submitRequestForm()" type="button"><i class="fas fa-paper-plane"></i> Submit Request</button>' +
+    '</div>';
+
+  document.getElementById('mRequestBody').innerHTML = html;
+}
+
+function saveDraftCollection(){
+  if(!S.requestDraft) return;
+  var c = Object.assign({}, S.requestDraft);
+  c.requesterEcoId = S.user.ecoId;
+  c.requesterName = S.user.name;
+  c.statusId = 'DRAFT';
+  c.createdAt = now();
+  c.updatedAt = now();
+  c.priority = c.urgency || 'normal';
+  c.history = [{ts:now(), status:'DRAFT', by:S.user.ecoId, note:'Draft created'}];
+
+  S.collections.unshift(c);
+  saveCollections();
+  publishEvent('collection_created', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  closeM('mRequest');
+  toast('Draft saved');
+  renderAll();
+  showPage('collections');
+}
+
+function submitRequestForm(){
+  if(!S.requestDraft) return;
+  var d = S.requestDraft;
+
+  if(!d.approxArea || !d.approxArea.trim()){
+    toast('Please enter your approximate area', 'error');
+    return;
+  }
+
+  var c = Object.assign({}, d);
+  c.requesterEcoId = S.user.ecoId;
+  c.requesterName = S.user.name;
+  c.statusId = 'SUBMITTED';
+  c.createdAt = now();
+  c.updatedAt = now();
+  c.priority = c.urgency || 'normal';
+  c.history = [{ts:now(), status:'SUBMITTED', by:S.user.ecoId, note:'Request submitted by requester'}];
+
+  S.collections.unshift(c);
+  saveCollections();
+  publishEvent('collection_created', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+
+  closeM('mRequest');
+  toast('Collection request submitted!');
+  renderAll();
+  showPage('collections');
+}
+
+/* ============================================================
+   STATUS TRANSITIONS
+   ============================================================ */
+function addHistory(c, newStatus, note){
+  if(!c.history) c.history = [];
+  c.history.push({ts:now(), status:newStatus, by:S.user.ecoId, note:note||''});
+}
+
+function updateStatus(id, newStatus){
+  var c = findCollection(id);
+  if(!c) { toast('Collection not found', 'error'); return; }
+  c.statusId = newStatus;
+  c.updatedAt = now();
+  addHistory(c, newStatus, 'Status updated');
+  saveCollections();
+  publishEvent('collection_updated', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  toast('Status updated: ' + statusById(newStatus).label);
+  renderAll();
+  closeM('mDetail');
+}
+
+function findCollection(id){
+  for(var i=0;i<S.collections.length;i++) if(S.collections[i].id === id) return S.collections[i];
+  return null;
+}
+
+function submitCollection(id){
+  var c = findCollection(id);
+  if(!c) return;
+  c.statusId = 'SUBMITTED';
+  c.updatedAt = now();
+  addHistory(c, 'SUBMITTED', 'Submitted by requester');
+  saveCollections();
+  publishEvent('collection_updated', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  toast('Request submitted!');
+  renderAll();
+}
+
+function cancelCollection(id){
+  var c = findCollection(id);
+  if(!c) return;
+  if(!confirm('Cancel this collection request?')) return;
+  c.statusId = 'CANCELLED';
+  c.updatedAt = now();
+  addHistory(c, 'CANCELLED', 'Cancelled by requester');
+  saveCollections();
+  publishEvent('collection_updated', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  toast('Collection cancelled', 'info');
+  renderAll();
+  closeM('mDetail');
+}
+
+function acceptCollection(id){
+  var c = findCollection(id);
+  if(!c) return;
+  c.collectorEcoId = S.user.ecoId;
+  c.collectorName = S.user.name;
+  c.statusId = 'COLLECTOR_ASSIGNED';
+  c.updatedAt = now();
+  addHistory(c, 'COLLECTOR_ASSIGNED', 'Collector ' + S.user.name + ' accepted');
+  saveCollections();
+  publishEvent('collection_updated', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  toast('Collection accepted! You are now assigned.');
+  renderAll();
+  closeM('mDetail');
+}
+
+function markScheduled(id){ updateStatus(id, 'SCHEDULED'); }
+
+function openHandover(id){
+  var c = findCollection(id);
+  if(!c) return;
+
+  var html = '<button class="mdl-close" onclick="closeM(\'mDetail\')" aria-label="Close" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><h2><i class="fas fa-handshake"></i> Confirm Handover</h2></div>' +
+    '<p class="mdl-sub">Record the actual materials collected at handover.</p>' +
+    '<div class="fg">' +
+      '<label class="fl" for="hvWeight">Actual weight (kg) <span class="req">*</span></label>' +
+      '<input class="fi" id="hvWeight" type="number" step="0.1" placeholder="e.g. 14.5" value="' + (c.estimatedWeight||'') + '">' +
+    '</div>' +
+    '<div class="fg">' +
+      '<label class="fl" for="hvCondition">Condition at collection</label>' +
+      '<input class="fi" id="hvCondition" placeholder="e.g. Clean, Sorted, Mixed" value="' + esc(c.condition||'') + '">' +
+    '</div>' +
+    '<div class="fg">' +
+      '<label class="fl" for="hvNotes">Notes</label>' +
+      '<textarea class="ft" id="hvNotes" placeholder="Any notes about the collection…" style="min-height:70px;"></textarea>' +
+    '</div>' +
+    '<button class="btn btn-primary btn-lg btn-block mt-3" onclick="confirmHandover(\'' + id + '\')" type="button"><i class="fas fa-check-double"></i> Confirm Collected</button>';
+
+  document.getElementById('mDetailBody').innerHTML = html;
+}
+
+function confirmHandover(id){
+  var c = findCollection(id);
+  if(!c) return;
+  var weight = parseFloat(document.getElementById('hvWeight').value);
+  if(!weight || weight <= 0){ toast('Please enter the actual weight', 'error'); return; }
+
+  c.actualWeight = weight;
+  c.statusId = 'AWAITING_VERIFY';
+  c.updatedAt = now();
+  addHistory(c, 'AWAITING_VERIFY', 'Collected ' + weight + ' kg by ' + S.user.name);
+  saveCollections();
+  publishEvent('collection_updated', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  toast('Handover confirmed! ' + weight + ' kg collected.');
+  renderAll();
+  closeM('mDetail');
+}
+
+function verifyCollection(id){
+  var c = findCollection(id);
+  if(!c) return;
+  c.statusId = 'VERIFIED';
+  c.verifiedAt = now();
+  c.updatedAt = now();
+  addHistory(c, 'VERIFIED', 'Verified by requester');
+  saveCollections();
+  publishEvent('collection_updated', { id:c.id, status:c.statusId });
+  pushCollectionToBackend(c);
+  toast('Collection verified!');
+  renderAll();
+  closeM('mDetail');
+}
+
+/* ============================================================
+   DETAIL MODAL
+   ============================================================ */
+function openDetail(id){
+  var c = findCollection(id);
+  if(!c) return;
+  var ct = ctById(c.collectionType);
+  var st = statusById(c.statusId);
+  var pr = PRIORITY[c.priority] || PRIORITY.normal;
+  var mat = matById(c.materialCategory);
+  var mine = c.requesterEcoId === S.user.ecoId;
+  var isCollector = c.collectorEcoId === S.user.ecoId;
+  var canAccept = S.user.role === 'collector' && (isGroup(c.statusId,'pending') || c.statusId === 'COLLECTOR_NEEDED');
+
+  var timeline = (c.history||[]).map(function(h, i){
+    var isLast = i === c.history.length - 1;
+    return '<div class="tl-item ' + (isLast ? 'active' : 'done') + '">' +
+      '<div class="tl-time">' + fmtTime(h.ts) + '</div>' +
+      '<div class="tl-title">' + esc(statusById(h.status).label) + '</div>' +
+      (h.note ? '<div class="tl-desc">' + esc(h.note) + '</div>' : '') +
+    '</div>';
+  }).join('');
+
+  var actions = '';
+  if(mine && c.statusId === 'DRAFT') actions += '<button class="btn btn-primary" onclick="submitCollection(\'' + id + '\')" type="button"><i class="fas fa-paper-plane"></i> Submit</button>';
+  if(canAccept) actions += '<button class="btn btn-primary" onclick="acceptCollection(\'' + id + '\')" type="button"><i class="fas fa-check"></i> Accept Collection</button>';
+  if(isCollector && c.statusId === 'COLLECTOR_ASSIGNED') actions += '<button class="btn btn-primary" onclick="updateStatus(\'' + id + '\',\'SCHEDULED\')" type="button"><i class="fas fa-calendar-check"></i> Mark Scheduled</button>';
+  if(isCollector && c.statusId === 'SCHEDULED') actions += '<button class="btn btn-primary" onclick="updateStatus(\'' + id + '\',\'ON_THE_WAY\')" type="button"><i class="fas fa-truck"></i> On the Way</button>';
+  if(isCollector && c.statusId === 'ON_THE_WAY') actions += '<button class="btn btn-primary" onclick="updateStatus(\'' + id + '\',\'ARRIVED\')" type="button"><i class="fas fa-map-marker-alt"></i> Arrived</button>';
+  if(isCollector && c.statusId === 'ARRIVED') actions += '<button class="btn btn-primary" onclick="openHandover(\'' + id + '\')" type="button"><i class="fas fa-handshake"></i> Confirm Handover</button>';
+  if(mine && c.statusId === 'AWAITING_VERIFY') actions += '<button class="btn btn-primary" onclick="verifyCollection(\'' + id + '\')" type="button"><i class="fas fa-check-double"></i> Verify Weight</button>';
+  if(mine && c.statusId === 'VERIFIED') actions += '<button class="btn btn-primary" onclick="updateStatus(\'' + id + '\',\'COMPLETED\')" type="button"><i class="fas fa-flag-checkered"></i> Mark Completed</button>';
+  if(mine && !isGroup(c.statusId,'completed') && !isGroup(c.statusId,'cancelled')) actions += '<button class="btn btn-danger" onclick="cancelCollection(\'' + id + '\')" type="button"><i class="fas fa-times"></i> Cancel</button>';
+
+  var html = '<button class="mdl-close" onclick="closeM(\'mDetail\')" aria-label="Close" type="button"><i class="fas fa-times"></i></button>' +
+    '<div class="mdl-hd"><h2><i class="fas ' + ct.i + '"></i> ' + esc(ct.n) + '</h2></div>' +
+    '<p class="mdl-sub">' +
+      '<span class="status-pill ' + st.cls + '"><i class="fas fa-circle"></i> ' + esc(st.label) + '</span>' +
+      ' <span class="chip chip-cond">' + esc(pr.label) + ' priority</span>' +
+    '</p>' +
+
+    '<div class="crd" style="padding:14px;margin-bottom:16px;">' +
+      '<div class="det-row"><span class="k">Reference</span><span class="v">' + esc(c.ref || c.id.slice(-6).toUpperCase()) + '</span></div>' +
+      '<div class="det-row"><span class="k">Material</span><span class="v">' + esc(mat.n) + (c.specificMaterial ? ' · ' + esc(c.specificMaterial) : '') + '</span></div>' +
+      (c.quantity ? '<div class="det-row"><span class="k">Quantity</span><span class="v">' + esc(c.quantity) + ' ' + esc(c.unit||'') + '</span></div>' : '') +
+      (c.estimatedWeight ? '<div class="det-row"><span class="k">Est. Weight</span><span class="v">~' + c.estimatedWeight + ' kg</span></div>' : '') +
+      (c.actualWeight ? '<div class="det-row"><span class="k">Actual Weight</span><span class="v gr">' + c.actualWeight + ' kg <span class="chip chip-verified">verified</span></span></div>' : '') +
+      (c.condition ? '<div class="det-row"><span class="k">Condition</span><span class="v">' + esc(c.condition) + '</span></div>' : '') +
+      (c.contamination ? '<div class="det-row"><span class="k">Contamination</span><span class="v">' + esc(c.contamination) + '</span></div>' : '') +
+      (c.approxArea ? '<div class="det-row"><span class="k">Area</span><span class="v">' + esc(c.approxArea) + '</span></div>' : '') +
+      (c.preferredDate ? '<div class="det-row"><span class="k">Preferred Date</span><span class="v">' + esc(c.preferredDate) + ' (' + esc(c.preferredTimeWindow||'any') + ')</span></div>' : '') +
+      (c.collectorName ? '<div class="det-row"><span class="k">Collector</span><span class="v">' + esc(c.collectorName) + '</span></div>' : '') +
+      '<div class="det-row"><span class="k">Created</span><span class="v">' + fmtTime(c.createdAt) + '</span></div>' +
+      '<div class="det-row"><span class="k">Updated</span><span class="v">' + fmtRel(c.updatedAt||c.createdAt) + '</span></div>' +
+    '</div>' +
+
+    (c.description ? '<div class="crd" style="padding:14px;margin-bottom:16px;"><div class="fl" style="margin-bottom:6px;">Description</div><p class="tx-sm txt-2" style="line-height:1.6;">' + esc(c.description) + '</p></div>' : '') +
+    (c.privateHandover ? '<div class="crd" style="padding:14px;margin-bottom:16px;background:rgba(251,191,36,0.06);border-color:rgba(251,191,36,0.2);"><div class="fl" style="margin-bottom:6px;color:var(--gold);"><i class="fas fa-lock"></i> Private Handover Notes</div><p class="tx-sm" style="line-height:1.6;">' + esc(c.privateHandover) + '</p></div>' : '') +
+
+    '<div class="crd" style="padding:14px;margin-bottom:16px;">' +
+      '<div class="fl" style="margin-bottom:10px;">Status Timeline</div>' +
+      '<div class="timeline">' + timeline + '</div>' +
+    '</div>' +
+
+    '<div class="flx g-2 f-wrap">' + actions + '</div>';
+
+  document.getElementById('mDetailBody').innerHTML = html;
+  openM('mDetail');
+}
+
+/* ============================================================
+   BACKEND PUSH (called from EcoSync if available)
+   ============================================================ */
+function pushCollectionToBackend(c){
+  if(!window.EcoSync) return;
+  try{
+    // Push this single collection record via the sync endpoint
+    EcoSync.pushEntity('collections', [c]);
+  }catch(e){}
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function boot(){
+  loadUser();
+  loadSettings();
+  loadCollections();
+  initRealtime();
+  renderAll();
+
+  window.addEventListener('scroll', function(){
+    var h = document.getElementById('hdr');
+    if(!h) return;
+    if(window.scrollY > 10) h.classList.add('scrolled');
+    else h.classList.remove('scrolled');
+  });
+
+  console.log('[EcoCollect] Ready. Collections:', S.collections.length);
+}
+
+/* ============================================================
+   EXPOSE TO WINDOW
+   ============================================================ */
+window.toggleDrawer = toggleDrawer;
+window.showPage = showPage;
+window.openRequestForm = openRequestForm;
+window.setRequestField = setRequestField;
+window.saveDraftCollection = saveDraftCollection;
+window.submitRequestForm = submitRequestForm;
+window.openDetail = openDetail;
+window.acceptCollection = acceptCollection;
+window.submitCollection = submitCollection;
+window.cancelCollection = cancelCollection;
+window.updateStatus = updateStatus;
+window.markScheduled = markScheduled;
+window.openHandover = openHandover;
+window.confirmHandover = confirmHandover;
+window.verifyCollection = verifyCollection;
+window.setColFilter = setColFilter;
+window.saveSettings = saveSettings;
+window.exportData = exportData;
+window.confirmClear = confirmClear;
+window.closeM = closeM;
+window.toast = toast;
+window.renderAll = renderAll;
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ECOSYNC CLIENT — real-time bridge between EcoCollect and the
+   EcoCycle X Java backend.
+
+   Endpoints:
+     REST:      http://localhost:8080/api/*
+     WebSocket: ws://localhost:8080/ws/ecosync
+
+   Responsibilities:
+     1. Auto-register a session (dev convenience)
+     2. Open WebSocket, subscribe to relevant modules
+     3. Push collections + activities / materials / projects / goals / methods
+     4. Receive settings.updated, notification.created, and collection/entity events
+     5. Reflect the real WebSocket state in the header pill — never fake Live
+   ═══════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+var ECO_BACKEND = window.ECOCYCLE_API || 'http://localhost:8080';
+var ECO_WS      = ECO_BACKEND.replace(/^http/, 'ws') + '/ws/ecosync';
+
+var token    = localStorage.getItem('ecocycle_token') || null;
+var authUser = null;
+var ws       = null;
+var wsState  = 'offline';
+var attempts = 0;
+var listeners = new Set();
+var heartbeat = null;
+var lastPong  = 0;
+var lastSync  = null;
+
+/* ---------- Outbox ---------- */
+var OUTBOX_KEY = 'ecocycle_collect_outbox_v1';
+var OUTBOX_MAX = 500;
+function outboxLoad(){ try{ return JSON.parse(localStorage.getItem(OUTBOX_KEY)||'[]'); }catch(e){ return []; } }
+function outboxSave(v){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(v.slice(-OUTBOX_MAX))); }catch(e){} }
+function outboxPush(m){ var q = outboxLoad(); q.push(Object.assign({ _enqueuedAt: Date.now() }, m)); outboxSave(q); }
+function outboxFlush(){
+  if(wsState !== 'connected' && wsState !== 'synced') return;
+  var q = outboxLoad(); if(!q.length) return;
+  var sent = 0;
+  for(var i=0; i<q.length; i++){
+    try{ ws.send(JSON.stringify(q[i])); sent++; }catch(e){ break; }
+  }
+  if(sent === q.length) outboxSave([]);
+  else outboxSave(q.slice(sent));
+}
+
+/* ---------- Helpers ---------- */
+function uid(p){ return (p||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function now(){ return Date.now(); }
+
+function ecoApi(path, opts){
+  opts = opts || {};
+  var headers = Object.assign({'Content-Type':'application/json'}, opts.headers || {});
+  if(token) headers['Authorization'] = 'Bearer ' + token;
+  return fetch(ECO_BACKEND + path, Object.assign({}, opts, { headers: headers }))
+    .then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(data){
+        if(!r.ok) return { ok:false, status: r.status, error: data.error || r.statusText };
+        return { ok:true, status: r.status, data: data.data !== undefined ? data.data : data };
+      });
+    })
+    .catch(function(e){ return { ok:false, error: e.message, offline: true }; });
+}
+
+/* ---------- Session ---------- */
+function ensureSession(){
+  if(token){
+    return ecoApi('/api/auth/me').then(function(r){
+      if(r.ok){ authUser = r.data; return true; }
+      token = null; localStorage.removeItem('ecocycle_token');
+      return registerFresh();
+    });
+  }
+  return registerFresh();
+}
+function registerFresh(){
+  var email = 'collect_' + Date.now() + '_' + Math.random().toString(36).slice(2,6) + '@ecocycle.local';
+  var pass  = 'c_' + Math.random().toString(36).slice(2, 14);
+  return ecoApi('/api/auth/register', {
+    method:'POST',
+    body: JSON.stringify({ email: email, password: pass, displayName: 'EcoCollect User' })
+  }).then(function(r){
+    if(r.ok && r.data && r.data.token){
+      token = r.data.token; authUser = r.data.user;
+      localStorage.setItem('ecocycle_token', token);
+      localStorage.setItem('ecocycle_user', JSON.stringify(authUser));
+      return true;
+    }
+    return false;
+  });
+}
+
+/* ---------- WebSocket ---------- */
+function connect(){
+  if(ws && (ws.readyState === 0 || ws.readyState === 1)) return;
+  setWs('connecting');
+  try{ ws = new WebSocket(ECO_WS); }
+  catch(e){ setWs('offline'); scheduleReconnect(); return; }
+
+  ws.onopen = function(){
+    setWs('connected');
+    attempts = 0;
+    lastPong = Date.now();
+
+    /* Subscribe to every module EcoCollect cares about */
+    ['ecocollect','collections','activities','materials','projects','goals','methods',
+     'settings','notifications','ecowallet','ecomarket','ecoimpact','*'].forEach(function(m){
+      try{ ws.send(JSON.stringify({ action:'subscribe', module: m })); }
+      catch(e){}
+    });
+
+    outboxFlush();
+    bulkSyncAll();
+
+    /* Pull current server-side settings */
+    ecoApi('/api/settings').then(function(r){
+      if(r.ok && r.data){
+        var stored = JSON.parse(localStorage.getItem('ecocycle_collect_settings_v1') || '{}');
+        Object.keys(r.data).forEach(function(k){ if(r.data[k] !== undefined) stored[k] = r.data[k]; });
+        localStorage.setItem('ecocycle_collect_settings_v1', JSON.stringify(stored));
+        if(window.renderAll) window.renderAll();
+      }
+    });
+
+    /* Heartbeat */
+    if(heartbeat) clearInterval(heartbeat);
+    heartbeat = setInterval(function(){
+      if(!ws || ws.readyState !== 1) return;
+      try{ ws.send(JSON.stringify({ action:'ping', ts: Date.now() })); }catch(e){}
+      if(Date.now() - lastPong > 40000){ try{ ws.close(); }catch(e){} }
+    }, 15000);
+
+    lastSync = now();
+    setWs('synced');
+  };
+
+  ws.onmessage = function(evt){
+    try{
+      var msg = JSON.parse(evt.data);
+      if(msg.type === 'pong'){ lastPong = Date.now(); return; }
+      handleEvent(msg);
+      listeners.forEach(function(fn){ try{ fn(msg); }catch(e){} });
+      if(window.renderAll) window.renderAll();
+    }catch(e){}
+  };
+
+  ws.onclose = function(){ setWs('reconnecting'); scheduleReconnect(); };
+  ws.onerror = function(){ setWs('error'); };
+}
+
+function scheduleReconnect(){
+  attempts++;
+  var base = Math.min(30000, 1000 * Math.pow(2, Math.min(attempts, 5)));
+  var jitter = Math.floor(Math.random() * 500);
+  setTimeout(connect, base + jitter);
+}
+
+/* ---------- Inbound handling ---------- */
+function handleEvent(msg){
+  if(!msg || !msg.type) return;
+
+  /* Settings synced from other devices */
+  if(msg.type === 'settings.updated' && msg.payload && msg.payload.settings){
+    var stored = JSON.parse(localStorage.getItem('ecocycle_collect_settings_v1') || '{}');
+    Object.keys(msg.payload.settings).forEach(function(k){ stored[k] = msg.payload.settings[k]; });
+    localStorage.setItem('ecocycle_collect_settings_v1', JSON.stringify(stored));
+    window.dispatchEvent(new CustomEvent('ecosync:settings', { detail: msg.payload.settings }));
+  }
+
+  /* Notifications → toast */
+  if(msg.type === 'notification.created' && msg.payload){
+    if(window.toast) window.toast(msg.payload.title || 'New notification', 'info');
+    window.dispatchEvent(new CustomEvent('ecosync:notification', { detail: msg.payload }));
+  }
+
+  /* Inbound collections (this module's own data) */
+  if(msg.type === 'collection.created' || msg.type === 'collection.updated' || msg.type === 'collections.sync'){
+    applyCollectionsFromBackend(msg.payload);
+  }
+
+  /* Inbound shared entities */
+  ['activity','activities','material','materials','project','projects','goal','goals','method','methods'].forEach(function(scope){
+    if(msg.type && msg.type.indexOf(scope + '.') === 0){
+      applyEntityFromBackend(scope, msg.payload);
+    }
+  });
+}
+
+function applyCollectionsFromBackend(payload){
+  if(!payload) return;
+  var items = Array.isArray(payload) ? payload : [payload];
+  var local = JSON.parse(localStorage.getItem('ecocycle_collections_v2') || '[]');
+  if(!Array.isArray(local)) local = [];
+  items.forEach(function(item){
+    if(!item || !item.id) return;
+    var idx = local.findIndex(function(x){ return x.id === item.id; });
+    if(idx >= 0) local[idx] = Object.assign(local[idx], item);
+    else local.unshift(item);
+  });
+  localStorage.setItem('ecocycle_collections_v2', JSON.stringify(local));
+}
+
+function applyEntityFromBackend(scope, payload){
+  if(!payload) return;
+  var key = null;
+  if(scope === 'activity' || scope === 'activities') key = 'activities';
+  if(scope === 'material' || scope === 'materials') key = 'materials';
+  if(scope === 'project'  || scope === 'projects')  key = 'projects';
+  if(scope === 'goal'     || scope === 'goals')     key = 'goals';
+  if(scope === 'method'   || scope === 'methods')   key = 'methods';
+  if(!key) return;
+
+  var im = JSON.parse(localStorage.getItem('ecocycle_impact_db_v1') || 'null') ||
+           { activities:[], materials:[], reuse:[], community:[], projects:[], goals:[], methods:[], evidence:[], qualityFlags:[], reports:[], stories:[], disputes:[], feed:[], auditLog:[] };
+  if(!Array.isArray(im[key])) im[key] = [];
+
+  var items = Array.isArray(payload) ? payload : [payload];
+  items.forEach(function(item){
+    if(!item || !item.id) return;
+    var idx = im[key].findIndex(function(x){ return x.id === item.id; });
+    if(idx >= 0) im[key][idx] = Object.assign(im[key][idx], item);
+    else im[key].unshift(item);
+  });
+  localStorage.setItem('ecocycle_impact_db_v1', JSON.stringify(im));
+}
+
+/* ---------- Outbound ---------- */
+function bulkSyncAll(){
+  try{
+    // Push collections (this module's primary data)
+    var cols = JSON.parse(localStorage.getItem('ecocycle_collections_v2') || '[]');
+    pushEntity('collections', cols);
+
+    // Push shared entities
+    var im = JSON.parse(localStorage.getItem('ecocycle_impact_db_v1') || 'null') || {};
+    pushEntity('activities', im.activities);
+    pushEntity('materials',  im.materials);
+    pushEntity('projects',   im.projects);
+    pushEntity('goals',      im.goals);
+    pushEntity('methods',    im.methods);
+  }catch(e){}
+}
+
+function pushEntity(entity, payload){
+  if(!entity) return Promise.resolve({ ok:false });
+  var items = Array.isArray(payload) ? payload : (payload ? [payload] : []);
+  if(!items.length) return Promise.resolve({ ok:true, skipped:true });
+
+  var msg = {
+    action: 'sync',
+    entity: entity,
+    items: items,
+    correlationId: uid('corr'),
+    idempotencyKey: uid('idem'),
+    ecoId: (JSON.parse(localStorage.getItem('ecocycle_user_v1')||'{}').ecoId) || 'ECO-COLLECT',
+    emittedAt: Date.now()
+  };
+
+  if(ws && ws.readyState === 1){
+    try{ ws.send(JSON.stringify(msg)); }catch(e){ outboxPush(msg); }
+  } else {
+    outboxPush(msg);
+  }
+
+  if(token){
+    var body = { entity: entity, items: items, correlationId: msg.correlationId, idempotencyKey: msg.idempotencyKey, ecoId: msg.ecoId, emittedAt: msg.emittedAt };
+    return ecoApi('/api/sync/' + entity, { method:'POST', body: JSON.stringify(body) })
+      .then(function(r){ if(r && r.ok){ lastSync = now(); setWs('synced'); } return r; });
+  }
+  return Promise.resolve({ ok:true, queued:true });
+}
+
+function pushSetting(key, value){
+  if(!token) return Promise.resolve({ ok:false, error:'not_authenticated' });
+  var body = {}; body[key] = value;
+  return ecoApi('/api/settings', { method:'PATCH', body: JSON.stringify(body) });
+}
+
+/* ---------- Live pill ---------- */
+function setWs(state){
+  wsState = state;
+  if(state === 'connected' || state === 'synced') lastSync = now();
+
+  var label =
+    state === 'connected'    ? 'Live' :
+    state === 'synced'       ? 'Synced' :
+    state === 'connecting'   ? 'Connecting' :
+    state === 'syncing'      ? 'Syncing' :
+    state === 'reconnecting' ? 'Reconnecting' :
+    state === 'error'        ? 'Error' :
+    state === 'offline'      ? 'Offline' : 'Unavailable';
+
+  var pill = document.getElementById('hdrLive');
+  var txt  = document.getElementById('hdrLiveText');
+  if(pill) pill.setAttribute('data-state', state);
+  if(txt) txt.textContent = label;
+
+  // Refresh the connection banner on the dashboard if present
+  if(typeof window.renderAll === 'function'){
+    try{ window.renderAll(); }catch(e){}
+  } else {
+    var dot = document.getElementById('connDot');
+    var ctext = document.getElementById('connText');
+    if(dot && ctext){
+      var ok = (state === 'connected' || state === 'synced');
+      var warn = (state === 'connecting' || state === 'reconnecting' || state === 'syncing');
+      if(ok){
+        dot.style.color = 'var(--neon)';
+        dot.style.background = 'var(--neon)';
+        dot.style.boxShadow = '0 0 8px var(--neon)';
+        ctext.innerHTML = '<strong>Live — synced with EcoSync backend.</strong> Changes here sync to every authorised session in real time.';
+      } else if(warn){
+        dot.style.color = 'var(--gold)';
+        dot.style.background = 'var(--gold)';
+        dot.style.boxShadow = '0 0 8px var(--gold)';
+        ctext.innerHTML = '<strong>' + (state === 'connecting' ? 'Connecting' : 'Reconnecting') + ' to EcoSync backend…</strong> Local data remains available.';
+      } else {
+        dot.style.color = 'var(--rose)';
+        dot.style.background = 'var(--rose)';
+        dot.style.boxShadow = '0 0 8px var(--rose)';
+        ctext.innerHTML = '<strong>Backend offline.</strong> Running locally. Changes queue in the outbox and will sync automatically.';
+      }
+    }
+  }
+}
+
+/* ---------- Browser online / offline ---------- */
+window.addEventListener('offline', function(){ setWs('offline'); });
+window.addEventListener('online',  function(){
+  setWs('reconnecting');
+  setTimeout(connect, 800);
+});
+
+/* ---------- Public API ---------- */
+window.EcoSync = {
+  isConnected:   function(){ return wsState === 'connected' || wsState === 'synced'; },
+  getStatus:     function(){ return wsState; },
+  getBackendUrl: function(){ return ECO_BACKEND; },
+  getLastSync:   function(){ return lastSync; },
+  getOutboxSize: function(){ return outboxLoad().length; },
+  reconnect:     function(){ try{ if(ws) ws.close(); }catch(e){} attempts = 0; connect(); },
+  api:           ecoApi,
+  pushSetting:   pushSetting,
+  pushEntity:    pushEntity,
+  bulkSyncAll:   bulkSyncAll,
+  user:          function(){ return authUser; },
+  onEvent:       function(fn){ listeners.add(fn); return function(){ listeners.delete(fn); }; }
+};
+
+/* ---------- Boot client ---------- */
+(function bootClient(){
+  ensureSession().then(function(){ connect(); });
+  setInterval(outboxFlush, 20000);
+})();
+
+})();
+</script>
+</body>
+</html>

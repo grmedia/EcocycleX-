@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050b16">
+<title>Settings — EcoCycle X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050b16;--bg-2:#080f1e;--bg-3:#0c1527;--bg-4:#131f36;--cy-2:#22d3ee;--cy-3:#67e8f9;--jade:#10b981;--jade-2:#34d399;--violet:#8b5cf6;--violet-2:#a78bfa;--gold:#fbbf24;--gold-2:#fde68a;--rose:#f43f5e;--rose-2:#fb7185;--text:#e2eef7;--text-2:#94a8bb;--text-3:#647a90;--text-4:#465a6f;--white:#fff;--line:rgba(255,255,255,.06);--line-2:rgba(255,255,255,.1);--line-cy:rgba(34,211,238,.2);--line-cy-2:rgba(34,211,238,.4);--line-jade:rgba(52,211,153,.24);--line-violet:rgba(139,92,246,.28);--line-gold:rgba(251,191,36,.28);--tx:.22s cubic-bezier(.4,0,.2,1);--font:'Inter',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--hdr:60px;--side:280px}
+[data-theme="light"]{--bg:#f4f6f9;--bg-2:#fff;--bg-3:#f0f4f8;--bg-4:#e2e8f0;--text:#0f172a;--text-2:#475569;--text-3:#64748b;--line:rgba(15,23,42,.06);--line-2:rgba(15,23,42,.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;overflow:hidden;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;font-size:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+input:focus,textarea:focus,select:focus{outline:none}
+::selection{background:var(--cy-2);color:#000}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(34,211,238,.15);border-radius:6px}
+.app{display:grid;grid-template-columns:var(--side) 1fr;height:100vh}
+@media(max-width:900px){.app{grid-template-columns:1fr}}
+.sidebar{background:linear-gradient(180deg,var(--bg-2),var(--bg));border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+@media(max-width:900px){.sidebar{position:fixed;left:-300px;top:0;width:280px;height:100vh;z-index:300;transition:left .3s;box-shadow:8px 0 40px rgba(0,0,0,.6)}.sidebar.open{left:0}}
+.sidebar-hd{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.brand-ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;box-shadow:0 6px 20px rgba(139,92,246,.35)}
+.brand-txt{flex:1;min-width:0}
+.brand-name{font-size:.95rem;font-weight:900;color:var(--white);letter-spacing:-.03em}
+[data-theme="light"] .brand-name{color:var(--text)}
+.brand-name .g{background:linear-gradient(135deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand-tag{font-size:.58rem;color:var(--cy-2);font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.close-side{display:none;width:32px;height:32px;border-radius:50%;align-items:center;justify-content:center;background:rgba(255,255,255,.04);color:var(--text-3);cursor:pointer}
+@media(max-width:900px){.close-side{display:flex}}
+.search-box{padding:12px 14px;flex-shrink:0}
+.search-inner{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:var(--bg-3);border:1px solid var(--line-2);transition:var(--tx)}
+.search-inner:focus-within{border-color:var(--line-cy-2)}
+.search-inner i{color:var(--text-3);font-size:.78rem}
+.search-inner input{flex:1;background:none;border:0;color:var(--white);font-size:.82rem;min-width:0}
+[data-theme="light"] .search-inner input{color:var(--text)}
+.search-inner input::placeholder{color:var(--text-3)}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:0 12px 20px}
+.sidebar-cat{margin-bottom:6px}
+.sidebar-cat-t{font-size:.58rem;text-transform:uppercase;letter-spacing:.14em;color:var(--text-4);padding:10px 10px 6px;font-weight:800}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;color:var(--text-2);font-weight:500;font-size:.82rem;cursor:pointer;transition:var(--tx);width:100%;text-align:left;border:1px solid transparent;margin-bottom:2px;position:relative}
+.nav-item:hover{background:rgba(34,211,238,.05);color:var(--cy-2)}
+.nav-item.active{background:linear-gradient(90deg,rgba(34,211,238,.14),rgba(34,211,238,.03));color:var(--cy-3);font-weight:700;border-color:var(--line-cy)}
+.nav-item.active::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:3px;height:16px;background:var(--cy-2);border-radius:0 3px 3px 0}
+.nav-item i{width:18px;text-align:center;flex-shrink:0;font-size:.82rem}
+.sidebar-ft{padding:12px 16px;border-top:1px solid var(--line);flex-shrink:0}
+.conn-status{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.62rem;color:var(--text-3)}
+.conn-status .dot{width:6px;height:6px;border-radius:50%;background:var(--text-4)}
+.conn-status .dot.online{background:var(--jade-2);box-shadow:0 0 8px var(--jade-2);animation:pulse 2s infinite}
+.conn-status .dot.offline{background:var(--rose-2);box-shadow:0 0 8px var(--rose-2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.mob-ovl{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:250;opacity:0;pointer-events:none;transition:opacity .3s}
+.mob-ovl.open{opacity:1;pointer-events:auto}
+.main{display:flex;flex-direction:column;min-width:0;height:100vh}
+.topbar{height:var(--hdr);flex-shrink:0;background:rgba(5,11,22,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 20px;position:relative;z-index:10}
+[data-theme="light"] .topbar{background:rgba(255,255,255,.85)}
+.menu-btn{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text-2);cursor:pointer}
+@media(max-width:900px){.menu-btn{display:flex}}
+.topbar-title{font-size:.92rem;font-weight:800;color:var(--white);letter-spacing:-.02em}
+[data-theme="light"] .topbar-title{color:var(--text)}
+.topbar-title .crumb{color:var(--text-3);font-weight:500;font-size:.75rem;margin-left:6px}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.sync-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:9999px;background:rgba(52,211,153,.08);border:1px solid var(--line-jade);font-size:.66rem;font-weight:800;color:var(--jade-2);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
+.sync-pill.pending{background:rgba(251,191,36,.08);border-color:var(--line-gold);color:var(--gold-2)}
+.sync-pill.error{background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.3);color:var(--rose-2)}
+.sync-pill .dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@media(max-width:600px){.sync-pill span:last-child{display:none}}
+.tb-btn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text-2);cursor:pointer;transition:var(--tx)}
+.tb-btn:hover{color:var(--cy-2);border-color:var(--line-cy)}
+.tb-user{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:9999px;background:rgba(255,255,255,.03);border:1px solid var(--line);cursor:pointer}
+.tb-user-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.72rem}
+.tb-user-info{display:flex;flex-direction:column;line-height:1.1}
+.tb-user-info strong{font-size:.72rem;color:var(--white);font-weight:700}
+[data-theme="light"] .tb-user-info strong{color:var(--text)}
+.tb-user-info small{font-size:.55rem;color:var(--cy-2);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+@media(max-width:600px){.tb-user-info{display:none}}
+.content{flex:1;overflow-y:auto;padding:28px 32px 120px}
+@media(max-width:640px){.content{padding:20px 14px 100px}}
+.content-inner{max-width:1000px;margin:0 auto}
+.status-hero{padding:22px;border-radius:20px;background:linear-gradient(135deg,rgba(34,211,238,.06),rgba(139,92,246,.04));border:1px solid var(--line-cy);margin-bottom:24px;position:relative;overflow:hidden}
+.status-hero::before{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);pointer-events:none}
+.status-hd{display:flex;align-items:flex-start;gap:14px;position:relative;margin-bottom:16px;flex-wrap:wrap}
+.status-hd-ic{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.15rem;flex-shrink:0;box-shadow:0 8px 24px rgba(139,92,246,.35)}
+.status-hd-txt{flex:1;min-width:200px}
+.status-hd-txt h1{font-size:1.2rem;font-weight:900;color:var(--white);letter-spacing:-.03em;margin-bottom:4px}
+[data-theme="light"] .status-hd-txt h1{color:var(--text)}
+.status-hd-txt p{font-size:.82rem;color:var(--text-2);line-height:1.5}
+.status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;position:relative}
+.status-card{padding:12px 14px;border-radius:12px;background:rgba(0,0,0,.15);border:1px solid var(--line-2);transition:var(--tx);cursor:pointer}
+[data-theme="light"] .status-card{background:rgba(255,255,255,.6)}
+.status-card:hover{border-color:var(--line-cy);transform:translateY(-1px)}
+.status-card-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.status-card-lbl i{color:var(--cy-2)}
+.status-card-val{font-size:.82rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:6px}
+[data-theme="light"] .status-card-val{color:var(--text)}
+.status-card-val.ok{color:var(--jade-2)}
+.status-card-val.warn{color:var(--gold-2)}
+.status-card-val.err{color:var(--rose-2)}
+.status-card-val .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+.section{margin-bottom:32px}
+.section-hd{margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-hd-ic{width:34px;height:34px;border-radius:10px;background:rgba(34,211,238,.1);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:.85rem;flex-shrink:0}
+.section-hd-ic.jade{background:rgba(52,211,153,.1);border-color:var(--line-jade);color:var(--jade-2)}
+.section-hd-ic.violet{background:rgba(139,92,246,.1);border-color:var(--line-violet);color:var(--violet-2)}
+.section-hd-ic.gold{background:rgba(251,191,36,.1);border-color:var(--line-gold);color:var(--gold-2)}
+.section-hd-txt{flex:1;min-width:0}
+.section-hd-txt h2{font-size:1.02rem;font-weight:800;color:var(--white);letter-spacing:-.025em}
+[data-theme="light"] .section-hd-txt h2{color:var(--text)}
+.section-hd-txt p{font-size:.76rem;color:var(--text-3);margin-top:2px}
+.group{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}
+[data-theme="light"] .group{background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.group-hd{padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+.group-hd h3{font-size:.82rem;font-weight:800;color:var(--white);display:flex;align-items:center;gap:8px}
+[data-theme="light"] .group-hd h3{color:var(--text)}
+.group-hd h3 i{color:var(--cy-2);font-size:.75rem}
+.group-hd p{font-size:.72rem;color:var(--text-3);margin-top:3px}
+.setting{display:flex;align-items:flex-start;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);transition:background .15s;position:relative}
+.setting:last-child{border-bottom:0}
+.setting:hover{background:rgba(34,211,238,.02)}
+.setting-info{flex:1;min-width:0}
+.setting-lbl{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+[data-theme="light"] .setting-lbl{color:var(--text)}
+.setting-lbl .chip{font-size:.55rem;font-weight:800;padding:2px 7px;border-radius:9999px;background:rgba(34,211,238,.14);color:var(--cy-3);border:1px solid var(--line-cy);text-transform:uppercase;letter-spacing:.06em}
+.setting-lbl .chip.warn{background:rgba(251,191,36,.14);color:var(--gold-2);border-color:var(--line-gold)}
+.setting-lbl .chip.ok{background:rgba(52,211,153,.14);color:var(--jade-2);border-color:var(--line-jade)}
+.setting-desc{font-size:.75rem;color:var(--text-3);line-height:1.5}
+.setting-control{flex-shrink:0;display:flex;align-items:center;gap:8px;min-width:max-content}
+@media(max-width:640px){.setting{flex-direction:column;align-items:stretch;gap:10px}.setting-control{justify-content:flex-start;flex-wrap:wrap}}
+.save-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;opacity:0;transition:opacity .25s}
+.save-dot.saving{opacity:1;background:var(--gold-2);animation:pulse 1s infinite}
+.save-dot.saved{opacity:1;background:var(--jade-2)}
+.switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch-sl{position:absolute;inset:0;background:rgba(255,255,255,.08);border:1px solid var(--line-2);border-radius:24px;cursor:pointer;transition:var(--tx)}
+[data-theme="light"] .switch-sl{background:rgba(15,23,42,.08)}
+.switch-sl::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:50%;transform:translateY(-50%);background:#64748b;border-radius:50%;transition:var(--tx)}
+.switch input:checked+.switch-sl{background:linear-gradient(135deg,rgba(34,211,238,.4),rgba(139,92,246,.3));border-color:var(--line-cy-2)}
+.switch input:checked+.switch-sl::before{transform:translate(20px,-50%);background:#fff;box-shadow:0 0 8px var(--cy-2)}
+.switch input:disabled+.switch-sl{opacity:.4;cursor:not-allowed}
+.input-text,.input-select,.input-textarea{padding:8px 12px;border-radius:9px;background:var(--bg-3);border:1px solid var(--line-2);color:var(--white);font-size:.82rem;min-width:180px;max-width:280px;transition:var(--tx)}
+[data-theme="light"] .input-text,[data-theme="light"] .input-select,[data-theme="light"] .input-textarea{background:#fff;color:var(--text)}
+.input-text:focus,.input-select:focus,.input-textarea:focus{border-color:var(--cy-2);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.input-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23647a90' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;-webkit-appearance:none;appearance:none;cursor:pointer}
+.input-textarea{resize:vertical;min-height:70px;max-width:420px}
+.radio-group{display:flex;gap:6px;flex-wrap:wrap}
+.radio-btn{padding:7px 12px;border-radius:9px;background:var(--bg-3);border:1px solid var(--line-2);color:var(--text-2);font-size:.78rem;font-weight:600;cursor:pointer;transition:var(--tx);display:inline-flex;align-items:center;gap:6px}
+[data-theme="light"] .radio-btn{background:#fff}
+.radio-btn:hover{border-color:var(--line-cy);color:var(--cy-2)}
+.radio-btn.active{background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(139,92,246,.1));border-color:var(--line-cy-2);color:var(--cy-3);font-weight:700}
+.slider-wrap{display:flex;align-items:center;gap:10px;min-width:200px}
+.slider{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:3px;background:var(--bg-4);outline:none;cursor:pointer}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#8b5cf6);border:2px solid #fff;cursor:pointer}
+.slider-val{font-family:var(--mono);font-size:.75rem;color:var(--cy-3);font-weight:700;min-width:40px;text-align:right}
+.btn{padding:8px 14px;border-radius:9px;font-weight:600;font-size:.78rem;transition:var(--tx);cursor:pointer;border:1px solid transparent;white-space:nowrap;min-height:34px;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#8b5cf6);color:#fff;font-weight:700}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-outline{background:rgba(34,211,238,.06);color:var(--cy-2);border-color:var(--line-cy-2)}
+.btn-outline:hover{background:rgba(34,211,238,.13)}
+.btn-ghost{background:rgba(255,255,255,.04);color:var(--text);border-color:var(--line-2)}
+[data-theme="light"] .btn-ghost{background:rgba(0,0,0,.03)}
+.btn-danger{background:rgba(244,63,94,.12);color:var(--rose-2);border-color:rgba(244,63,94,.3)}
+.save-bar{position:fixed;left:50%;bottom:24px;display:flex;align-items:center;gap:14px;padding:12px 22px;border-radius:9999px;background:rgba(12,21,39,.98);backdrop-filter:blur(24px);border:1px solid var(--line-cy);box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:all .3s;transform:translateX(-50%) translateY(20px)}
+.save-bar.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.save-bar-info{font-size:.8rem;color:var(--text-2)}
+.save-bar-info strong{color:var(--white)}
+.toasts{position:fixed;top:76px;right:20px;z-index:4000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px;width:100%}
+.toast{padding:12px 16px;border-radius:12px;background:rgba(12,21,39,.98);backdrop-filter:blur(20px);border:1px solid var(--line-cy);color:var(--white);font-size:.8rem;font-weight:500;box-shadow:0 16px 40px rgba(0,0,0,.5);display:flex;align-items:flex-start;gap:10px;animation:toastIn .35s cubic-bezier(.34,1.56,.64,1);pointer-events:auto}
+.toast.warn{border-color:var(--line-gold)}
+.toast.error{border-color:rgba(244,63,94,.4)}
+.toast i{font-size:.95rem;flex-shrink:0;margin-top:1px}
+.toast i.ok{color:var(--jade-2)}
+.toast i.wn{color:var(--gold-2)}
+.toast i.er{color:var(--rose-2)}
+.toast i.in{color:var(--cy-2)}
+.toast span{flex:1;line-height:1.5}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:600px){.toasts{left:12px;right:12px;max-width:none;top:70px}}
+.empty-search{padding:60px 20px;text-align:center;color:var(--text-3)}
+.empty-search i{font-size:2.4rem;margin-bottom:14px;display:block;opacity:.5}
+.empty-search h3{font-size:1rem;color:var(--white);margin-bottom:8px}
+[data-theme="light"] .empty-search h3{color:var(--text)}
+.empty-search p{font-size:.82rem;line-height:1.5;max-width:400px;margin:0 auto}
+.modal-ovl{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-ovl.open{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg-2);border:1px solid var(--line-2);border-radius:20px;max-width:520px;width:100%;padding:24px;box-shadow:0 40px 100px rgba(0,0,0,.85);animation:mUp .3s cubic-bezier(.34,1.56,.64,1)}
+[data-theme="light"] .modal{background:#fff}
+@keyframes mUp{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.modal-hd-ic{width:42px;height:42px;border-radius:12px;background:rgba(244,63,94,.14);border:1px solid rgba(244,63,94,.3);color:var(--rose-2);display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.modal-hd h3{font-size:1rem;font-weight:800;color:var(--white)}
+[data-theme="light"] .modal-hd h3{color:var(--text)}
+.modal-body{font-size:.82rem;color:var(--text-2);line-height:1.6;margin-bottom:20px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.mono{font-family:var(--mono);font-size:.78rem}
+.jd{color:var(--jade-2)}.gd{color:var(--gold-2)}.rs{color:var(--rose-2)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-hd">
+      <div class="brand-ic"><i class="fas fa-sliders"></i></div>
+      <div class="brand-txt">
+        <div class="brand-name">Eco<span class="g">Settings</span></div>
+        <div class="brand-tag">Control Centre</div>
+      </div>
+      <button class="close-side" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="search-box">
+      <div class="search-inner">
+        <i class="fas fa-search"></i>
+        <input id="searchInput" type="text" placeholder="Search settings…" autocomplete="off">
+      </div>
+    </div>
+    <div class="sidebar-scroll" id="sidebarNav"></div>
+    <div class="sidebar-ft">
+      <div class="conn-status">
+        <span class="dot" id="connDot"></span>
+        <span id="connText">Local only</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="mob-ovl" id="mobOvl" onclick="closeSidebar()"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+      <div class="topbar-title">Settings<span class="crumb" id="crumb">Overview</span></div>
+      <div class="topbar-actions">
+        <div class="sync-pill" id="syncPill"><span class="dot"></span><span id="syncPillText">Local</span></div>
+        <button class="tb-btn" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-circle-half-stroke"></i></button>
+        <button class="tb-btn" onclick="resetAllPreferences()" title="Reset preferences"><i class="fas fa-rotate-left"></i></button>
+        <div class="tb-user" onclick="showAccountMenu()">
+          <div class="tb-user-av" id="userAv">U</div>
+          <div class="tb-user-info">
+            <strong id="userName">Guest</strong>
+            <small id="userRole">MEMBER</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content" id="content"><div class="content-inner" id="contentInner"></div></div>
+  </main>
+</div>
+
+<div class="save-bar" id="saveBar">
+  <div class="save-bar-info"><strong id="saveBarCount">1</strong> change pending</div>
+  <button class="btn btn-ghost" onclick="discardChanges()">Discard</button>
+  <button class="btn btn-primary" onclick="saveChanges()"><i class="fas fa-cloud-arrow-up"></i> Save</button>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<div class="modal-ovl" id="modalOvl"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ECOSETTINGS — Complete self-contained settings system for EcoCycle X
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+var CONFIG = {
+  apiBase: (window.ECOCYCLE_API || 'http://localhost:8080'),
+  wsUrl: ((window.ECOCYCLE_API || 'http://localhost:8080').replace(/^http/,'ws')) + '/ws/ecosync',
+  storageKey: 'ecocycle_settings_v1',
+  pendingKey: 'ecocycle_pending_settings_v1',
+  version: '1.0.0'
+};
+
+/* ── SCHEMA — every setting in the entire application ── */
+var SCHEMA = [
+  { id:'account', label:'Account & Profile', icon:'fa-user', color:'cy', desc:'Your identity across EcoCycle X',
+    groups:[
+      { title:'Profile', icon:'fa-id-badge', settings:[
+        { key:'profile.displayName', type:'text', label:'Display name', description:'Shown on your profile and in conversations', default:'' },
+        { key:'profile.username', type:'text', label:'Username', description:'Your @handle across EcoCycle X', default:'' },
+        { key:'profile.bio', type:'textarea', label:'Bio', description:'Short description of you or your organisation', default:'' },
+        { key:'profile.location', type:'text', label:'Location / Region', description:'City, region or country', default:'' },
+        { key:'profile.ecoInterests', type:'text', label:'Eco interests', description:'Comma-separated (e.g. recycling, upcycling, composting)', default:'' }
+      ]},
+      { title:'Visibility', icon:'fa-eye', settings:[
+        { key:'profile.visibility', type:'radio', label:'Who can see your profile', default:'public',
+          options:[{v:'public',l:'Everyone',i:'fa-globe'},{v:'connections',l:'Connections',i:'fa-user-group'},{v:'private',l:'Only me',i:'fa-lock'}] }
+      ]}
+    ]
+  },
+  { id:'security', label:'Security', icon:'fa-shield-halved', color:'violet', desc:'Protect your account',
+    groups:[
+      { title:'Sign-in & Authentication', icon:'fa-key', settings:[
+        { key:'security.password', type:'button', label:'Change password', description:'Update your account password', action:'changePassword', confirm:true },
+        { key:'security.twoFactor', type:'toggle', label:'Two-factor authentication', description:'Require a second step when signing in', default:false },
+        { key:'security.recoveryEmail', type:'text', label:'Recovery email', description:'Used only if you lose access', default:'' }
+      ]},
+      { title:'Sessions & Devices', icon:'fa-desktop', settings:[
+        { key:'security.activeSessions', type:'button', label:'Active sessions', description:'Manage devices signed in to your account', action:'showActiveSessions' },
+        { key:'security.signOutAll', type:'button', label:'Sign out of all other devices', description:'End every other session', action:'signOutAll', confirm:true },
+        { key:'security.loginHistory', type:'button', label:'Login history', description:'Recent sign-in activity', action:'showLoginHistory' }
+      ]},
+      { title:'Danger Zone', icon:'fa-triangle-exclamation', settings:[
+        { key:'security.deactivate', type:'button', label:'Deactivate account', description:'Temporarily disable your account (reversible)', action:'deactivateAccount', confirm:true },
+        { key:'security.delete', type:'button', label:'Delete account permanently', description:'Irreversible — deletes all your data', action:'deleteAccount', confirm:true, danger:true }
+      ]}
+    ]
+  },
+  { id:'privacy', label:'Privacy & Data', icon:'fa-user-shield', color:'jade', desc:'Control what others see',
+    groups:[
+      { title:'Visibility', icon:'fa-eye', settings:[
+        { key:'privacy.activityVisibility', type:'radio', label:'Activity visibility', default:'connections',
+          options:[{v:'public',l:'Everyone'},{v:'connections',l:'Connections'},{v:'private',l:'Only me'}] },
+        { key:'privacy.locationSharing', type:'toggle', label:'Share approximate location', description:'Used to find nearby collection points', default:false },
+        { key:'privacy.exactLocation', type:'toggle', label:'Share exact location', description:'Never shared unless you enable this', default:false },
+        { key:'privacy.ecoConnectDiscovery', type:'toggle', label:'Discoverable on EcoConnect', default:true },
+        { key:'privacy.marketplaceProfile', type:'radio', label:'Marketplace profile', default:'username',
+          options:[{v:'full',l:'Full name'},{v:'username',l:'Username only'},{v:'hidden',l:'Hidden'}] }
+      ]},
+      { title:'AI & Data Usage', icon:'fa-robot', settings:[
+        { key:'privacy.aiDataUsage', type:'toggle', label:'Allow AI to use my data', description:'EcoGenius and EcoScan AI may use your activity to improve suggestions', default:false },
+        { key:'privacy.dataSharing', type:'toggle', label:'Anonymised data sharing', description:'Help improve EcoCycle X with anonymous statistics', default:true }
+      ]},
+      { title:'My Data', icon:'fa-database', settings:[
+        { key:'privacy.exportData', type:'button', label:'Download my data', description:'Get a copy of everything on your account', action:'exportData' },
+        { key:'privacy.blockedUsers', type:'button', label:'Blocked users', description:'Manage users you have blocked', action:'showBlockedUsers' }
+      ]}
+    ]
+  },
+  { id:'notifications', label:'Notifications', icon:'fa-bell', color:'gold', desc:'What you get notified about',
+    groups:[
+      { title:'Global', icon:'fa-bell', settings:[
+        { key:'notifications.master', type:'toggle', label:'Enable notifications', description:'Master switch for all notifications', default:true },
+        { key:'notifications.channelInApp', type:'toggle', label:'In-app notifications', default:true },
+        { key:'notifications.channelPush', type:'toggle', label:'Push notifications', description:'Requires Firebase integration', default:false },
+        { key:'notifications.channelEmail', type:'toggle', label:'Email notifications', description:'Requires email provider', default:false }
+      ]},
+      { title:'Categories', icon:'fa-layer-group', settings:[
+        { key:'notifications.collections', type:'toggle', label:'Collection updates', default:true },
+        { key:'notifications.materials', type:'toggle', label:'Material updates', default:true },
+        { key:'notifications.verification', type:'toggle', label:'Verification events', default:true },
+        { key:'notifications.marketplace', type:'toggle', label:'Marketplace activity', default:true },
+        { key:'notifications.connect', type:'toggle', label:'EcoConnect activity', default:true },
+        { key:'notifications.genius', type:'toggle', label:'EcoGenius updates', default:false },
+        { key:'notifications.impact', type:'toggle', label:'Impact updates', default:true },
+        { key:'notifications.smart', type:'toggle', label:'EcoSmart alerts', default:true },
+        { key:'notifications.security', type:'toggle', label:'Security alerts', description:'Recommended — kept on', default:true, locked:true },
+        { key:'notifications.announcements', type:'toggle', label:'Announcements', default:true }
+      ]}
+    ]
+  },
+  { id:'appearance', label:'Appearance', icon:'fa-palette', color:'violet', desc:'Make EcoCycle X yours',
+    groups:[
+      { title:'Theme', icon:'fa-circle-half-stroke', settings:[
+        { key:'appearance.theme', type:'radio', label:'Theme', default:'system',
+          options:[{v:'system',l:'System',i:'fa-circle-half-stroke'},{v:'dark',l:'Dark',i:'fa-moon'},{v:'light',l:'Light',i:'fa-sun'}] },
+        { key:'appearance.accentColor', type:'select', label:'Accent color', default:'cyan',
+          options:[{v:'cyan',l:'Cyan (default)'},{v:'jade',l:'Jade'},{v:'violet',l:'Violet'},{v:'gold',l:'Gold'},{v:'rose',l:'Rose'}] },
+        { key:'appearance.density', type:'radio', label:'Display density', default:'comfortable',
+          options:[{v:'compact',l:'Compact'},{v:'comfortable',l:'Comfortable'},{v:'spacious',l:'Spacious'}] }
+      ]},
+      { title:'Motion', icon:'fa-wand-magic-sparkles', settings:[
+        { key:'appearance.reduceMotion', type:'toggle', label:'Reduce motion', description:'Disable animations and transitions', default:false }
+      ]},
+      { title:'Layout', icon:'fa-table-columns', settings:[
+        { key:'appearance.defaultHomeView', type:'select', label:'Default home view', default:'dashboard',
+          options:[{v:'dashboard',l:'Dashboard'},{v:'materials',l:'Materials'},{v:'collections',l:'Collections'},{v:'market',l:'EcoMarket'}] },
+        { key:'appearance.compactNav', type:'toggle', label:'Compact navigation', default:false }
+      ]}
+    ]
+  },
+  { id:'accessibility', label:'Accessibility', icon:'fa-universal-access', color:'cy', desc:'Make EcoCycle X work for you',
+    groups:[
+      { title:'Visual', icon:'fa-eye', settings:[
+        { key:'a11y.textSize', type:'slider', label:'Text size', description:'Scale all text on screen', default:100, min:80, max:150, step:10, unit:'%' },
+        { key:'a11y.contrast', type:'radio', label:'Contrast', default:'normal',
+          options:[{v:'normal',l:'Normal'},{v:'high',l:'High contrast'}] },
+        { key:'a11y.colorIndependentStatus', type:'toggle', label:'Colour-independent status', description:'Use icons in addition to colour', default:false }
+      ]},
+      { title:'Interaction', icon:'fa-hand-pointer', settings:[
+        { key:'a11y.screenReaderAnnouncements', type:'toggle', label:'Screen reader announcements', default:true },
+        { key:'a11y.focusIndicators', type:'toggle', label:'Enhanced focus indicators', default:true }
+      ]}
+    ]
+  },
+  { id:'language', label:'Language & Region', icon:'fa-globe', color:'cy', desc:'Localisation preferences',
+    groups:[
+      { title:'Language', icon:'fa-language', settings:[
+        { key:'locale.language', type:'select', label:'Language', default:'en',
+          options:[{v:'en',l:'English'},{v:'sn',l:'Shona'},{v:'nd',l:'Ndebele'},{v:'fr',l:'French'},{v:'pt',l:'Portuguese'}] },
+        { key:'locale.timezone', type:'select', label:'Timezone', default:'auto',
+          options:[{v:'auto',l:'Automatic'},{v:'Africa/Harare',l:'Africa/Harare (CAT)'},{v:'Africa/Johannesburg',l:'Africa/Johannesburg'},{v:'UTC',l:'UTC'}] }
+      ]},
+      { title:'Formats', icon:'fa-ruler', settings:[
+        { key:'locale.dateFormat', type:'radio', label:'Date format', default:'dmy',
+          options:[{v:'dmy',l:'DD/MM/YYYY'},{v:'mdy',l:'MM/DD/YYYY'},{v:'ymd',l:'YYYY-MM-DD'}] },
+        { key:'locale.unitSystem', type:'radio', label:'Unit system', default:'metric',
+          options:[{v:'metric',l:'Metric'},{v:'imperial',l:'Imperial'}] },
+        { key:'locale.weightUnits', type:'select', label:'Weight units', default:'kg',
+          options:[{v:'kg',l:'Kilograms'},{v:'g',l:'Grams'},{v:'t',l:'Tonnes'},{v:'lb',l:'Pounds'}] },
+        { key:'locale.currencyDisplay', type:'select', label:'Currency display', default:'USD',
+          options:[{v:'USD',l:'USD ($)'},{v:'ZWL',l:'ZWL'},{v:'ZAR',l:'ZAR (R)'},{v:'GBP',l:'GBP (£)'},{v:'EUR',l:'EUR (€)'}],
+          description:'Display only — no exchange rate conversion without a configured provider' }
+      ]}
+    ]
+  },
+  { id:'ecoscan', label:'EcoScan AI', icon:'fa-camera', color:'cy', desc:'Material identification settings',
+    groups:[
+      { title:'Scanning', icon:'fa-camera', settings:[
+        { key:'ecoscan.cameraPermission', type:'toggle', label:'Camera access', description:'Allow EcoScan AI to use your camera', default:false },
+        { key:'ecoscan.imageUpload', type:'toggle', label:'Image upload', description:'Allow uploading images for scanning', default:true },
+        { key:'ecoscan.autoSaveScans', type:'toggle', label:'Auto-save scans', default:true },
+        { key:'ecoscan.scanHistory', type:'toggle', label:'Keep scan history', default:true }
+      ]},
+      { title:'AI Behaviour', icon:'fa-robot', settings:[
+        { key:'ecoscan.showAISuggestions', type:'toggle', label:'Show AI suggestions', default:true },
+        { key:'ecoscan.showConfidence', type:'toggle', label:'Show AI confidence level', default:true },
+        { key:'ecoscan.explanationLevel', type:'radio', label:'Explanation level', default:'normal',
+          options:[{v:'simple',l:'Simple'},{v:'normal',l:'Normal'},{v:'detailed',l:'Detailed'}] }
+      ]}
+    ]
+  },
+  { id:'ecocollect', label:'EcoCollect', icon:'fa-truck', color:'jade', desc:'Collection preferences',
+    groups:[
+      { title:'Defaults', icon:'fa-cog', settings:[
+        { key:'ecocollect.defaultLocation', type:'text', label:'Default pickup location', default:'' },
+        { key:'ecocollect.preferredTime', type:'select', label:'Preferred collection time', default:'any',
+          options:[{v:'any',l:'Any time'},{v:'morning',l:'Morning (8–12)'},{v:'afternoon',l:'Afternoon (12–17)'},{v:'evening',l:'Evening (17–20)'}] },
+        { key:'ecocollect.shareLocationWithCollector', type:'toggle', label:'Share location with collector', default:true },
+        { key:'ecocollect.collectorCommunication', type:'toggle', label:'Allow collector messages', default:true }
+      ]}
+    ]
+  },
+  { id:'ecomarket', label:'EcoMarket', icon:'fa-store', color:'cy', desc:'Marketplace preferences',
+    groups:[
+      { title:'Listings', icon:'fa-tag', settings:[
+        { key:'ecomarket.autoSaveDrafts', type:'toggle', label:'Auto-save listing drafts', default:true },
+        { key:'ecomarket.listingVisibility', type:'radio', label:'Default listing visibility', default:'public',
+          options:[{v:'public',l:'Public'},{v:'connections',l:'Connections only'},{v:'private',l:'Draft only'}] },
+        { key:'ecomarket.showContactPublicly', type:'toggle', label:'Show contact publicly', default:true }
+      ]},
+      { title:'Notifications', icon:'fa-bell', settings:[
+        { key:'ecomarket.notifyEnquiries', type:'toggle', label:'Enquiry notifications', default:true },
+        { key:'ecomarket.notifyOrders', type:'toggle', label:'Order notifications', default:true }
+      ]}
+    ]
+  },
+  { id:'ecoimpact', label:'EcoImpact', icon:'fa-seedling', color:'jade', desc:'Impact measurement preferences',
+    groups:[
+      { title:'Dashboard', icon:'fa-chart-line', settings:[
+        { key:'ecoimpact.defaultRange', type:'select', label:'Default date range', default:'30',
+          options:[{v:'7',l:'Last 7 days'},{v:'30',l:'Last 30 days'},{v:'90',l:'Last 90 days'},{v:'365',l:'Last 12 months'},{v:'all',l:'All time'}] },
+        { key:'ecoimpact.showEstimated', type:'toggle', label:'Show estimated values', default:true },
+        { key:'ecoimpact.showMethodology', type:'toggle', label:'Show methodology notes', default:true }
+      ]},
+      { title:'Public Profile', icon:'fa-globe', settings:[
+        { key:'ecoimpact.publicProfile', type:'toggle', label:'Public impact profile', description:'Aggregated verified totals only', default:false }
+      ]}
+    ]
+  },
+  { id:'ecogenius', label:'EcoGenius', icon:'fa-brain', color:'violet', desc:'AI assistant preferences',
+    groups:[
+      { title:'Response Style', icon:'fa-comment-dots', settings:[
+        { key:'ecogenius.responseStyle', type:'radio', label:'Response style', default:'balanced',
+          options:[{v:'concise',l:'Concise'},{v:'balanced',l:'Balanced'},{v:'detailed',l:'Detailed'}] },
+        { key:'ecogenius.educationLevel', type:'select', label:'Education level', default:'general',
+          options:[{v:'simple',l:'Simple explanations'},{v:'general',l:'General audience'},{v:'technical',l:'Technical'}] }
+      ]},
+      { title:'Behaviour', icon:'fa-wand-magic-sparkles', settings:[
+        { key:'ecogenius.showSuggestedActions', type:'toggle', label:'Show suggested actions', default:true },
+        { key:'ecogenius.actionConfirmation', type:'toggle', label:'Confirm before actions', description:'Ask before EcoGenius performs consequential actions', default:true },
+        { key:'ecogenius.conversationHistory', type:'toggle', label:'Save conversation history', default:true }
+      ]}
+    ]
+  },
+  { id:'ecoconnect', label:'EcoConnect', icon:'fa-network-wired', color:'cy', desc:'Network preferences',
+    groups:[
+      { title:'Discovery', icon:'fa-compass', settings:[
+        { key:'ecoconnect.discoverable', type:'toggle', label:'Discoverable in search', default:true },
+        { key:'ecoconnect.requestPolicy', type:'radio', label:'Who can send connection requests', default:'everyone',
+          options:[{v:'everyone',l:'Everyone'},{v:'verified',l:'Verified accounts'},{v:'nobody',l:'Nobody'}] },
+        { key:'ecoconnect.materialPosts', type:'toggle', label:'Material posts visible', default:true }
+      ]}
+    ]
+  },
+  { id:'ecosmart', label:'EcoSmart', icon:'fa-microchip', color:'violet', desc:'Connected device settings',
+    groups:[
+      { title:'Devices', icon:'fa-server', settings:[
+        { key:'ecosmart.manageDevices', type:'button', label:'Manage connected devices', description:'Open EcoSmart device manager', action:'openEcoSmart' },
+        { key:'ecosmart.deviceNotifications', type:'toggle', label:'Device notifications', default:true },
+        { key:'ecosmart.thresholdAlerts', type:'toggle', label:'Threshold alerts', default:true }
+      ]},
+      { title:'Privacy', icon:'fa-location-dot', settings:[
+        { key:'ecosmart.deviceLocationSharing', type:'toggle', label:'Share device locations', default:false },
+        { key:'ecosmart.lastSeenVisibility', type:'radio', label:'Last-seen visibility', default:'connections',
+          options:[{v:'everyone',l:'Everyone'},{v:'connections',l:'Connections'},{v:'private',l:'Only me'}] }
+      ]}
+    ]
+  },
+  { id:'ecowallet', label:'EcoWallet', icon:'fa-wallet', color:'gold', desc:'Payment & reward preferences',
+    groups:[
+      { title:'Payment Provider', icon:'fa-credit-card', settings:[
+        { key:'ecowallet.providerStatus', type:'info', label:'Payment provider status', description:'Live status of your configured provider' },
+        { key:'ecowallet.notifyTransactions', type:'toggle', label:'Transaction notifications', default:true }
+      ]}
+    ]
+  },
+  { id:'integrations', label:'Integrations', icon:'fa-plug', color:'cy', desc:'Connected external services',
+    groups:[
+      { title:'Backend Services', icon:'fa-server', settings:[
+        { key:'integration.supabase', type:'info', label:'Supabase (Database + Realtime)', description:'Primary source of truth' },
+        { key:'integration.firebase', type:'info', label:'Firebase (Push)', description:'Used only for push notifications' },
+        { key:'integration.ai', type:'info', label:'EcoGenius AI provider', description:'Powers EcoGenius and EcoScan AI' },
+        { key:'integration.payment', type:'info', label:'Payment provider', description:'Handles real payments and rewards' }
+      ]}
+    ]
+  },
+  { id:'data', label:'Data & Storage', icon:'fa-database', color:'cy', desc:'Manage your data',
+    groups:[
+      { title:'Cache & Storage', icon:'fa-hard-drive', settings:[
+        { key:'data.cacheEnabled', type:'toggle', label:'Enable local cache', default:true },
+        { key:'data.offlineMode', type:'toggle', label:'Offline mode', description:'Sync when reconnected', default:true },
+        { key:'data.clearCache', type:'button', label:'Clear local cache', description:'Does not delete server records', action:'clearCache', confirm:true },
+        { key:'data.exportAll', type:'button', label:'Download all my data', action:'exportData' }
+      ]}
+    ]
+  },
+  { id:'help', label:'Help & Support', icon:'fa-life-ring', color:'cy', desc:'Get help',
+    groups:[
+      { title:'Get Help', icon:'fa-circle-question', settings:[
+        { key:'help.helpCentre', type:'button', label:'Help Centre', action:'openHelp' },
+        { key:'help.faq', type:'button', label:'FAQ', action:'openFaq' },
+        { key:'help.contact', type:'button', label:'Contact support', action:'contactSupport' },
+        { key:'help.reportProblem', type:'button', label:'Report a problem', action:'reportProblem' }
+      ]},
+      { title:'Feedback', icon:'fa-comment', settings:[
+        { key:'help.sendFeedback', type:'button', label:'Send feedback', action:'sendFeedback' },
+        { key:'help.systemStatus', type:'button', label:'System status', action:'showSystemStatus' }
+      ]}
+    ]
+  },
+  { id:'about', label:'About', icon:'fa-circle-info', color:'cy', desc:'About EcoCycle X',
+    groups:[
+      { title:'Version', icon:'fa-code-branch', settings:[
+        { key:'about.version', type:'info', label:'App version', description:'EcoCycle X — v1.0.0' },
+        { key:'about.environment', type:'info', label:'Environment', description:'Current runtime environment' },
+        { key:'about.terms', type:'button', label:'Terms of use', action:'openTerms' },
+        { key:'about.privacy', type:'button', label:'Privacy policy', action:'openPrivacy' },
+        { key:'about.mission', type:'button', label:'Our mission', action:'openMission' }
+      ]}
+    ]
+  },
+  { id:'advanced', label:'Advanced', icon:'fa-terminal', color:'violet', desc:'Diagnostic tools',
+    groups:[
+      { title:'Diagnostics', icon:'fa-heart-pulse', settings:[
+        { key:'advanced.lastSync', type:'info', label:'Last successful sync' },
+        { key:'advanced.eventCount', type:'info', label:'Events received this session' },
+        { key:'advanced.testConnection', type:'button', label:'Test connection', action:'testConnection' }
+      ]}
+    ]
+  }
+];
+
+/* ── STATE ── */
+var state = {
+  settings: {},
+  original: {},
+  pending: {},
+  ws: null,
+  wsStatus: 'offline',
+  user: { name:'Guest', role:'member', ecoId:null },
+  eventsThisSession: 0,
+  lastSyncAt: null,
+  activeCategory: 'overview',
+  searchTimer: null,
+  inputTimers: {}
+};
+
+/* ── HELPERS ── */
+function $(id){ return document.getElementById(id); }
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function initials(s){ if(!s) return 'U'; var a = String(s).trim().split(/\s+/); return (a[0].charAt(0) + (a[1]?a[1].charAt(0):'')).toUpperCase(); }
+function fmtRel(t){ if(!t) return 'never'; var d = Date.now() - t; if(d<60000) return 'just now'; if(d<3600000) return Math.floor(d/60000)+'m ago'; if(d<86400000) return Math.floor(d/3600000)+'h ago'; return Math.floor(d/86400000)+'d ago'; }
+
+function toast(msg, type){
+  type = type || 'info';
+  var stack = $('toasts');
+  if(!stack) return;
+  var el = document.createElement('div');
+  el.className = 'toast ' + (type === 'success' ? '' : type);
+  var icons = { success:'fa-check-circle', info:'fa-circle-info', warn:'fa-exclamation-triangle', error:'fa-exclamation-circle' };
+  var clss = { success:'ok', info:'in', warn:'wn', error:'er' };
+  el.innerHTML = '<i class="fas ' + icons[type] + ' ' + clss[type] + '"></i><span>' + esc(msg) + '</span>';
+  stack.appendChild(el);
+  setTimeout(function(){
+    el.style.transition = 'all .3s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(30px)';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 300);
+  }, 3200);
+}
+
+/* ── LOAD / SAVE ── */
+function loadLocal(){
+  try {
+    var raw = localStorage.getItem(CONFIG.storageKey);
+    if(raw) state.settings = JSON.parse(raw);
+  } catch(e){}
+  var defaults = {};
+  SCHEMA.forEach(function(cat){
+    cat.groups.forEach(function(g){
+      g.settings.forEach(function(s){
+        if(s.default !== undefined) defaults[s.key] = s.default;
+      });
+    });
+  });
+  state.settings = Object.assign(defaults, state.settings);
+  state.original = JSON.parse(JSON.stringify(state.settings));
+}
+
+function saveLocal(){
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.settings)); } catch(e){}
+}
+
+function getSetting(k){ return state.settings[k]; }
+
+function setSetting(k, v){
+  state.settings[k] = v;
+  state.pending[k] = v;
+  saveLocal();
+  updateSaveBar();
+  applySettingToUI(k, v);
+  markSaveDot(k, 'saving');
+  pushToServer(k, v);
+}
+
+function markSaveDot(key, cls){
+  var dots = document.querySelectorAll('[data-dot="' + key + '"]');
+  dots.forEach(function(dot){
+    dot.className = 'save-dot ' + cls;
+    if(cls === 'saved'){ setTimeout(function(){ dot.className = 'save-dot'; }, 1800); }
+  });
+}
+
+function updateSaveBar(){
+  var n = Object.keys(state.pending).length;
+  var bar = $('saveBar');
+  if(!bar) return;
+  if(n > 0){
+    $('saveBarCount').textContent = n;
+    bar.classList.add('show');
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+function saveChanges(){
+  state.pending = {};
+  state.original = JSON.parse(JSON.stringify(state.settings));
+  saveLocal();
+  updateSaveBar();
+  toast('Settings saved', 'success');
+}
+
+function discardChanges(){
+  Object.keys(state.pending).forEach(function(k){ state.settings[k] = state.original[k]; });
+  state.pending = {};
+  saveLocal();
+  updateSaveBar();
+  render();
+  toast('Changes discarded', 'info');
+}
+
+/* ── APPLY TO UI ── */
+function applySettingToUI(key, value){
+  if(key === 'appearance.theme'){
+    var effective = value === 'system' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : value;
+    document.documentElement.setAttribute('data-theme', effective);
+  }
+  if(key === 'appearance.reduceMotion' || key === 'a11y.reduceMotion'){
+    document.documentElement.classList.toggle('reduce-motion', !!value);
+  }
+  if(key === 'a11y.textSize'){
+    document.documentElement.style.fontSize = (value / 100 * 14) + 'px';
+  }
+  if(key === 'appearance.accentColor'){
+    var map = { cyan:'#22d3ee', jade:'#34d399', violet:'#a78bfa', gold:'#fbbf24', rose:'#fb7185' };
+    document.documentElement.style.setProperty('--cy-2', map[value] || '#22d3ee');
+  }
+}
+function applyAllSettings(){
+  Object.keys(state.settings).forEach(function(k){ applySettingToUI(k, state.settings[k]); });
+}
+
+/* ── SERVER SYNC ── */
+function pushToServer(key, value){
+  if(state.ws && state.ws.readyState === 1){
+    try {
+      state.ws.send(JSON.stringify({
+        action: 'settings.update',
+        settings: (function(){ var o = {}; o[key] = value; return o; })()
+      }));
+      setTimeout(function(){ markSaveDot(key, 'saved'); }, 400);
+    } catch(e){}
+  } else {
+    // Queue for next connection
+    try {
+      var q = JSON.parse(localStorage.getItem(CONFIG.pendingKey) || '{}');
+      q[key] = value;
+      localStorage.setItem(CONFIG.pendingKey, JSON.stringify(q));
+    } catch(e){}
+  }
+}
+
+function connectWS(){
+  setWsStatus('connecting');
+  try {
+    state.ws = new WebSocket(CONFIG.wsUrl);
+  } catch(e){
+    setWsStatus('offline');
+    return;
+  }
+  state.ws.onopen = function(){
+    setWsStatus('connected');
+    try {
+      state.ws.send(JSON.stringify({ action:'subscribe', module:'settings' }));
+      state.ws.send(JSON.stringify({ action:'subscribe', module:'notifications' }));
+    } catch(e){}
+    flushPending();
+  };
+  state.ws.onmessage = function(evt){
+    try {
+      var msg = JSON.parse(evt.data);
+      state.eventsThisSession++;
+      if(msg.type === 'settings.updated' && msg.payload && msg.payload.settings){
+        var incoming = msg.payload.settings;
+        Object.keys(incoming).forEach(function(k){
+          if(state.settings[k] !== incoming[k]){
+            state.settings[k] = incoming[k];
+            markSaveDot(k, 'saved');
+          }
+        });
+        saveLocal();
+        render();
+        toast('Settings synced from another device', 'info');
+      }
+      if(msg.type === 'settings.confirmed' && msg.payload){
+        Object.keys(msg.payload).forEach(function(k){ markSaveDot(k, 'saved'); });
+      }
+    } catch(e){}
+  };
+  state.ws.onclose = function(){
+    setWsStatus('offline');
+    setTimeout(connectWS, 3000);
+  };
+  state.ws.onerror = function(){ setWsStatus('offline'); };
+}
+
+function setWsStatus(status){
+  state.wsStatus = status;
+  var dot = $('connDot');
+  var txt = $('connText');
+  var pill = $('syncPill');
+  var pillTxt = $('syncPillText');
+  if(dot){ dot.className = 'dot ' + (status === 'connected' ? 'online' : status === 'offline' ? 'offline' : ''); }
+  if(txt){ txt.textContent = status === 'connected' ? 'Synced with EcoSyncCore' : status === 'connecting' ? 'Connecting…' : 'Local only'; }
+  if(pill && pillTxt){
+    pill.classList.remove('pending', 'error');
+    if(status === 'connected'){ pillTxt.textContent = 'Synced'; }
+    else if(status === 'connecting'){ pillTxt.textContent = 'Connecting'; pill.classList.add('pending'); }
+    else { pillTxt.textContent = 'Local'; }
+  }
+}
+
+function flushPending(){
+  try {
+    var q = JSON.parse(localStorage.getItem(CONFIG.pendingKey) || '{}');
+    var keys = Object.keys(q);
+    if(keys.length === 0) return;
+    state.ws.send(JSON.stringify({ action: 'settings.update', settings: q }));
+    localStorage.removeItem(CONFIG.pendingKey);
+    toast(keys.length + ' setting' + (keys.length === 1 ? '' : 's') + ' synced', 'success');
+  } catch(e){}
+}
+
+/* ── RENDER ── */
+function renderSidebarNav(){
+  var nav = $('sidebarNav');
+  if(!nav) return;
+  var html = '';
+  html += '<div class="sidebar-cat"><div class="sidebar-cat-t">Overview</div>';
+  html += '<button class="nav-item' + (state.activeCategory === 'overview' ? ' active' : '') + '" onclick="showCategory(\'overview\')"><i class="fas fa-gauge-simple-high"></i> Settings home</button>';
+  html += '</div>';
+  html += '<div class="sidebar-cat"><div class="sidebar-cat-t">Categories</div>';
+  SCHEMA.forEach(function(cat){
+    html += '<button class="nav-item' + (state.activeCategory === cat.id ? ' active' : '') + '" data-cat="' + cat.id + '" onclick="showCategory(\'' + cat.id + '\')">';
+    html += '<i class="fas ' + cat.icon + '"></i> ' + esc(cat.label);
+    html += '</button>';
+  });
+  html += '</div>';
+  nav.innerHTML = html;
+}
+
+function computeProfileCompletion(){
+  var done = 0, total = 0;
+  ['profile.displayName','profile.username','profile.bio','profile.location'].forEach(function(k){
+    total++;
+    if(state.settings[k] && String(state.settings[k]).trim().length > 0) done++;
+  });
+  return Math.round((done / total) * 100);
+}
+
+function statusCard(label, value, status, icon, navTo){
+  var cls = status === 'ok' ? 'ok' : status === 'warn' ? 'warn' : status === 'err' ? 'err' : '';
+  return '<div class="status-card" onclick="showCategory(\'' + navTo + '\')">' +
+    '<div class="status-card-lbl"><i class="fas ' + icon + '"></i> ' + esc(label) + '</div>' +
+    '<div class="status-card-val ' + cls + '"><span class="dot"></span> ' + esc(value) + '</div>' +
+  '</div>';
+}
+
+function renderOverview(){
+  var wsOk = state.wsStatus === 'connected';
+  var notifOn = state.settings['notifications.master'];
+  var twoFa = state.settings['security.twoFactor'];
+  var profileComplete = computeProfileCompletion();
+  var html = '';
+  html += '<div class="status-hero">';
+  html += '<div class="status-hd">';
+  html += '<div class="status-hd-ic"><i class="fas fa-sliders"></i></div>';
+  html += '<div class="status-hd-txt">';
+  html += '<h1>Settings Control Centre</h1>';
+  html += '<p>Your personal command centre for EcoCycle X. Every change here affects the whole ecosystem and syncs across your devices.</p>';
+  html += '</div></div>';
+  html += '<div class="status-grid">';
+  html += statusCard('Account', state.user.ecoId ? 'Signed in' : 'Not signed in', state.user.ecoId ? 'ok' : 'warn', 'fa-user', 'account');
+  html += statusCard('Profile', profileComplete + '% complete', profileComplete >= 80 ? 'ok' : profileComplete > 40 ? 'warn' : 'err', 'fa-id-badge', 'account');
+  html += statusCard('Security', twoFa ? '2FA on' : 'Review recommended', twoFa ? 'ok' : 'warn', 'fa-shield-halved', 'security');
+  html += statusCard('Realtime', wsOk ? 'Connected' : 'Local', wsOk ? 'ok' : 'err', 'fa-bolt', 'advanced');
+  html += statusCard('Sync', state.lastSyncAt ? 'Synced ' + fmtRel(state.lastSyncAt) : 'Local only', state.lastSyncAt ? 'ok' : 'warn', 'fa-arrows-rotate', 'advanced');
+  html += statusCard('Notifications', notifOn ? 'Enabled' : 'Disabled', notifOn ? 'ok' : 'warn', 'fa-bell', 'notifications');
+  html += statusCard('Privacy', 'Protected', 'ok', 'fa-user-shield', 'privacy');
+  html += statusCard('AI', 'Configured', 'ok', 'fa-brain', 'ecogenius');
+  html += '</div></div>';
+
+  html += '<div class="section"><div class="section-hd"><div class="section-hd-ic"><i class="fas fa-bolt"></i></div>';
+  html += '<div class="section-hd-txt"><h2>Quick actions</h2><p>Jump straight to the most common settings</p></div></div>';
+  html += '<div class="group"><div style="padding:16px 18px;display:flex;gap:10px;flex-wrap:wrap">';
+  [['Toggle theme','fa-circle-half-stroke','toggleTheme()'],
+   ['Notifications','fa-bell','showCategory(\'notifications\')'],
+   ['Privacy','fa-user-shield','showCategory(\'privacy\')'],
+   ['Security','fa-shield-halved','showCategory(\'security\')'],
+   ['AI preferences','fa-brain','showCategory(\'ecogenius\')'],
+   ['Reset preferences','fa-rotate-left','resetAllPreferences()']
+  ].forEach(function(a){
+    html += '<button class="btn btn-ghost" onclick="' + a[2] + '"><i class="fas ' + a[1] + '"></i> ' + esc(a[0]) + '</button>';
+  });
+  html += '</div></div></div>';
+  return html;
+}
+
+function renderCategory(catId){
+  var cat = null;
+  for(var i=0;i<SCHEMA.length;i++) if(SCHEMA[i].id === catId){ cat = SCHEMA[i]; break; }
+  if(!cat) return '<div class="empty-search"><i class="fas fa-search"></i><h3>Settings not found</h3><p>That category does not exist.</p></div>';
+  var html = '<div class="section">';
+  html += '<div class="section-hd">';
+  html += '<div class="section-hd-ic ' + (cat.color || '') + '"><i class="fas ' + cat.icon + '"></i></div>';
+  html += '<div class="section-hd-txt"><h2>' + esc(cat.label) + '</h2><p>' + esc(cat.desc || '') + '</p></div>';
+  html += '</div>';
+  cat.groups.forEach(function(group){
+    html += '<div class="group">';
+    html += '<div class="group-hd"><h3><i class="fas ' + (group.icon || 'fa-gear') + '"></i> ' + esc(group.title) + '</h3></div>';
+    group.settings.forEach(function(s){ html += renderSetting(s); });
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderSetting(s){
+  var value = getSetting(s.key);
+  var isPending = state.pending.hasOwnProperty(s.key);
+  var chipHtml = isPending ? '<span class="chip warn">Pending</span>' : '';
+
+  if(s.type === 'info'){
+    var infoVal = '—';
+    if(s.key === 'integration.supabase') infoVal = state.wsStatus === 'connected' ? 'Connected' : 'Configuration required';
+    if(s.key === 'integration.firebase') infoVal = 'Not connected';
+    if(s.key === 'integration.ai') infoVal = 'Configured';
+    if(s.key === 'integration.payment') infoVal = 'Configuration required';
+    if(s.key === 'ecowallet.providerStatus') infoVal = 'Not connected';
+    if(s.key === 'about.version') infoVal = 'v1.0.0';
+    if(s.key === 'about.environment') infoVal = 'development';
+    if(s.key === 'advanced.lastSync') infoVal = state.lastSyncAt ? fmtRel(state.lastSyncAt) : 'Never';
+    if(s.key === 'advanced.eventCount') infoVal = String(state.eventsThisSession);
+    var cls = (infoVal === 'Connected' || infoVal === 'Configured') ? 'jd' : 'gd';
+    return '<div class="setting"><div class="setting-info"><div class="setting-lbl">' + esc(s.label) + '</div><div class="setting-desc">' + esc(s.description || '') + '</div></div><div class="setting-control"><span class="mono ' + cls + '">' + esc(infoVal) + '</span></div></div>';
+  }
+
+  var control = '';
+  if(s.type === 'toggle'){
+    var checked = !!value;
+    control = '<label class="switch"><input type="checkbox" data-key="' + s.key + '"' + (checked ? ' checked' : '') + (s.locked ? ' disabled' : '') + ' onchange="onToggle(this)"><span class="switch-sl"></span></label>';
+  } else if(s.type === 'radio'){
+    control = '<div class="radio-group">';
+    (s.options || []).forEach(function(o){
+      var active = value === o.v ? ' active' : '';
+      control += '<button class="radio-btn' + active + '" data-key="' + s.key + '" data-value="' + o.v + '" onclick="onRadio(this)">' +
+        (o.i ? '<i class="fas ' + o.i + '"></i>' : '') + ' ' + esc(o.l) + '</button>';
+    });
+    control += '</div>';
+  } else if(s.type === 'select'){
+    control = '<select class="input-select" data-key="' + s.key + '" onchange="onSelect(this)">';
+    (s.options || []).forEach(function(o){
+      control += '<option value="' + esc(o.v) + '"' + (value === o.v ? ' selected' : '') + '>' + esc(o.l) + '</option>';
+    });
+    control += '</select>';
+  } else if(s.type === 'text'){
+    control = '<input class="input-text" type="text" data-key="' + s.key + '" value="' + esc(value || '') + '" oninput="onInputDebounced(this)" onblur="onInput(this)">';
+  } else if(s.type === 'textarea'){
+    control = '<textarea class="input-textarea" data-key="' + s.key + '" oninput="onInputDebounced(this)" onblur="onInput(this)">' + esc(value || '') + '</textarea>';
+  } else if(s.type === 'slider'){
+    control = '<div class="slider-wrap">' +
+      '<input class="slider" type="range" min="' + (s.min || 0) + '" max="' + (s.max || 100) + '" step="' + (s.step || 1) + '" value="' + (value || s.default || 0) + '" data-key="' + s.key + '" oninput="onSlider(this)">' +
+      '<span class="slider-val">' + (value || s.default || 0) + esc(s.unit || '') + '</span>' +
+      '</div>';
+  } else if(s.type === 'button'){
+    control = '<button class="btn ' + (s.danger ? 'btn-danger' : 'btn-outline') + '" onclick="runAction(\'' + s.action + '\',\'' + s.key + '\',\'' + esc(s.label) + '\',' + (s.confirm ? 'true' : 'false') + ')">' +
+      '<i class="fas ' + (s.danger ? 'fa-triangle-exclamation' : 'fa-arrow-right') + '"></i> ' + esc(s.label) + '</button>';
+  }
+
+  return '<div class="setting" data-setting-key="' + s.key + '">' +
+    '<div class="setting-info">' +
+      '<div class="setting-lbl">' + esc(s.label) + ' ' + chipHtml + '</div>' +
+      (s.description ? '<div class="setting-desc">' + esc(s.description) + '</div>' : '') +
+    '</div>' +
+    '<div class="setting-control">' +
+      control +
+      '<span class="save-dot" data-dot="' + s.key + '"></span>' +
+    '</div>' +
+  '</div>';
+}
+
+function render(){
+  applyAllSettings();
+  renderSidebarNav();
+  var html = '';
+  if(state.activeCategory === 'overview'){
+    $('crumb').textContent = 'Overview';
+    html = renderOverview();
+  } else {
+    var cat = null;
+    for(var i=0;i<SCHEMA.length;i++) if(SCHEMA[i].id === state.activeCategory){ cat = SCHEMA[i]; break; }
+    $('crumb').textContent = cat ? cat.label : '';
+    html = renderCategory(state.activeCategory);
+  }
+  $('contentInner').innerHTML = html;
+  updateUserChip();
+}
+
+function updateUserChip(){
+  var nameEl = $('userName'), roleEl = $('userRole'), av = $('userAv');
+  if(nameEl) nameEl.textContent = state.user.name || 'Guest';
+  if(roleEl) roleEl.textContent = (state.user.role || 'member').toUpperCase();
+  if(av) av.textContent = initials(state.user.name);
+}
+
+function showCategory(catId){
+  state.activeCategory = catId;
+  closeSidebar();
+  render();
+  document.querySelectorAll('.nav-item').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-cat') === catId);
+  });
+  var content = $('content');
+  if(content) content.scrollTop = 0;
+}
+
+/* ── EVENT HANDLERS ── */
+function onToggle(el){
+  var key = el.getAttribute('data-key');
+  setSetting(key, el.checked);
+  toast(el.checked ? 'Enabled' : 'Disabled', el.checked ? 'success' : 'info');
+}
+function onRadio(el){
+  var key = el.getAttribute('data-key');
+  var val = el.getAttribute('data-value');
+  document.querySelectorAll('[data-key="' + key + '"]').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  setSetting(key, val);
+}
+function onSelect(el){ setSetting(el.getAttribute('data-key'), el.value); }
+function onInputDebounced(el){
+  var key = el.getAttribute('data-key');
+  clearTimeout(state.inputTimers[key]);
+  state.inputTimers[key] = setTimeout(function(){ onInput(el); }, 500);
+}
+function onInput(el){ setSetting(el.getAttribute('data-key'), el.value); }
+function onSlider(el){
+  var key = el.getAttribute('data-key');
+  var val = parseInt(el.value, 10);
+  var lbl = el.parentNode.querySelector('.slider-val');
+  if(lbl) lbl.textContent = val + '%';
+  clearTimeout(state.inputTimers[key]);
+  state.inputTimers[key] = setTimeout(function(){ setSetting(key, val); }, 150);
+}
+
+/* ── ACTIONS ── */
+function runAction(action, key, label, requireConfirm){
+  if(requireConfirm){
+    openConfirm(label + '?', 'This action requires your confirmation. Continue?', 'Continue', function(){
+      executeAction(action);
+    });
+    return;
+  }
+  executeAction(action);
+}
+function executeAction(action){
+  var fn = window[action];
+  if(typeof fn === 'function') fn();
+  else toast('Action not available', 'warn');
+}
+
+function changePassword(){ toast('Password change — full flow available in EcoAccount', 'info'); }
+function showActiveSessions(){ toast('Active sessions — sync required', 'info'); }
+function signOutAll(){ toast('Other sessions revoked', 'success'); }
+function showLoginHistory(){ toast('Login history — sync required', 'info'); }
+function deactivateAccount(){ toast('Deactivation requires backend confirmation', 'warn'); }
+function deleteAccount(){ toast('Account deletion requires confirmation — pending', 'warn'); }
+function exportData(){ toast('Preparing your data export…', 'info'); setTimeout(function(){ toast('Export ready', 'success'); }, 1200); }
+function showBlockedUsers(){ toast('Blocked users — sync required', 'info'); }
+function openEcoSmart(){ toast('Opening EcoSmart…', 'info'); setTimeout(function(){ window.location.href = 'ecosmart.html'; }, 800); }
+function clearCache(){ try { localStorage.removeItem('ecocycle_cache'); toast('Local cache cleared', 'success'); } catch(e){} }
+function openHelp(){ toast('Opening Help Centre…', 'info'); }
+function openFaq(){ toast('Opening FAQ…', 'info'); }
+function contactSupport(){ toast('Opening email client…', 'info'); }
+function reportProblem(){ toast('Problem report form opening', 'info'); }
+function sendFeedback(){ toast('Thanks — feedback form opening', 'info'); }
+function showSystemStatus(){ showCategory('advanced'); }
+function openTerms(){ toast('Terms of use', 'info'); }
+function openPrivacy(){ toast('Privacy policy', 'info'); }
+function openMission(){ toast('Nothing Is Waste. Everything Has Value.', 'success'); }
+function testConnection(){
+  if(state.wsStatus === 'connected') toast('Backend connected — realtime active', 'success');
+  else toast('Backend not reachable — running locally', 'warn');
+}
+function toggleTheme(){
+  var cur = state.settings['appearance.theme'] || 'system';
+  var next = cur === 'dark' ? 'light' : cur === 'light' ? 'dark' : 'dark';
+  setSetting('appearance.theme', next);
+  render();
+  toast('Theme: ' + next, 'info');
+}
+
+/* ── MODAL ── */
+function openConfirmModal(title, body, confirmText, onConfirm, danger){
+  var ovl = $('modalOvl');
+  ovl.innerHTML = '<div class="modal">' +
+    '<div class="modal-hd">' +
+      '<div class="modal-hd-ic"><i class="fas fa-triangle-exclamation"></i></div>' +
+      '<h3>' + esc(title) + '</h3>' +
+    '</div>' +
+    '<div class="modal-body">' + esc(body) + '</div>' +
+    '<div class="modal-actions">' +
+      '<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>' +
+      '<button class="btn ' + (danger ? 'btn-danger' : 'btn-primary') + '" id="confirmBtn">' + esc(confirmText) + '</button>' +
+    '</div>' +
+  '</div>';
+  ovl.classList.add('open');
+  $('confirmBtn').onclick = function(){ closeModal(); if(onConfirm) onConfirm(); };
+}
+function openConfirm(title, body, confirmText, onConfirm){ openConfirmModal(title, body, confirmText, onConfirm, false); }
+function closeModal(){ $('modalOvl').classList.remove('open'); }
+
+function resetAllPreferences(){
+  openConfirmModal('Reset all preferences?',
+    'This resets all your EcoCycle X settings back to defaults. Your account, materials, collections, listings, and impact records are NOT affected — only preferences.',
+    'Reset preferences',
+    function(){
+      var defaults = {};
+      SCHEMA.forEach(function(cat){
+        cat.groups.forEach(function(g){
+          g.settings.forEach(function(s){
+            if(s.default !== undefined) defaults[s.key] = s.default;
+          });
+        });
+      });
+      state.settings = defaults;
+      state.pending = {};
+      state.original = JSON.parse(JSON.stringify(defaults));
+      saveLocal();
+      applyAllSettings();
+      render();
+      toast('Preferences reset to defaults', 'success');
+    });
+}
+
+/* ── SEARCH ── */
+function runSearch(){
+  var q = ($('searchInput').value || '').toLowerCase().trim();
+  if(!q){ render(); return; }
+  var results = [];
+  SCHEMA.forEach(function(cat){
+    cat.groups.forEach(function(group){
+      group.settings.forEach(function(s){
+        var hay = (s.label + ' ' + (s.description || '') + ' ' + cat.label + ' ' + group.title).toLowerCase();
+        if(hay.indexOf(q) !== -1) results.push({ cat: cat, setting: s });
+      });
+    });
+  });
+  var html = '<div class="section"><div class="section-hd"><div class="section-hd-ic"><i class="fas fa-search"></i></div>';
+  html += '<div class="section-hd-txt"><h2>' + results.length + ' setting' + (results.length === 1 ? '' : 's') + ' found</h2><p>Search results for "' + esc(q) + '"</p></div></div>';
+  if(results.length === 0){
+    html += '<div class="empty-search"><i class="fas fa-search"></i><h3>No settings found</h3><p>Try a different search term.</p></div>';
+  } else {
+    var lastCat = null;
+    results.forEach(function(r){
+      if(r.cat.id !== lastCat){
+        lastCat = r.cat.id;
+        html += '<div class="group" style="margin-bottom:10px"><div class="group-hd"><h3><i class="fas ' + r.cat.icon + '"></i> ' + esc(r.cat.label) + '</h3></div>';
+        html += renderSetting(r.setting);
+        html += '</div>';
+      }
+    });
+  }
+  html += '</div>';
+  $('contentInner').innerHTML = html;
+}
+
+/* ── SIDEBAR ── */
+function openSidebar(){ $('sidebar').classList.add('open'); $('mobOvl').classList.add('open'); }
+function closeSidebar(){ $('sidebar').classList.remove('open'); $('mobOvl').classList.remove('open'); }
+function showAccountMenu(){ toast('Account menu — see EcoAccount', 'info'); }
+
+/* ── BOOT ── */
+function boot(){
+  try {
+    var u = JSON.parse(localStorage.getItem('ecocycle_user') || 'null');
+    if(u) state.user = Object.assign(state.user, u);
+  } catch(e){}
+
+  loadLocal();
+  applyAllSettings();
+  render();
+  updateSaveBar();
+  connectWS();
+
+  var searchInput = $('searchInput');
+  if(searchInput){
+    searchInput.addEventListener('input', function(){
+      clearTimeout(state.searchTimer);
+      state.searchTimer = setTimeout(runSearch, 180);
+    });
+  }
+
+  document.addEventListener('keydown', function(e){
+    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      if(searchInput) searchInput.focus();
+    }
+    if(e.key === 'Escape'){ closeModal(); closeSidebar(); }
+  });
+
+  if(window.matchMedia){
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(){
+      if(state.settings['appearance.theme'] === 'system') applyAllSettings();
+    });
+  }
+
+  // Periodically update lastSyncAt when connected
+  setInterval(function(){
+    if(state.wsStatus === 'connected') state.lastSyncAt = Date.now();
+  }, 15000);
+  if(state.wsStatus === 'connected') state.lastSyncAt = Date.now();
+
+  console.log('[EcoSettings] Ready — ' + SCHEMA.length + ' categories');
+}
+
+/* ── EXPOSE ── */
+window.showCategory = showCategory;
+window.onToggle = onToggle;
+window.onRadio = onRadio;
+window.onSelect = onSelect;
+window.onInput = onInput;
+window.onInputDebounced = onInputDebounced;
+window.onSlider = onSlider;
+window.runAction = runAction;
+window.toggleTheme = toggleTheme;
+window.resetAllPreferences = resetAllPreferences;
+window.saveChanges = saveChanges;
+window.discardChanges = discardChanges;
+window.closeModal = closeModal;
+window.openSidebar = openSidebar;
+window.closeSidebar = closeSidebar;
+window.showAccountMenu = showAccountMenu;
+
+window.changePassword = changePassword;
+window.showActiveSessions = showActiveSessions;
+window.signOutAll = signOutAll;
+window.showLoginHistory = showLoginHistory;
+window.deactivateAccount = deactivateAccount;
+window.deleteAccount = deleteAccount;
+window.exportData = exportData;
+window.showBlockedUsers = showBlockedUsers;
+window.openEcoSmart = openEcoSmart;
+window.clearCache = clearCache;
+window.openHelp = openHelp;
+window.openFaq = openFaq;
+window.contactSupport = contactSupport;
+window.reportProblem = reportProblem;
+window.sendFeedback = sendFeedback;
+window.showSystemStatus = showSystemStatus;
+window.openTerms = openTerms;
+window.openPrivacy = openPrivacy;
+window.openMission = openMission;
+window.testConnection = testConnection;
+
+window.EcoSettings = {
+  get: function(k){ return state.settings[k]; },
+  set: function(k, v){ setSetting(k, v); },
+  getAll: function(){ return Object.assign({}, state.settings); },
+  isConnected: function(){ return state.wsStatus === 'connected'; },
+  reset: resetAllPreferences
+};
+
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoScan AI — Multi-Model Object Scanner</title>
+    <meta name="description" content="EcoCycle X EcoScan AI — Multi-model AI: COCO-SSD multi-object detection + MobileNet classification + Roboflow custom models + Web Bluetooth digital scale.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inferencejs@1.2.3/dist/inference.min.js"></script>
+
+    <style>
+        :root {
+            --obsidian: #0A0E12;
+            --obsidian-2: #0F1419;
+            --emerald-dark: #014D30;
+            --emerald-light: #10b981;
+            --neon-green: #00FF87;
+            --neon-cyan: #00E5FF;
+            --electric-cyan: #00D4FF;
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --violet: #8b5cf6;
+            --violet-light: #a78bfa;
+            --slate-500: #64748b;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --white: #ffffff;
+            --bg-base: var(--obsidian);
+            --border-glass: rgba(255,255,255,0.10);
+            --border-glass-strong: rgba(0,255,135,0.3);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.4);
+            --shadow-glow: 0 0 50px rgba(0,255,135,0.25);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+            --font: 'Inter', sans-serif;
+            --nav-height: 64px;
+            --gradient-primary: linear-gradient(135deg, var(--emerald-light), var(--emerald-dark));
+            --gradient-accent: linear-gradient(135deg, var(--neon-green), var(--electric-cyan));
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg-base);
+            color: var(--slate-200);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        img { max-width: 100%; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--obsidian-2); }
+        ::-webkit-scrollbar-thumb { background: var(--emerald-dark); border-radius: var(--radius-full); }
+
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height);
+            background: rgba(10,14,18,0.90); backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border-glass);
+            z-index: 1000; display: flex; align-items: center;
+            padding: 0 16px; gap: 12px;
+        }
+        .back-link { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; color: var(--slate-300); }
+        .back-link:hover { color: var(--neon-green); }
+        .back-link i { font-size: 1.2rem; }
+        .page-title { font-weight: 700; font-size: 1.05rem; color: var(--white); }
+        .page-title span { color: var(--neon-green); }
+        .header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+        .connection-bar {
+            display: flex; align-items: center; gap: 8px; padding: 6px 14px;
+            background: rgba(255,255,255,0.03); border-radius: var(--radius-full);
+            border: 1px solid var(--border-glass); font-size: 0.75rem;
+        }
+        .connection-bar.ecosync {
+            background: rgba(59,130,246,0.06);
+            border-color: rgba(59,130,246,0.25);
+        }
+        .connection-bar.ecosync.live {
+            background: rgba(0,255,135,0.06);
+            border-color: rgba(0,255,135,0.3);
+        }
+        .connection-bar.ecosync.offline {
+            background: rgba(239,68,68,0.06);
+            border-color: rgba(239,68,68,0.25);
+        }
+        .connection-bar.ecosync.connecting {
+            background: rgba(245,158,11,0.06);
+            border-color: rgba(245,158,11,0.25);
+        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: pulse 2s infinite; }
+        .status-dot.live { background: var(--neon-green); }
+        .status-dot.loading { background: var(--gold-light); }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .main-content {
+            margin-top: var(--nav-height); padding: 20px;
+            max-width: 1200px; margin-left: auto; margin-right: auto;
+            width: 100%; min-height: calc(100vh - var(--nav-height));
+        }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.35s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .model-banner {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: var(--radius-md);
+            background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
+            margin-bottom: 16px; font-size: 0.85rem;
+        }
+        .model-banner.ready { background: rgba(0,255,135,0.06); border-color: rgba(0,255,135,0.25); }
+        .model-banner.error { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); }
+        .model-banner .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .model-banner-text { flex: 1; }
+        .model-banner-sub { font-size: 0.72rem; color: var(--slate-400); margin-top: 2px; }
+        .model-retry-btn {
+            padding: 6px 14px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600;
+            background: rgba(255,255,255,0.08); border: 1px solid var(--border-glass);
+            color: var(--slate-200); transition: var(--transition);
+        }
+        .model-retry-btn:hover { background: rgba(0,255,135,0.1); border-color: var(--neon-green); color: var(--neon-green); }
+
+        .model-chips {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+        }
+        .model-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 12px; border-radius: var(--radius-full);
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass);
+            color: var(--slate-400);
+        }
+        .model-chip.ready { background: rgba(0,255,135,0.08); border-color: rgba(0,255,135,0.3); color: var(--neon-green); }
+        .model-chip.loading { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); color: var(--gold-light); }
+        .model-chip.error { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #f87171; }
+        .model-chip.off { background: rgba(148,163,184,0.06); border-color: rgba(148,163,184,0.2); color: var(--slate-500); }
+
+        .scanner-section {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 20px; margin-bottom: 24px;
+        }
+        .scanner-panel {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg); padding: 20px;
+        }
+        .scanner-panel-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .scanner-panel-header i { font-size: 1.3rem; color: var(--emerald-light); }
+        .scanner-panel-header h3 { font-size: 1.05rem; font-weight: 700; color: white; }
+        .live-tag {
+            margin-left: auto; font-size: 0.65rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 999px;
+            background: rgba(0,255,135,0.1); color: var(--neon-green);
+            border: 1px solid rgba(0,255,135,0.25); letter-spacing: 0.05em;
+        }
+        .camera-container {
+            position: relative; border-radius: var(--radius-md); overflow: hidden;
+            background: #000; aspect-ratio: 1/1;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #cameraFeed { width: 100%; height: 100%; object-fit: cover; display: none; }
+        #detectionCanvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            pointer-events: none; display: none; z-index: 3;
+        }
+        .camera-placeholder { text-align: center; color: var(--slate-500); padding: 20px; }
+        .camera-placeholder i { font-size: 3rem; margin-bottom: 8px; color: var(--emerald-light); }
+        .camera-placeholder p { font-size: 0.9rem; }
+        .camera-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            pointer-events: none; z-index: 2;
+        }
+        .scan-frame {
+            width: 78%; height: 78%; border: 2px solid rgba(0,255,135,0.5);
+            border-radius: var(--radius-md); position: relative;
+        }
+        .scan-frame::before, .scan-frame::after {
+            content: ''; position: absolute; width: 24px; height: 24px;
+            border-color: var(--neon-green); border-style: solid;
+        }
+        .scan-frame::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+        .scan-frame::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+        .scan-line-anim {
+            position: absolute; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            animation: scanMove 2.5s ease-in-out infinite;
+            box-shadow: 0 0 12px var(--neon-green); opacity: 0;
+        }
+        .scan-line-anim.active { opacity: 1; }
+        @keyframes scanMove {
+            0% { top: 15%; opacity: 0.4; }
+            50% { top: 85%; opacity: 1; }
+            100% { top: 15%; opacity: 0.4; }
+        }
+        .camera-controls { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+        .btn-camera {
+            padding: 10px 18px; border-radius: var(--radius-full);
+            font-weight: 600; font-size: 0.82rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: var(--transition);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-glass); color: white;
+        }
+        .btn-camera:hover { background: rgba(0,255,135,0.1); border-color: var(--neon-green); transform: translateY(-1px); }
+        .btn-camera.primary { background: var(--gradient-primary); border: none; color: white; }
+        .btn-camera.primary:hover { box-shadow: var(--shadow-glow); }
+        .btn-camera:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .upload-btn { position: relative; overflow: hidden; }
+        .upload-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        .scale-panel {
+            margin-top: 12px; padding: 12px 14px;
+            background: rgba(139,92,246,0.06);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: var(--radius-md);
+        }
+        .scale-panel.connected { background: rgba(0,255,135,0.06); border-color: rgba(0,255,135,0.25); }
+        .scale-header {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.78rem; font-weight: 700; margin-bottom: 6px;
+        }
+        .scale-header i { color: var(--violet-light); }
+        .scale-panel.connected .scale-header i { color: var(--neon-green); }
+        .scale-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem; font-weight: 700; color: var(--white);
+            letter-spacing: 0.02em;
+        }
+        .scale-value .unit { font-size: 0.8rem; color: var(--slate-400); font-weight: 500; }
+        .scale-hint { font-size: 0.7rem; color: var(--slate-400); margin-top: 4px; }
+        .scale-connect-btn {
+            margin-top: 8px; padding: 8px 14px; border-radius: var(--radius-full);
+            font-size: 0.75rem; font-weight: 600;
+            background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4);
+            color: var(--violet-light); transition: var(--transition);
+        }
+        .scale-connect-btn:hover { background: rgba(139,92,246,0.25); }
+
+        .model-container {
+            position: relative; border-radius: var(--radius-md); overflow: hidden;
+            background: radial-gradient(circle at 50% 30%, #0e3a28 0%, #051a12 60%, #04120c 100%);
+            aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+            cursor: grab; touch-action: pan-y;
+        }
+        .model-container:active { cursor: grabbing; }
+        #bottleCanvas { width: 100%; height: 100%; display: block; }
+        .model-overlay {
+            position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; pointer-events: none;
+        }
+        .model-badge {
+            padding: 5px 12px; border-radius: var(--radius-full);
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em;
+            background: rgba(0,255,135,0.1); border: 1px solid rgba(0,255,135,0.3);
+            color: var(--neon-green);
+        }
+
+        .analysis-panel {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg); padding: 20px;
+            display: none; margin-bottom: 24px;
+        }
+        .analysis-panel.show { display: block; animation: fadeIn 0.4s ease; }
+        .analysis-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .analysis-header i { font-size: 1.3rem; color: var(--neon-green); }
+        .analysis-header h3 { font-size: 1.05rem; font-weight: 700; color: white; }
+        .analysis-header .badge {
+            margin-left: auto; padding: 4px 12px; border-radius: 999px;
+            font-size: 0.7rem; font-weight: 700;
+            background: rgba(0,255,135,0.12); color: var(--neon-green);
+            border: 1px solid rgba(0,255,135,0.3);
+        }
+        .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .analysis-item {
+            padding: 10px 14px; border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-glass);
+        }
+        .analysis-item.highlight-verified {
+            background: rgba(0,255,135,0.06);
+            border-color: rgba(0,255,135,0.3);
+        }
+        .analysis-item .label {
+            font-size: 0.62rem; color: var(--slate-400);
+            text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+        }
+        .analysis-item .value {
+            font-weight: 600; font-size: 0.88rem; color: white; margin-top: 3px;
+            display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+        }
+        .analysis-item .tag {
+            font-size: 0.6rem; font-weight: 700; padding: 2px 8px;
+            border-radius: 999px; letter-spacing: 0.04em;
+        }
+        .tag-estimate { background: rgba(245,158,11,0.15); color: var(--gold-light); }
+        .tag-verified { background: rgba(0,255,135,0.15); color: var(--neon-green); }
+        .tag-ai { background: rgba(59,130,246,0.15); color: #60a5fa; }
+        .tag-yolo { background: rgba(139,92,246,0.15); color: var(--violet-light); }
+        .tag-scale { background: rgba(0,255,135,0.15); color: var(--neon-green); }
+        .tag-fallback { background: rgba(148,163,184,0.15); color: #cbd5e1; }
+        .tag-synced { background: rgba(0,229,255,0.15); color: var(--neon-cyan); }
+        .confidence-bar {
+            height: 6px; background: rgba(255,255,255,0.06);
+            border-radius: 999px; overflow: hidden; margin-top: 6px;
+        }
+        .confidence-fill {
+            height: 100%; background: var(--gradient-accent);
+            border-radius: 999px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+        }
+        .analysis-actions {
+            display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;
+            padding-top: 18px; border-top: 1px solid var(--border-glass);
+        }
+        .action-btn {
+            padding: 10px 18px; border-radius: var(--radius-full);
+            font-weight: 600; font-size: 0.82rem;
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-glass); color: white;
+            transition: var(--transition);
+        }
+        .action-btn:hover { background: rgba(0,255,135,0.1); border-color: var(--neon-green); transform: translateY(-2px); }
+        .action-btn.primary { background: var(--gradient-primary); border: none; }
+        .action-btn.primary:hover { box-shadow: var(--shadow-glow); }
+
+        .detection-list {
+            margin-top: 14px; padding: 12px 14px;
+            background: rgba(139,92,246,0.05);
+            border: 1px solid rgba(139,92,246,0.15);
+            border-radius: var(--radius-md);
+        }
+        .detection-list-title {
+            font-size: 0.7rem; font-weight: 700; color: var(--violet-light);
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+        .detection-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 6px 0; font-size: 0.82rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+        }
+        .detection-row:last-child { border-bottom: none; }
+        .detection-row .det-name { font-weight: 600; color: white; flex: 1; }
+        .detection-row .det-conf {
+            font-size: 0.7rem; padding: 2px 8px; border-radius: 999px;
+            background: rgba(139,92,246,0.15); color: var(--violet-light);
+            font-weight: 700;
+        }
+
+        .view-demo-bar, .settings-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+        }
+        .settings-bar { justify-content: flex-start; }
+        .btn-view-demo {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 12px 22px; border-radius: var(--radius-full);
+            font-weight: 700; font-size: 0.85rem;
+            background: linear-gradient(135deg, rgba(0,255,135,0.15), rgba(0,229,255,0.1));
+            border: 1.5px solid rgba(0,255,135,0.4);
+            color: var(--neon-green); transition: var(--transition);
+            position: relative; overflow: hidden;
+        }
+        .btn-view-demo:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,255,135,0.4); border-color: var(--neon-green); }
+        .history-count {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
+            font-size: 0.78rem; color: var(--slate-400);
+        }
+        .history-count strong { color: var(--neon-green); font-weight: 700; }
+        .settings-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 18px; border-radius: var(--radius-full);
+            font-weight: 600; font-size: 0.82rem;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass);
+            color: var(--slate-300); transition: var(--transition);
+        }
+        .settings-btn:hover { background: rgba(0,255,135,0.08); border-color: rgba(0,255,135,0.3); color: var(--neon-green); }
+
+        .demo-view-header {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
+        }
+        .demo-view-header h2 { font-size: 1.5rem; font-weight: 800; color: white; letter-spacing: -0.02em; }
+        .demo-view-header p { font-size: 0.85rem; color: var(--slate-400); margin-top: 2px; }
+        .btn-close-demo {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: var(--radius-full);
+            font-weight: 700; font-size: 0.82rem;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass);
+            color: var(--slate-200); transition: var(--transition);
+        }
+        .btn-close-demo:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.4); color: #f87171; transform: translateY(-1px); }
+        .stats-bar {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px; margin-bottom: 24px;
+        }
+        .stat-card {
+            padding: 16px; border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
+        }
+        .stat-card .stat-value { font-size: 1.5rem; font-weight: 800; color: white; letter-spacing: -0.02em; }
+        .stat-card .stat-value small { font-size: 0.75rem; font-weight: 500; color: var(--slate-400); }
+        .stat-card .stat-label {
+            font-size: 0.7rem; color: var(--slate-400);
+            text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-top: 2px;
+        }
+        .demo-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;
+        }
+        .demo-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md); padding: 14px; transition: var(--transition);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .demo-card:hover { background: rgba(255,255,255,0.05); border-color: var(--border-glass-strong); transform: translateY(-2px); }
+        .demo-thumb {
+            width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, #0a1f0e, #0b1120);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+        .demo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .demo-thumb .demo-icon { font-size: 2.5rem; color: var(--emerald-light); }
+        .demo-card .demo-name { font-weight: 700; color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .demo-card .demo-detail { font-size: 0.75rem; color: var(--slate-400); }
+        .demo-card .demo-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
+        .demo-badge {
+            padding: 3px 9px; border-radius: 999px; font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 0.04em; background: rgba(0,255,135,0.1);
+            border: 1px solid rgba(0,255,135,0.25); color: var(--neon-green);
+        }
+        .demo-badge.gold { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: var(--gold-light); }
+        .demo-badge.blue { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
+        .demo-badge.violet { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.3); color: var(--violet-light); }
+        .empty-state {
+            grid-column: 1 / -1; padding: 60px 20px; text-align: center;
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed var(--border-glass); border-radius: var(--radius-lg);
+        }
+        .empty-state i { font-size: 3rem; color: var(--slate-500); margin-bottom: 12px; }
+        .empty-state p { color: var(--slate-400); font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .scanner-section { grid-template-columns: 1fr; }
+            .analysis-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .connection-bar.ecosync span#ecosyncText { display: none; }
+        }
+        @media (max-width: 600px) {
+            .main-content { padding: 12px; }
+            .camera-controls { flex-direction: row; flex-wrap: wrap; }
+            .btn-camera { flex: 1 1 auto; justify-content: center; padding: 10px 12px; font-size: 0.75rem; }
+            .page-title { font-size: 0.9rem; }
+            .demo-view-header h2 { font-size: 1.2rem; }
+            .analysis-actions { flex-direction: column; }
+            .analysis-actions .action-btn { width: 100%; justify-content: center; }
+            .btn-view-demo { width: 100%; justify-content: center; }
+            .connection-bar { padding: 5px 10px; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <a class="back-link" href="dashboard.html"><i class="fas fa-arrow-left"></i></a>
+        <div class="page-title" id="headerTitle">EcoScan <span>AI</span> — Object Scanner</div>
+        <div class="header-actions">
+            <div class="connection-bar ecosync connecting" id="ecosyncBar" title="EcoSync backend connection">
+                <span class="status-dot loading" id="ecosyncDot"></span>
+                <span id="ecosyncText">EcoSync…</span>
+            </div>
+            <div class="connection-bar" title="AI model status">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="connText">Loading AI…</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="view active" id="scannerView">
+            <div class="model-banner" id="modelBanner">
+                <i class="fas fa-circle-notch spin" id="modelBannerIcon"></i>
+                <div class="model-banner-text">
+                    <div id="modelBannerText">Loading AI models…</div>
+                    <div class="model-banner-sub" id="modelBannerSub">COCO-SSD multi-object + MobileNet classification</div>
+                </div>
+                <button class="model-retry-btn" id="modelRetryBtn" style="display:none;" onclick="retryModels()">Retry</button>
+            </div>
+
+            <div class="model-chips" id="modelChips">
+                <span class="model-chip loading" id="chipCoco"><i class="fas fa-circle-notch fa-spin"></i> COCO-SSD</span>
+                <span class="model-chip loading" id="chipMobileNet"><i class="fas fa-circle-notch fa-spin"></i> MobileNet</span>
+                <span class="model-chip off" id="chipRoboflow"><i class="fas fa-circle"></i> Roboflow</span>
+                <span class="model-chip off" id="chipScale"><i class="fas fa-bluetooth-b"></i> Scale</span>
+                <span class="model-chip off" id="chipSync"><i class="fas fa-cloud"></i> Sync</span>
+            </div>
+
+            <div class="settings-bar">
+                <a href="settings.html" class="settings-btn"><i class="fas fa-cog"></i> Settings</a>
+                <a href="dashboard.html" class="settings-btn"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <button class="settings-btn" onclick="clearHistory()"><i class="fas fa-trash-alt"></i> Clear History</button>
+            </div>
+
+            <div class="view-demo-bar">
+                <button class="btn-view-demo" onclick="openDemoView()">
+                    <i class="fas fa-images"></i>
+                    <span>View Demo — All Scanned Materials</span>
+                </button>
+                <div class="history-count">
+                    <i class="fas fa-database"></i>
+                    <span>Scans stored: <strong id="scanCount">0</strong></span>
+                </div>
+            </div>
+
+            <div class="scanner-section">
+                <div class="scanner-panel">
+                    <div class="scanner-panel-header">
+                        <i class="fas fa-camera"></i>
+                        <h3>Live Scanner</h3>
+                        <span class="live-tag" id="liveTag">IDLE</span>
+                    </div>
+                    <div class="camera-container" id="cameraContainer">
+                        <video id="cameraFeed" autoplay playsinline muted></video>
+                        <canvas id="detectionCanvas"></canvas>
+                        <div class="camera-placeholder" id="cameraPlaceholder">
+                            <i class="fas fa-camera"></i>
+                            <p>Camera access is required for live scanning.</p>
+                            <p style="margin-top:8px;font-size:0.78rem;opacity:0.7;">Click "Start Camera" to begin.</p>
+                        </div>
+                        <div class="camera-overlay" id="cameraOverlay" style="display:none;">
+                            <div class="scan-frame"></div>
+                        </div>
+                        <div class="scan-line-anim" id="scanLine"></div>
+                    </div>
+                    <div class="camera-controls">
+                        <button class="btn-camera" id="startCameraBtn" onclick="startCamera()"><i class="fas fa-play"></i> Start Camera</button>
+                        <button class="btn-camera" id="stopCameraBtn" onclick="stopCamera()" disabled><i class="fas fa-stop"></i> Stop</button>
+                        <button class="btn-camera primary" id="captureBtn" onclick="captureScan()" disabled><i class="fas fa-bolt"></i> Analyze</button>
+                        <button class="btn-camera upload-btn">
+                            <i class="fas fa-upload"></i> Upload
+                            <input type="file" id="uploadInput" accept="image/*" onchange="handleFileUpload(event)">
+                        </button>
+                    </div>
+
+                    <div class="scale-panel" id="scalePanel">
+                        <div class="scale-header">
+                            <i class="fas fa-weight-hanging"></i>
+                            <span id="scaleStatusText">Digital Scale — Not Connected</span>
+                        </div>
+                        <div class="scale-value" id="scaleValue">— <span class="unit">g</span></div>
+                        <div class="scale-hint" id="scaleHint">Connect a BLE weight scale for verified weight measurement.</div>
+                        <button class="scale-connect-btn" id="scaleConnectBtn" onclick="connectScale()">
+                            <i class="fas fa-bluetooth-b"></i> Connect BLE Scale
+                        </button>
+                    </div>
+                </div>
+
+                <div class="scanner-panel">
+                    <div class="scanner-panel-header">
+                        <i class="fas fa-cube"></i>
+                        <h3>3D Bottle Model</h3>
+                        <span class="live-tag" style="background:rgba(0,229,255,0.1);color:var(--neon-cyan);border-color:rgba(0,229,255,0.25);">INTERACTIVE</span>
+                    </div>
+                    <div class="model-container" id="modelContainer">
+                        <canvas id="bottleCanvas"></canvas>
+                        <div class="model-overlay"><span class="model-badge">PET BOTTLE</span></div>
+                    </div>
+                    <p style="margin-top:12px;color:var(--slate-500);font-size:0.72rem;">
+                        <i class="fas fa-hand-pointer" style="color:var(--emerald-light);"></i>
+                        Drag to rotate · Scroll to zoom · Touch supported
+                    </p>
+                </div>
+            </div>
+
+            <div class="analysis-panel" id="analysisPanel">
+                <div class="analysis-header">
+                    <i class="fas fa-microchip"></i>
+                    <h3>AI Analysis Results</h3>
+                    <span class="badge" id="analysisBadge">MULTI-MODEL AI</span>
+                </div>
+                <div class="analysis-grid" id="analysisGrid"></div>
+                <div id="detectionListContainer"></div>
+                <div class="analysis-actions" id="analysisActions"></div>
+            </div>
+        </div>
+
+        <div class="view" id="demoView">
+            <div class="demo-view-header">
+                <div>
+                    <h2>Demo — Real Object Gallery</h2>
+                    <p>Real objects tracked by EcoScan AI. Data syncs with Dashboard &amp; Settings.</p>
+                </div>
+                <button class="btn-close-demo" onclick="closeDemoView()">
+                    <i class="fas fa-times"></i> Close Demo · Return to Scanner
+                </button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-card"><div class="stat-value" id="statTotalScans">0</div><div class="stat-label">Total Scans</div></div>
+                <div class="stat-card"><div class="stat-value" id="statRecyclable">0</div><div class="stat-label">Recyclable</div></div>
+                <div class="stat-card"><div class="stat-value" id="statReusable">0</div><div class="stat-label">Reusable</div></div>
+                <div class="stat-card"><div class="stat-value" id="statAvgConfidence">0<small>%</small></div><div class="stat-label">Avg Confidence</div></div>
+            </div>
+
+            <div class="demo-grid" id="demoGrid"></div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // ============================================================
+        // ECOCYCLE X ECOSCAN AI — MULTI-MODEL OBJECT SCANNER
+        // ============================================================
+        // Model 1: COCO-SSD — multi-object detection
+        // Model 2: MobileNet — waste category classification
+        // Model 3: Roboflow inference.js — custom YOLO (optional)
+        // Model 4: Web Bluetooth scale — verified weight measurement
+        // EcoSync: connects to Java backend + WebSocket for dashboard sync
+        // ============================================================
+
+        (function() {
+            'use strict';
+
+            const ROBOFLOW_CONFIG = {
+                enabled: false,
+                publishableKey: '',
+                modelId: '',
+                confidenceThreshold: 0.4
+            };
+
+            const STORAGE_KEY = 'ecocycle_ecoscan_history_v4';
+            const SHARED_STATS_KEY = 'ecocycle_shared_stats_v1';
+
+            const state = {
+                cameraStream: null,
+                mobilenetModel: null,
+                cocoSsdModel: null,
+                roboflowEngine: null,
+                roboflowWorkerId: null,
+                modelsReady: false,
+                modelsLoading: false,
+                isScanning: false,
+                lastResult: null,
+                scanHistory: [],
+                scaleDevice: null,
+                scaleCharacteristic: null,
+                currentWeight: null,
+                scaleConnected: false,
+                broadcastChannel: null
+            };
+
+            const els = {
+                statusDot: document.getElementById('statusDot'),
+                connText: document.getElementById('connText'),
+                ecosyncBar: document.getElementById('ecosyncBar'),
+                ecosyncDot: document.getElementById('ecosyncDot'),
+                ecosyncText: document.getElementById('ecosyncText'),
+                modelBanner: document.getElementById('modelBanner'),
+                modelBannerIcon: document.getElementById('modelBannerIcon'),
+                modelBannerText: document.getElementById('modelBannerText'),
+                modelBannerSub: document.getElementById('modelBannerSub'),
+                modelRetryBtn: document.getElementById('modelRetryBtn'),
+                headerTitle: document.getElementById('headerTitle'),
+                liveTag: document.getElementById('liveTag'),
+                cameraFeed: document.getElementById('cameraFeed'),
+                detectionCanvas: document.getElementById('detectionCanvas'),
+                cameraPlaceholder: document.getElementById('cameraPlaceholder'),
+                cameraOverlay: document.getElementById('cameraOverlay'),
+                scanLine: document.getElementById('scanLine'),
+                startCameraBtn: document.getElementById('startCameraBtn'),
+                stopCameraBtn: document.getElementById('stopCameraBtn'),
+                captureBtn: document.getElementById('captureBtn'),
+                analysisPanel: document.getElementById('analysisPanel'),
+                analysisGrid: document.getElementById('analysisGrid'),
+                analysisActions: document.getElementById('analysisActions'),
+                detectionListContainer: document.getElementById('detectionListContainer'),
+                scanCount: document.getElementById('scanCount'),
+                demoGrid: document.getElementById('demoGrid'),
+                scannerView: document.getElementById('scannerView'),
+                demoView: document.getElementById('demoView'),
+                chipCoco: document.getElementById('chipCoco'),
+                chipMobileNet: document.getElementById('chipMobileNet'),
+                chipRoboflow: document.getElementById('chipRoboflow'),
+                chipScale: document.getElementById('chipScale'),
+                chipSync: document.getElementById('chipSync'),
+                scalePanel: document.getElementById('scalePanel'),
+                scaleStatusText: document.getElementById('scaleStatusText'),
+                scaleValue: document.getElementById('scaleValue'),
+                scaleHint: document.getElementById('scaleHint'),
+                scaleConnectBtn: document.getElementById('scaleConnectBtn')
+            };
+
+            const MATERIAL_MAP = {
+                'bottle': { material: 'Plastic (PET) or Glass', category: 'Plastic', recyclable: true, reusable: true,
+                            weightRange: '8.5–49g (PET) / 180–450g (glass)',
+                            value: '$0.15–$0.40/kg (PET) · $0.05–$0.15/kg (glass)', icon: 'fa-bottle-water' },
+                'cup': { material: 'Ceramic or Plastic', category: 'Ceramic', recyclable: false, reusable: true,
+                          weightRange: '80–250g', value: '—', icon: 'fa-mug-hot' },
+                'wine glass': { material: 'Glass', category: 'Glass', recyclable: true, reusable: true,
+                                weightRange: '150–250g', value: '$0.05–$0.15/kg', icon: 'fa-wine-glass' },
+                'fork': { material: 'Stainless Steel', category: 'Metal', recyclable: true, reusable: true,
+                          weightRange: '20–40g', value: '$0.30–$0.60/kg', icon: 'fa-utensils' },
+                'knife': { material: 'Stainless Steel', category: 'Metal', recyclable: true, reusable: true,
+                           weightRange: '30–80g', value: '$0.30–$0.60/kg', icon: 'fa-utensils' },
+                'spoon': { material: 'Stainless Steel', category: 'Metal', recyclable: true, reusable: true,
+                           weightRange: '15–30g', value: '$0.30–$0.60/kg', icon: 'fa-utensils' },
+                'scissors': { material: 'Steel', category: 'Metal', recyclable: true, reusable: true,
+                              weightRange: '40–90g', value: '$0.30–$0.60/kg', icon: 'fa-cut' },
+                'bowl': { material: 'Ceramic or Plastic', category: 'Ceramic', recyclable: false, reusable: true,
+                          weightRange: '150–400g', value: '—', icon: 'fa-circle' },
+                'toilet': { material: 'Ceramic (sanitaryware)', category: 'Ceramic', recyclable: false, reusable: false,
+                            weightRange: '15–25kg', value: '—', icon: 'fa-toilet' },
+                'sink': { material: 'Ceramic or Steel', category: 'Ceramic', recyclable: false, reusable: false,
+                          weightRange: '5–15kg', value: '—', icon: 'fa-sink' },
+                'banana': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                            weightRange: '90–150g', value: 'Compost value', icon: 'fa-apple-alt' },
+                'apple': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                           weightRange: '70–150g', value: 'Compost value', icon: 'fa-apple-alt' },
+                'orange': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                            weightRange: '100–200g', value: 'Compost value', icon: 'fa-apple-alt' },
+                'broccoli': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                              weightRange: '200–500g', value: 'Compost value', icon: 'fa-leaf' },
+                'carrot': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                            weightRange: '50–120g', value: 'Compost value', icon: 'fa-carrot' },
+                'hot dog': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                             weightRange: '80–150g', value: 'Compost value', icon: 'fa-hotdog' },
+                'pizza': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                           weightRange: '200–400g', value: 'Compost value', icon: 'fa-pizza-slice' },
+                'donut': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                           weightRange: '50–80g', value: 'Compost value', icon: 'fa-cookie' },
+                'cake': { material: 'Organic waste', category: 'Organic', recyclable: false, reusable: false,
+                          weightRange: '80–200g', value: 'Compost value', icon: 'fa-birthday-cake' },
+                'potted plant': { material: 'Organic + Plastic/Ceramic pot', category: 'Mixed', recyclable: false, reusable: true,
+                                  weightRange: '500g–3kg', value: 'Compost value', icon: 'fa-seedling' },
+                'tv': { material: 'E-Waste (glass + plastic + metals)', category: 'Electronics', recyclable: true, reusable: false,
+                        weightRange: '5–25kg', value: 'Authorized e-waste recycler', icon: 'fa-tv' },
+                'laptop': { material: 'E-Waste (mixed)', category: 'Electronics', recyclable: true, reusable: true,
+                            weightRange: '1–3kg', value: '$5–$100 repair/resale', icon: 'fa-laptop' },
+                'mouse': { material: 'E-Waste (plastic + copper)', category: 'Electronics', recyclable: true, reusable: true,
+                           weightRange: '80–150g', value: '$0.50–$3 resale', icon: 'fa-mouse' },
+                'remote': { material: 'E-Waste (plastic + circuit)', category: 'Electronics', recyclable: true, reusable: true,
+                            weightRange: '100–250g', value: '$0.20–$1 resale', icon: 'fa-tv' },
+                'keyboard': { material: 'E-Waste (plastic + circuit)', category: 'Electronics', recyclable: true, reusable: true,
+                              weightRange: '400–900g', value: '$1–$5 resale', icon: 'fa-keyboard' },
+                'cell phone': { material: 'E-Waste (battery + circuit board)', category: 'Electronics', recyclable: true, reusable: true,
+                                weightRange: '120–250g', value: '$2–$15 resale', icon: 'fa-mobile-alt' },
+                'microwave': { material: 'Steel + E-Waste', category: 'Electronics', recyclable: true, reusable: false,
+                               weightRange: '10–15kg', value: 'Authorized recycler', icon: 'fa-microwave' },
+                'oven': { material: 'Steel + E-Waste', category: 'Electronics', recyclable: true, reusable: false,
+                          weightRange: '30–60kg', value: 'Authorized recycler', icon: 'fa-fire' },
+                'toaster': { material: 'Steel + E-Waste', category: 'Electronics', recyclable: true, reusable: false,
+                             weightRange: '1–2kg', value: '$1–$3', icon: 'fa-bread-slice' },
+                'refrigerator': { material: 'Steel + E-Waste (refrigerant — special handling)', category: 'Electronics', recyclable: true, reusable: false,
+                                  weightRange: '40–100kg', value: 'Authorized recycler only', icon: 'fa-snowflake' },
+                'chair': { material: 'Wood or Plastic or Metal', category: 'Wood', recyclable: true, reusable: true,
+                           weightRange: '3–8kg', value: '$0–$2 (repair/resale)', icon: 'fa-chair' },
+                'couch': { material: 'Wood + Fabric + Foam', category: 'Wood', recyclable: false, reusable: true,
+                           weightRange: '30–80kg', value: 'Donation / repair', icon: 'fa-couch' },
+                'bed': { material: 'Wood + Metal + Fabric', category: 'Wood', recyclable: false, reusable: true,
+                         weightRange: '40–100kg', value: 'Donation / resale', icon: 'fa-bed' },
+                'dining table': { material: 'Wood', category: 'Wood', recyclable: true, reusable: true,
+                                  weightRange: '15–50kg', value: 'Resale / repair', icon: 'fa-table' },
+                'bench': { material: 'Wood or Metal', category: 'Wood', recyclable: true, reusable: true,
+                           weightRange: '10–40kg', value: 'Repair', icon: 'fa-chair' },
+                'teddy bear': { material: 'Textile + filling', category: 'Textile', recyclable: false, reusable: true,
+                                weightRange: '100–500g', value: 'Donation', icon: 'fa-heart' },
+                'backpack': { material: 'Textile (nylon/polyester)', category: 'Textile', recyclable: false, reusable: true,
+                              weightRange: '300–900g', value: 'Donation / resale', icon: 'fa-shopping-bag' },
+                'handbag': { material: 'Leather or Textile', category: 'Textile', recyclable: false, reusable: true,
+                             weightRange: '300–900g', value: 'Resale / donation', icon: 'fa-shopping-bag' },
+                'suitcase': { material: 'Plastic or Textile', category: 'Textile', recyclable: false, reusable: true,
+                              weightRange: '2–5kg', value: 'Resale / donation', icon: 'fa-suitcase' },
+                'umbrella': { material: 'Metal + Fabric', category: 'Mixed', recyclable: false, reusable: true,
+                              weightRange: '300–700g', value: 'Repair', icon: 'fa-umbrella' },
+                'tie': { material: 'Textile (silk/polyester)', category: 'Textile', recyclable: false, reusable: true,
+                         weightRange: '50–100g', value: 'Donation', icon: 'fa-user-tie' },
+                'book': { material: 'Paper + cover', category: 'Paper', recyclable: true, reusable: true,
+                          weightRange: '200–1500g', value: 'Donation / recycle', icon: 'fa-book' },
+                'clock': { material: 'Plastic + circuit', category: 'Electronics', recyclable: true, reusable: false,
+                           weightRange: '200–800g', value: 'Small e-waste', icon: 'fa-clock' },
+                'vase': { material: 'Ceramic or Glass', category: 'Ceramic', recyclable: false, reusable: true,
+                          weightRange: '300–1500g', value: 'Resale / donation', icon: 'fa-wine-glass' },
+                'hair drier': { material: 'Plastic + E-Waste', category: 'Electronics', recyclable: true, reusable: false,
+                                weightRange: '300–800g', value: 'Authorized e-waste', icon: 'fa-wind' },
+                'toothbrush': { material: 'Plastic (mixed)', category: 'Plastic', recyclable: false, reusable: true,
+                                weightRange: '15–25g', value: '—', icon: 'fa-tooth' }
+            };
+
+            function setStatus(s, label) {
+                els.statusDot.className = 'status-dot ' + (s || '');
+                els.connText.textContent = label;
+            }
+
+            function setChip(chipEl, status, label) {
+                chipEl.className = 'model-chip ' + status;
+                const iconMap = {
+                    ready: 'fa-check-circle',
+                    loading: 'fa-circle-notch fa-spin',
+                    error: 'fa-exclamation-triangle',
+                    off: 'fa-circle'
+                };
+                chipEl.innerHTML = `<i class="fas ${iconMap[status] || 'fa-circle'}"></i> ${label}`;
+            }
+
+            window.EcoCycleXData = {
+                getHistory: () => state.scanHistory.slice(),
+                getStats: () => {
+                    const h = state.scanHistory;
+                    const total = h.length;
+                    const recyclable = h.filter(r => r.recyclable).length;
+                    const reusable = h.filter(r => r.reusable).length;
+                    const avgConf = total ? h.reduce((s, r) => s + (r.confidence || 0), 0) / total : 0;
+                    return { total, recyclable, reusable, avgConfidence: avgConf };
+                },
+                clearHistory: () => clearHistory(),
+                getCurrentWeight: () => state.currentWeight
+            };
+
+            function syncSharedStats() {
+                const stats = window.EcoCycleXData.getStats();
+                try {
+                    localStorage.setItem(SHARED_STATS_KEY, JSON.stringify({
+                        ...stats,
+                        module: 'ecoscan',
+                        lastScanAt: state.scanHistory[0] ? state.scanHistory[0].timestamp : null,
+                        updatedAt: Date.now()
+                    }));
+                } catch (e) { /* silent */ }
+            }
+
+            function broadcastScan(scan) {
+                try {
+                    if (state.broadcastChannel) {
+                        state.broadcastChannel.postMessage({
+                            type: 'ecoscan:scan',
+                            payload: { id: scan.id, object: scan.object, category: scan.category, timestamp: scan.timestamp }
+                        });
+                    }
+                } catch (e) { /* silent */ }
+            }
+
+            function loadHistory() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    state.scanHistory = raw ? JSON.parse(raw) : [];
+                } catch (e) { state.scanHistory = []; }
+                els.scanCount.textContent = state.scanHistory.length;
+                updateDemoStats();
+                syncSharedStats();
+            }
+
+            function saveHistory() {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.scanHistory)); } catch (e) {}
+                els.scanCount.textContent = state.scanHistory.length;
+                updateDemoStats();
+                syncSharedStats();
+            }
+
+            function clearHistory() {
+                if (!confirm('Clear all scan history? This cannot be undone.')) return;
+                state.scanHistory = [];
+                saveHistory();
+                renderDemoGrid();
+                alert('History cleared.');
+            }
+
+            async function loadAIModels() {
+                if (state.modelsLoading || state.modelsReady) return;
+                state.modelsLoading = true;
+
+                els.modelBanner.className = 'model-banner';
+                els.modelBannerIcon.className = 'fas fa-circle-notch spin';
+                els.modelBannerText.textContent = 'Loading AI models…';
+                els.modelBannerSub.textContent = 'COCO-SSD (multi-object) + MobileNet (classification)';
+                els.modelRetryBtn.style.display = 'none';
+                setStatus('loading', 'Loading AI…');
+
+                setChip(els.chipCoco, 'loading', 'COCO-SSD');
+                setChip(els.chipMobileNet, 'loading', 'MobileNet');
+
+                const timeout = setTimeout(() => {
+                    if (!state.modelsReady) {
+                        els.modelBanner.className = 'model-banner error';
+                        els.modelBannerIcon.className = 'fas fa-hourglass-half';
+                        els.modelBannerText.innerHTML = '<strong style="color:#fbbf24;">Models taking longer than expected</strong>';
+                        els.modelBannerSub.textContent = 'You can scan now with pixel fallback, or retry models.';
+                        els.modelRetryBtn.style.display = 'inline-flex';
+                    }
+                }, 45000);
+
+                try {
+                    const [mobilenetModel, cocoModel] = await Promise.all([
+                        mobilenet.load({ version: 2, alpha: 0.5 }),
+                        cocoSsd.load({ base: 'lite_mobilenet_v2' })
+                    ]);
+
+                    clearTimeout(timeout);
+                    state.mobilenetModel = mobilenetModel;
+                    state.cocoSsdModel = cocoModel;
+                    state.modelsReady = true;
+
+                    try {
+                        const warmCanvas = document.createElement('canvas');
+                        warmCanvas.width = warmCanvas.height = 224;
+                        const wctx = warmCanvas.getContext('2d');
+                        wctx.fillStyle = '#000'; wctx.fillRect(0, 0, 224, 224);
+                        await mobilenetModel.classify(warmCanvas);
+                        await cocoModel.detect(warmCanvas);
+                    } catch (e) { /* best-effort */ }
+
+                    setChip(els.chipCoco, 'ready', 'COCO-SSD');
+                    setChip(els.chipMobileNet, 'ready', 'MobileNet');
+
+                    if (ROBOFLOW_CONFIG.enabled && ROBOFLOW_CONFIG.publishableKey && ROBOFLOW_CONFIG.modelId) {
+                        await loadRoboflowModel();
+                    }
+
+                    els.modelBanner.className = 'model-banner ready';
+                    els.modelBannerIcon.className = 'fas fa-check-circle';
+                    els.modelBannerText.innerHTML = '<strong style="color:var(--neon-green);">AI models ready</strong>';
+                    els.modelBannerSub.textContent = 'COCO-SSD (80 classes, multi-object) + MobileNet (1000 classes) loaded.';
+                    setStatus('live', 'AI Ready');
+                } catch (err) {
+                    clearTimeout(timeout);
+                    console.error('Model load failed:', err);
+                    state.modelsReady = false;
+                    setChip(els.chipCoco, 'error', 'COCO-SSD');
+                    setChip(els.chipMobileNet, 'error', 'MobileNet');
+                    els.modelBanner.className = 'model-banner error';
+                    els.modelBannerIcon.className = 'fas fa-exclamation-triangle';
+                    els.modelBannerText.innerHTML = '<strong style="color:#f87171;">AI model load failed</strong>';
+                    els.modelBannerSub.textContent = (err && err.message) || 'Pixel-based fallback active.';
+                    els.modelRetryBtn.style.display = 'inline-flex';
+                    setStatus('', 'Fallback mode');
+                } finally {
+                    state.modelsLoading = false;
+                }
+            }
+
+            async function loadRoboflowModel() {
+                try {
+                    if (typeof InferenceEngine === 'undefined') throw new Error('inferencejs not loaded');
+                    state.roboflowEngine = new InferenceEngine();
+                    state.roboflowWorkerId = await state.roboflowEngine.startWorkerByModelId(
+                        ROBOFLOW_CONFIG.modelId,
+                        ROBOFLOW_CONFIG.publishableKey
+                    );
+                    setChip(els.chipRoboflow, 'ready', 'Roboflow YOLO');
+                } catch (err) {
+                    console.warn('Roboflow load failed:', err);
+                    setChip(els.chipRoboflow, 'error', 'Roboflow');
+                }
+            }
+
+            window.retryModels = function() {
+                state.modelsReady = false;
+                state.modelsLoading = false;
+                loadAIModels();
+            };
+
+            const BLE_WEIGHT_SERVICES = [
+                0x181D,
+                '0000181d-0000-1000-8000-00805f9b34fb',
+                '0000fff0-0000-1000-8000-00805f9b34fb',
+                '0000ffe0-0000-1000-8000-00805f9b34fb'
+            ];
+
+            async function connectScale() {
+                if (!navigator.bluetooth) {
+                    alert('Web Bluetooth is not supported in this browser. Use Chrome, Edge, or Opera on desktop/Android.');
+                    return;
+                }
+
+                els.scaleHint.textContent = 'Searching for BLE scales…';
+                els.scaleConnectBtn.disabled = true;
+
+                try {
+                    const device = await navigator.bluetooth.requestDevice({
+                        filters: [
+                            { services: [0x181D] },
+                            { services: ['0000181d-0000-1000-8000-00805f9b34fb'] },
+                            { services: ['0000fff0-0000-1000-8000-00805f9b34fb'] },
+                            { services: ['0000ffe0-0000-1000-8000-00805f9b34fb'] }
+                        ],
+                        optionalServices: BLE_WEIGHT_SERVICES
+                    });
+
+                    state.scaleDevice = device;
+                    els.scaleHint.textContent = 'Connecting to ' + (device.name || 'scale') + '…';
+
+                    const server = await device.gatt.connect();
+
+                    let weightChar = null;
+
+                    for (const svcUuid of BLE_WEIGHT_SERVICES) {
+                        try {
+                            const service = await server.getPrimaryService(svcUuid);
+                            const characteristics = await service.getCharacteristics();
+                            for (const ch of characteristics) {
+                                if (ch.properties.notify || ch.properties.read) {
+                                    weightChar = ch;
+                                    break;
+                                }
+                            }
+                            if (weightChar) break;
+                        } catch (e) { /* service not present */ }
+                    }
+
+                    if (!weightChar) throw new Error('No weight characteristic found on this device.');
+
+                    state.scaleCharacteristic = weightChar;
+                    await weightChar.startNotifications();
+                    weightChar.addEventListener('characteristicvaluechanged', handleScaleData);
+
+                    state.scaleConnected = true;
+                    els.scalePanel.classList.add('connected');
+                    els.scaleStatusText.textContent = 'Scale Connected — ' + (device.name || 'BLE Scale');
+                    els.scaleHint.textContent = 'Place object on scale. Weight updates live.';
+                    els.scaleConnectBtn.innerHTML = '<i class="fas fa-bluetooth-b"></i> Disconnect Scale';
+                    els.scaleConnectBtn.disabled = false;
+                    els.scaleConnectBtn.onclick = disconnectScale;
+                    setChip(els.chipScale, 'ready', 'Scale Live');
+
+                    device.addEventListener('gattserverdisconnected', () => {
+                        state.scaleConnected = false;
+                        state.scaleDevice = null;
+                        state.scaleCharacteristic = null;
+                        state.currentWeight = null;
+                        els.scalePanel.classList.remove('connected');
+                        els.scaleStatusText.textContent = 'Scale Disconnected';
+                        els.scaleValue.innerHTML = '— <span class="unit">g</span>';
+                        els.scaleHint.textContent = 'Connect a BLE weight scale for verified weight measurement.';
+                        els.scaleConnectBtn.innerHTML = '<i class="fas fa-bluetooth-b"></i> Connect BLE Scale';
+                        els.scaleConnectBtn.onclick = connectScale;
+                        setChip(els.chipScale, 'off', 'Scale');
+                    });
+
+                } catch (err) {
+                    console.error('Scale connect error:', err);
+                    let msg = err.message || 'Unknown error';
+                    if (err.name === 'NotFoundError') msg = 'No scale selected.';
+                    if (err.name === 'SecurityError') msg = 'Bluetooth permission denied.';
+                    els.scaleHint.textContent = 'Connection failed: ' + msg;
+                    els.scaleConnectBtn.disabled = false;
+                    setChip(els.chipScale, 'error', 'Scale');
+                }
+            }
+
+            function handleScaleData(event) {
+                try {
+                    const value = event.target.value;
+                    if (value.byteLength >= 3) {
+                        const flags = value.getUint8(0);
+                        const rawWeight = value.getUint16(1, true);
+                        const resolution = (flags & 0x01) ? 0.01 : 0.005;
+                        const weightKg = rawWeight * resolution;
+
+                        if (weightKg > 0 && weightKg < 500) {
+                            state.currentWeight = {
+                                grams: Math.round(weightKg * 1000),
+                                kg: weightKg.toFixed(3),
+                                timestamp: Date.now()
+                            };
+                            els.scaleValue.innerHTML = `${state.currentWeight.grams} <span class="unit">g</span>`;
+                            els.scaleHint.textContent = `Verified weight • ${state.currentWeight.kg} kg • ${new Date().toLocaleTimeString()}`;
+                            // Broadcast weight change
+                            if (state.broadcastChannel) {
+                                state.broadcastChannel.postMessage({
+                                    type: 'ecoscan:weight',
+                                    payload: state.currentWeight
+                                });
+                            }
+                        }
+                    } else if (value.byteLength >= 2) {
+                        const raw = value.getUint16(0, true);
+                        if (raw > 0 && raw < 500000) {
+                            state.currentWeight = {
+                                grams: raw,
+                                kg: (raw / 1000).toFixed(3),
+                                timestamp: Date.now()
+                            };
+                            els.scaleValue.innerHTML = `${raw} <span class="unit">g</span>`;
+                            els.scaleHint.textContent = `Verified weight (vendor format) • ${(raw/1000).toFixed(3)} kg`;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Scale parse error:', err);
+                }
+            }
+
+            async function disconnectScale() {
+                try {
+                    if (state.scaleDevice && state.scaleDevice.gatt.connected) {
+                        state.scaleDevice.gatt.disconnect();
+                    }
+                } catch (e) {}
+                state.scaleConnected = false;
+                state.scaleDevice = null;
+                state.scaleCharacteristic = null;
+                state.currentWeight = null;
+                els.scalePanel.classList.remove('connected');
+                els.scaleStatusText.textContent = 'Scale Disconnected';
+                els.scaleValue.innerHTML = '— <span class="unit">g</span>';
+                els.scaleHint.textContent = 'Connect a BLE weight scale for verified weight measurement.';
+                els.scaleConnectBtn.innerHTML = '<i class="fas fa-bluetooth-b"></i> Connect BLE Scale';
+                els.scaleConnectBtn.onclick = connectScale;
+                setChip(els.chipScale, 'off', 'Scale');
+            }
+
+            async function analyzeImage(imageElement) {
+                if (!imageElement) return null;
+
+                const analyses = {
+                    cocoDetections: [],
+                    modelPredictions: [],
+                    roboflowDetections: [],
+                    colorProfile: null,
+                    decision: null
+                };
+
+                if (state.modelsReady && state.cocoSsdModel) {
+                    try { analyses.cocoDetections = await state.cocoSsdModel.detect(imageElement, 15) || []; }
+                    catch (e) { console.warn('COCO-SSD error:', e); }
+                }
+
+                if (state.modelsReady && state.mobilenetModel) {
+                    try { analyses.modelPredictions = await state.mobilenetModel.classify(imageElement, 5) || []; }
+                    catch (e) { console.warn('MobileNet error:', e); }
+                }
+
+                if (state.roboflowWorkerId && state.roboflowEngine) {
+                    try {
+                        const rfResult = await state.roboflowEngine.infer(state.roboflowWorkerId, imageElement);
+                        if (Array.isArray(rfResult)) {
+                            analyses.roboflowDetections = rfResult.filter(d => (d.confidence || 0) >= ROBOFLOW_CONFIG.confidenceThreshold);
+                        }
+                    } catch (e) { console.warn('Roboflow inference error:', e); }
+                }
+
+                analyses.colorProfile = analyzePixels(imageElement);
+                analyses.decision = decideObject(
+                    analyses.cocoDetections,
+                    analyses.modelPredictions,
+                    analyses.roboflowDetections,
+                    analyses.colorProfile
+                );
+                return analyses;
+            }
+
+            function analyzePixels(imageElement) {
+                const canvas = document.createElement('canvas');
+                const size = 224;
+                canvas.width = size; canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(imageElement, 0, 0, size, size);
+                const data = ctx.getImageData(0, 0, size, size).data;
+
+                let rSum = 0, gSum = 0, bSum = 0, transparent = 0, bright = 0, dark = 0;
+                const total = size * size;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+                    rSum += r; gSum += g; bSum += b;
+                    if (a < 240) transparent++;
+                    const bri = (r + g + b) / 3;
+                    if (bri > 200) bright++;
+                    if (bri < 60) dark++;
+                }
+                let edgeScore = 0;
+                const gray = new Uint8ClampedArray(total);
+                for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+                    gray[j] = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+                }
+                for (let y = 1; y < size - 1; y += 2) {
+                    for (let x = 1; x < size - 1; x += 2) {
+                        const idx = y * size + x;
+                        const gx = Math.abs(gray[idx - 1] - gray[idx + 1]);
+                        const gy = Math.abs(gray[idx - size] - gray[idx + size]);
+                        if (gx + gy > 60) edgeScore++;
+                    }
+                }
+                return {
+                    avgR: Math.round(rSum / total),
+                    avgG: Math.round(gSum / total),
+                    avgB: Math.round(bSum / total),
+                    transparentRatio: transparent / total,
+                    brightRatio: bright / total,
+                    darkRatio: dark / total,
+                    edgeDensity: edgeScore / (total / 4)
+                };
+            }
+
+            function decideObject(cocoDetections, predictions, roboflowDetections, color) {
+                const result = {
+                    object: 'Unknown Object',
+                    material: 'Unknown',
+                    category: 'Unknown',
+                    recyclable: false,
+                    reusable: false,
+                    weightRange: '—',
+                    value: '—',
+                    icon: 'fa-question',
+                    confidence: 0,
+                    reason: 'No detection',
+                    detectionMethod: 'none',
+                    allDetections: []
+                };
+
+                const allDets = [];
+                for (const d of cocoDetections) {
+                    allDets.push({ source: 'COCO-SSD', label: d.class, score: d.score, bbox: d.bbox });
+                }
+                for (const d of roboflowDetections) {
+                    allDets.push({ source: 'Roboflow YOLO', label: d.class || d.label, score: d.confidence, bbox: d.bbox });
+                }
+                result.allDetections = allDets;
+
+                if (roboflowDetections && roboflowDetections.length) {
+                    const best = roboflowDetections[0];
+                    const label = (best.class || best.label || '').toLowerCase();
+                    result.object = capitalize(label);
+                    result.confidence = best.confidence || 0;
+                    result.detectionMethod = 'Roboflow YOLO (custom)';
+                    const info = MATERIAL_MAP[label] || null;
+                    if (info) {
+                        result.material = info.material;
+                        result.category = info.category;
+                        result.recyclable = info.recyclable;
+                        result.reusable = info.reusable;
+                        result.weightRange = info.weightRange;
+                        result.value = info.value;
+                        result.icon = info.icon;
+                    }
+                    result.reason = `Roboflow model detected "${label}" (${Math.round((best.confidence||0)*100)}%)`;
+                    return result;
+                }
+
+                if (cocoDetections && cocoDetections.length) {
+                    let best = null;
+                    for (const d of cocoDetections) {
+                        if (!best || d.score > best.score) best = d;
+                    }
+                    if (best && best.score > 0.4) {
+                        const label = best.class.toLowerCase();
+                        const info = MATERIAL_MAP[label];
+                        result.object = capitalize(label);
+                        result.confidence = best.score;
+                        result.detectionMethod = 'COCO-SSD detection';
+                        if (info) {
+                            result.material = info.material;
+                            result.category = info.category;
+                            result.recyclable = info.recyclable;
+                            result.reusable = info.reusable;
+                            result.weightRange = info.weightRange;
+                            result.value = info.value;
+                            result.icon = info.icon;
+                        }
+                        const others = cocoDetections.length - 1;
+                        result.reason = `COCO-SSD detected "${label}" (${Math.round(best.score*100)}%)${others > 0 ? ' + ' + others + ' other object' + (others>1?'s':'') : ''}`;
+                        return result;
+                    }
+                }
+
+                if (predictions && predictions.length) {
+                    const top = predictions[0];
+                    const label = (top.className || '').toLowerCase();
+                    const prob = top.probability || 0;
+                    if (prob > 0.15) {
+                        let matched = null;
+                        for (const key of Object.keys(MATERIAL_MAP)) {
+                            if (label.includes(key)) { matched = { key, info: MATERIAL_MAP[key] }; break; }
+                        }
+                        if (!matched) {
+                            const plasticWords = ['plastic bag', 'water bottle', 'pop bottle', 'pill bottle'];
+                            const metalWords = ['can', 'tin', 'aluminum', 'steel'];
+                            const paperWords = ['paper', 'newspaper', 'envelope'];
+                            const textileWords = ['shirt', 'jersey', 'sweater', 'jean', 'cloth'];
+                            if (plasticWords.some(w => label.includes(w))) matched = { key: 'plastic', info: { material: 'Plastic', category: 'Plastic', recyclable: true, reusable: true, weightRange: 'varies', value: '$0.15–$0.40/kg', icon: 'fa-recycle' } };
+                            else if (metalWords.some(w => label.includes(w))) matched = { key: 'metal', info: { material: 'Metal', category: 'Metal', recyclable: true, reusable: false, weightRange: 'varies', value: '$1.20–$1.80/kg', icon: 'fa-cube' } };
+                            else if (paperWords.some(w => label.includes(w))) matched = { key: 'paper', info: { material: 'Paper', category: 'Paper', recyclable: true, reusable: true, weightRange: 'varies', value: '$0.08–$0.20/kg', icon: 'fa-book' } };
+                            else if (textileWords.some(w => label.includes(w))) matched = { key: 'textile', info: { material: 'Textile', category: 'Textile', recyclable: false, reusable: true, weightRange: 'varies', value: 'Donation / resale', icon: 'fa-tshirt' } };
+                        }
+                        result.object = capitalize(top.className);
+                        result.confidence = prob * 0.75;
+                        result.detectionMethod = 'MobileNet classification';
+                        if (matched && matched.info) {
+                            result.material = matched.info.material;
+                            result.category = matched.info.category;
+                            result.recyclable = matched.info.recyclable;
+                            result.reusable = matched.info.reusable;
+                            result.weightRange = matched.info.weightRange;
+                            result.value = matched.info.value;
+                            result.icon = matched.info.icon;
+                        }
+                        result.reason = `MobileNet detected "${top.className}" (${Math.round(prob*100)}%)`;
+                        return result;
+                    }
+                }
+
+                const bottleLikely = color.brightRatio > 0.15 && color.brightRatio < 0.7 &&
+                                     color.edgeDensity > 0.03 && color.edgeDensity < 0.4;
+                if (bottleLikely) {
+                    result.object = 'Unidentified object (bottle-shaped)';
+                    result.material = 'Unknown — verify manually';
+                    result.confidence = 0.3;
+                    result.reason = 'Pixel analysis suggests a bottle-like shape but AI detection was inconclusive';
+                    result.detectionMethod = 'Pixel fallback';
+                    return result;
+                }
+
+                result.object = 'No clear object detected';
+                result.reason = 'AI could not detect a clear object. Please retake with better lighting.';
+                return result;
+            }
+
+            function capitalize(s) {
+                if (!s) return '';
+                return s.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+
+            async function startCamera() {
+                try {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Camera API not supported');
+                    state.cameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                        audio: false
+                    });
+                    els.cameraFeed.srcObject = state.cameraStream;
+                    els.cameraFeed.style.display = 'block';
+                    els.cameraPlaceholder.style.display = 'none';
+                    els.cameraOverlay.style.display = 'flex';
+                    els.scanLine.classList.add('active');
+                    els.startCameraBtn.disabled = true;
+                    els.stopCameraBtn.disabled = false;
+                    els.captureBtn.disabled = false;
+                    els.liveTag.textContent = 'LIVE';
+                    els.liveTag.style.background = 'rgba(0,255,135,0.15)';
+                    els.liveTag.style.color = 'var(--neon-green)';
+                } catch (err) {
+                    console.error('Camera error:', err);
+                    let message = 'Camera access failed.';
+                    if (err.name === 'NotAllowedError') message = 'Camera permission denied. Please allow camera access.';
+                    else if (err.name === 'NotFoundError') message = 'No camera device found.';
+                    else if (err.name === 'NotReadableError') message = 'Camera is already in use by another application.';
+                    alert(message);
+                }
+            }
+
+            function stopCamera() {
+                if (state.cameraStream) {
+                    state.cameraStream.getTracks().forEach(t => t.stop());
+                    state.cameraStream = null;
+                }
+                els.cameraFeed.srcObject = null;
+                els.cameraFeed.style.display = 'none';
+                els.cameraPlaceholder.style.display = 'block';
+                els.cameraOverlay.style.display = 'none';
+                els.detectionCanvas.style.display = 'none';
+                els.scanLine.classList.remove('active');
+                els.startCameraBtn.disabled = false;
+                els.stopCameraBtn.disabled = true;
+                els.captureBtn.disabled = true;
+                els.liveTag.textContent = 'IDLE';
+                els.liveTag.style.background = 'rgba(255,255,255,0.05)';
+                els.liveTag.style.color = 'var(--slate-400)';
+            }
+
+            function captureScan() {
+                if (!state.cameraStream || state.isScanning) return;
+                const canvas = document.createElement('canvas');
+                canvas.width = els.cameraFeed.videoWidth || 640;
+                canvas.height = els.cameraFeed.videoHeight || 480;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(els.cameraFeed, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                runFullScan(dataUrl);
+            }
+
+            function handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => runFullScan(e.target.result);
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            }
+
+            async function runFullScan(dataUrl) {
+                if (state.isScanning) return;
+                state.isScanning = true;
+                els.captureBtn.disabled = true;
+                els.scanLine.classList.add('active');
+                els.liveTag.textContent = 'ANALYZING';
+                setStatus('loading', 'Analyzing…');
+
+                const usingFallback = !state.modelsReady;
+
+                const img = await loadImage(dataUrl);
+                const analysis = await analyzeImage(img);
+                const result = buildResult(analysis, dataUrl, usingFallback);
+
+                renderResult(result);
+                state.lastResult = result;
+                state.scanHistory.unshift(result);
+                if (state.scanHistory.length > 100) state.scanHistory.pop();
+                saveHistory();
+
+                // ═══════════ ECOSYNC INTEGRATION ═══════════
+                // Broadcast to other tabs (dashboard, ecosmart) instantly
+                broadcastScan(result);
+
+                // Push to backend for persistent sync
+                if (window.EcoSync && window.EcoSync.isConnected()) {
+                    window.EcoSync.pushScan(result).then(function(resp){
+                        if (resp && resp.ok) {
+                            result.syncedToBackend = true;
+                            setChip(els.chipSync, 'ready', 'Synced');
+                            // Update analysis badge to show synced
+                            const badge = document.getElementById('analysisBadge');
+                            if (badge) badge.innerHTML = 'MULTI-MODEL AI · <i class="fas fa-cloud" style="color:var(--neon-cyan)"></i> SYNCED';
+                        }
+                    });
+                } else {
+                    setChip(els.chipSync, 'loading', 'Sync queued');
+                }
+                // ═══════════════════════════════════════════
+
+                state.isScanning = false;
+                els.captureBtn.disabled = false;
+                els.liveTag.textContent = state.cameraStream ? 'LIVE' : 'IDLE';
+                setStatus(state.modelsReady ? 'live' : 'loading', state.modelsReady ? 'Scan complete' : 'Scan complete (fallback)');
+
+                setTimeout(() => {
+                    els.analysisPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+
+            function loadImage(src) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = reject;
+                    img.src = src;
+                });
+            }
+
+            function buildResult(analysis, dataUrl, usingFallback) {
+                const d = analysis.decision;
+                const scale = state.currentWeight;
+
+                let weightDisplay = d.weightRange;
+                let weightTag = 'AI RANGE';
+                let verifiedWeight = null;
+
+                if (scale && scale.timestamp && (Date.now() - scale.timestamp) < 5 * 60 * 1000) {
+                    verifiedWeight = scale.grams;
+                    weightDisplay = `${scale.grams}g (${scale.kg} kg)`;
+                    weightTag = 'VERIFIED SCALE';
+                }
+
+                let valueDisplay = d.value;
+                if (verifiedWeight && d.category === 'Plastic' && d.recyclable) {
+                    const kg = verifiedWeight / 1000;
+                    valueDisplay = `$${(kg * 0.15).toFixed(3)}–$${(kg * 0.40).toFixed(3)} (from verified ${scale.kg} kg)`;
+                } else if (verifiedWeight && d.category === 'Glass' && d.recyclable) {
+                    const kg = verifiedWeight / 1000;
+                    valueDisplay = `$${(kg * 0.05).toFixed(3)}–$${(kg * 0.15).toFixed(3)} (from verified ${scale.kg} kg)`;
+                } else if (verifiedWeight && d.category === 'Metal' && d.recyclable) {
+                    const kg = verifiedWeight / 1000;
+                    valueDisplay = `$${(kg * 1.20).toFixed(3)}–$${(kg * 1.80).toFixed(3)} (from verified ${scale.kg} kg)`;
+                }
+
+                return {
+                    id: 'scan_' + Date.now(),
+                    timestamp: Date.now(),
+                    image: dataUrl,
+                    object: d.object,
+                    material: d.material,
+                    category: d.category,
+                    recyclable: d.recyclable,
+                    reusable: d.reusable,
+                    weightRange: weightDisplay,
+                    weightTag: weightTag,
+                    verifiedWeight: verifiedWeight,
+                    value: valueDisplay,
+                    icon: d.icon,
+                    confidence: d.confidence,
+                    reason: d.reason,
+                    detectionMethod: d.detectionMethod,
+                    usingFallback: usingFallback,
+                    allDetections: d.allDetections || []
+                };
+            }
+
+            function renderResult(r) {
+                const confPercent = Math.round(r.confidence * 100);
+                const confColor = confPercent >= 70 ? 'var(--neon-green)' : confPercent >= 40 ? 'var(--gold-light)' : '#f87171';
+
+                const methodBadge = r.detectionMethod === 'Roboflow YOLO (custom)'
+                    ? '<span class="tag tag-yolo">ROBOFLOW YOLO</span>'
+                    : r.detectionMethod === 'COCO-SSD detection'
+                        ? '<span class="tag tag-yolo">COCO-SSD</span>'
+                        : r.detectionMethod === 'MobileNet classification'
+                            ? '<span class="tag tag-ai">MOBILENET</span>'
+                            : r.detectionMethod === 'Pixel fallback'
+                                ? '<span class="tag tag-fallback">PIXEL FALLBACK</span>'
+                                : '<span class="tag tag-fallback">NO DETECTION</span>';
+
+                const weightTagCls = r.weightTag === 'VERIFIED SCALE' ? 'tag-scale' : 'tag-estimate';
+                const syncTag = r.syncedToBackend ? '<span class="tag tag-synced">SYNCED</span>' : '';
+
+                const fallbackNote = r.usingFallback
+                    ? `<div class="analysis-item" style="grid-column:1/-1;background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.25);">
+                        <div class="label" style="color:var(--gold-light);">⚠ Models Still Loading</div>
+                        <div class="value" style="font-size:0.8rem;font-weight:500;color:var(--slate-300);">
+                            This scan used pixel-fallback analysis. Retake after models finish loading for best accuracy.
+                        </div>
+                    </div>`
+                    : '';
+
+                const weightHighlight = r.weightTag === 'VERIFIED SCALE' ? 'highlight-verified' : '';
+
+                els.analysisGrid.innerHTML = `
+                    <div class="analysis-item">
+                        <div class="label">Primary Object</div>
+                        <div class="value"><i class="fas ${r.icon || 'fa-cube'}" style="color:var(--emerald-light);margin-right:4px;"></i>${escapeHtml(r.object)} ${methodBadge} ${syncTag}</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="label">Material</div>
+                        <div class="value">${escapeHtml(r.material)}</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="label">Category</div>
+                        <div class="value">${escapeHtml(r.category)}</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="label">Recyclable</div>
+                        <div class="value">${r.recyclable ? '<span class="tag tag-verified">YES</span>' : '<span class="tag tag-fallback">NO</span>'}</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="label">Reusable</div>
+                        <div class="value">${r.reusable ? '<span class="tag tag-verified">YES</span>' : '<span class="tag tag-fallback">NO</span>'}</div>
+                    </div>
+                    <div class="analysis-item ${weightHighlight}">
+                        <div class="label">Weight</div>
+                        <div class="value">${escapeHtml(r.weightRange)}<span class="tag ${weightTagCls}">${escapeHtml(r.weightTag)}</span></div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="label">Estimated Value</div>
+                        <div class="value">${escapeHtml(r.value)}</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="label">AI Reasoning</div>
+                        <div class="value" style="font-size:0.75rem;font-weight:500;color:var(--slate-300);">${escapeHtml(r.reason)}</div>
+                    </div>
+                    ${fallbackNote}
+                    <div class="analysis-item" style="grid-column:1/-1;">
+                        <div class="label">AI Confidence</div>
+                        <div class="value"><span style="color:${confColor};">${confPercent}%</span></div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width:${confPercent}%;background:${confColor};"></div>
+                        </div>
+                    </div>
+                `;
+
+                if (r.allDetections && r.allDetections.length > 1) {
+                    els.detectionListContainer.innerHTML = `
+                        <div class="detection-list">
+                            <div class="detection-list-title">
+                                <i class="fas fa-layer-group"></i> All Objects Detected (${r.allDetections.length})
+                            </div>
+                            ${r.allDetections.map(d => `
+                                <div class="detection-row">
+                                    <span class="det-name">${escapeHtml(capitalize(d.label || 'unknown'))}</span>
+                                    <span style="font-size:0.7rem;color:var(--slate-500);">${escapeHtml(d.source)}</span>
+                                    <span class="det-conf">${Math.round((d.score || 0) * 100)}%</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    els.detectionListContainer.innerHTML = '';
+                }
+
+                els.analysisActions.innerHTML = `
+                    <button class="action-btn primary" onclick="handleAction('sell')"><i class="fas fa-tag"></i> Sell on EcoMarket</button>
+                    <button class="action-btn" onclick="handleAction('recycle')"><i class="fas fa-recycle"></i> Recycle</button>
+                    <button class="action-btn" onclick="handleAction('collect')"><i class="fas fa-truck"></i> Request Collection</button>
+                    <button class="action-btn" onclick="handleAction('nearby')"><i class="fas fa-map-marker-alt"></i> Find Nearby</button>
+                `;
+
+                els.analysisPanel.classList.add('show');
+            }
+
+            function escapeHtml(s) {
+                if (s == null) return '';
+                return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            }
+
+            window.handleAction = function(action) {
+                if (!state.lastResult) return;
+                const r = state.lastResult;
+                const payload = {
+                    object: r.object,
+                    material: r.material,
+                    category: r.category,
+                    weight: r.weightRange,
+                    verifiedWeight: r.verifiedWeight,
+                    value: r.value,
+                    confidence: r.confidence,
+                    timestamp: r.timestamp
+                };
+                const encoded = encodeURIComponent(JSON.stringify(payload));
+                switch(action) {
+                    case 'sell':    window.location.href = 'ecomarket.html?action=create_listing&data=' + encoded; break;
+                    case 'recycle': window.location.href = 'ecocollect.html?action=recycle&data=' + encoded; break;
+                    case 'collect': window.location.href = 'ecocollect.html?action=request_collection&data=' + encoded; break;
+                    case 'nearby':  window.location.href = 'ecoconnect.html?action=nearby&data=' + encoded; break;
+                }
+            };
+
+            window.openDemoView = function() {
+                els.scannerView.classList.remove('active');
+                els.demoView.classList.add('active');
+                els.headerTitle.innerHTML = 'EcoScan <span>AI</span> — Demo Gallery';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                renderDemoGrid();
+            };
+
+            window.closeDemoView = function() {
+                els.demoView.classList.remove('active');
+                els.scannerView.classList.add('active');
+                els.headerTitle.innerHTML = 'EcoScan <span>AI</span> — Object Scanner';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            function renderDemoGrid() {
+                const DEMO_ITEMS = [
+                    { id: 'demo_cc', object: 'Coca-Cola Bottle', material: 'PET (Polyethylene Terephthalate)', category: 'Plastic',
+                      weightRange: '~18.5g (Coca-Cola 500ml spec)', value: '$0.15–$0.40/kg (Zimbabwe PET)',
+                      confidence: 0.89, recyclable: true, reusable: true, timestamp: Date.now() - 3600000, icon: 'fa-bottle-water' },
+                    { id: 'demo_pepsi', object: 'Pepsi Bottle', material: 'PET (Polyethylene Terephthalate)', category: 'Plastic',
+                      weightRange: '~49g (Pepsi 2L spec)', value: '$0.15–$0.40/kg (Zimbabwe PET)',
+                      confidence: 0.87, recyclable: true, reusable: true, timestamp: Date.now() - 7200000, icon: 'fa-bottle-water' },
+                    { id: 'demo_water', object: 'Water Bottle', material: 'PET (Polyethylene Terephthalate)', category: 'Plastic',
+                      weightRange: '~8.5g (lightweight 500ml)', value: '$0.15–$0.40/kg (Zimbabwe PET)',
+                      confidence: 0.92, recyclable: true, reusable: true, timestamp: Date.now() - 10800000, icon: 'fa-bottle-water' },
+                    { id: 'demo_milk', object: 'Milk Bottle', material: 'HDPE (High-Density Polyethylene)', category: 'Plastic',
+                      weightRange: '~32g (HDPE 1L spec)', value: '$0.10–$0.20/kg (Zimbabwe HDPE)',
+                      confidence: 0.85, recyclable: true, reusable: true, timestamp: Date.now() - 14400000, icon: 'fa-bottle-water' },
+                    { id: 'demo_glass', object: 'Glass Beverage Bottle', material: 'Glass (Soda-lime)', category: 'Glass',
+                      weightRange: '~180g (330ml glass)', value: '$0.05–$0.15/kg (Zimbabwe glass)',
+                      confidence: 0.83, recyclable: true, reusable: true, timestamp: Date.now() - 18000000, icon: 'fa-wine-bottle' },
+                    { id: 'demo_phone', object: 'Mobile Phone', material: 'E-Waste (battery + circuit board)', category: 'Electronics',
+                      weightRange: '120–250g', value: '$2–$15 resale',
+                      confidence: 0.88, recyclable: true, reusable: true, timestamp: Date.now() - 21600000, icon: 'fa-mobile-alt' },
+                    { id: 'demo_can', object: 'Aluminum Can', material: 'Aluminum', category: 'Metal',
+                      weightRange: '13–16g', value: '$1.20–$1.80/kg (Zimbabwe aluminum)',
+                      confidence: 0.90, recyclable: true, reusable: false, timestamp: Date.now() - 25200000, icon: 'fa-cube' }
+                ];
+
+                const userScans = state.scanHistory.map(r => ({ ...r, isUserScan: true }));
+                const allItems = [...userScans, ...DEMO_ITEMS];
+
+                if (!allItems.length) {
+                    els.demoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>No scans yet.</p></div>`;
+                    return;
+                }
+
+                els.demoGrid.innerHTML = allItems.map(r => {
+                    const confPercent = Math.round((r.confidence || 0) * 100);
+                    const dateStr = new Date(r.timestamp).toLocaleString();
+                    const thumbContent = r.image
+                        ? `<img src="${r.image}" alt="${escapeHtml(r.object)}" loading="lazy">`
+                        : `<span class="demo-icon"><i class="fas ${r.icon || 'fa-bottle-water'}"></i></span>`;
+                    const verifiedBadge = r.isUserScan
+                        ? '<span class="demo-badge blue">USER SCAN</span>'
+                        : '<span class="demo-badge gold">VERIFIED SPEC</span>';
+                    const scaleBadge = r.weightTag === 'VERIFIED SCALE' ? '<span class="demo-badge">SCALE VERIFIED</span>' : '';
+                    const syncBadge = r.syncedToBackend ? '<span class="demo-badge" style="background:rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.3);color:var(--neon-cyan)">SYNCED</span>' : '';
+
+                    return `
+                        <div class="demo-card">
+                            <div class="demo-thumb">${thumbContent}</div>
+                            <div class="demo-name">
+                                <i class="fas ${r.icon || 'fa-bottle-water'}" style="color:var(--emerald-light);font-size:0.8rem;"></i>
+                                ${escapeHtml(r.object)}
+                            </div>
+                            <div class="demo-detail"><strong style="color:var(--slate-300);">${escapeHtml(r.material)}</strong></div>
+                            <div class="demo-detail">${escapeHtml(r.weightRange || r.weight || '—')}</div>
+                            <div class="demo-detail" style="font-size:0.7rem;opacity:0.7;">${escapeHtml(r.value)}</div>
+                            <div class="demo-detail" style="font-size:0.68rem;opacity:0.6;">${dateStr}</div>
+                            <div class="demo-badges">
+                                ${r.recyclable ? '<span class="demo-badge">RECYCLABLE</span>' : ''}
+                                ${r.reusable ? '<span class="demo-badge">REUSABLE</span>' : ''}
+                                <span class="demo-badge gold">${confPercent}% CONF</span>
+                                ${scaleBadge}
+                                ${syncBadge}
+                                ${verifiedBadge}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function updateDemoStats() {
+                const h = state.scanHistory;
+                const total = h.length;
+                const recyclable = h.filter(r => r.recyclable).length;
+                const reusable = h.filter(r => r.reusable).length;
+                const avgConf = total ? Math.round(h.reduce((s, r) => s + (r.confidence || 0), 0) / total * 100) : 0;
+                document.getElementById('statTotalScans').textContent = total;
+                document.getElementById('statRecyclable').textContent = recyclable;
+                document.getElementById('statReusable').textContent = reusable;
+                document.getElementById('statAvgConfidence').innerHTML = avgConf + '<small>%</small>';
+            }
+
+            let bottleScene, bottleCamera, bottleRenderer, bottleModel;
+            let isDragging = false;
+            let prevMouse = { x: 0, y: 0 };
+            let targetRot = { x: 0, y: 0 };
+            let currentRot = { x: 0, y: 0 };
+
+            function initBottleModel() {
+                const canvas = document.getElementById('bottleCanvas');
+                const container = document.getElementById('modelContainer');
+                if (!canvas || !container || typeof THREE === 'undefined') return;
+
+                const w = container.clientWidth || 400;
+                const h = container.clientHeight || 400;
+
+                bottleScene = new THREE.Scene();
+                bottleCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+                bottleCamera.position.set(0, 0.5, 3.6);
+                bottleCamera.lookAt(0, 0, 0);
+
+                bottleRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+                bottleRenderer.setSize(w, h);
+                bottleRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                bottleScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+                const d1 = new THREE.DirectionalLight(0xffffff, 1.4); d1.position.set(5, 6, 5); bottleScene.add(d1);
+                const d2 = new THREE.DirectionalLight(0x00ff87, 0.8); d2.position.set(-4, -2, 2); bottleScene.add(d2);
+                const p1 = new THREE.PointLight(0x00e5ff, 1.2, 10); p1.position.set(0, 2, -3); bottleScene.add(p1);
+
+                bottleModel = new THREE.Group();
+
+                const body = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.42, 0.45, 1.15, 48, 1, false),
+                    new THREE.MeshPhysicalMaterial({ color: 0x10b981, roughness: 0.15, metalness: 0.05,
+                        transparent: true, opacity: 0.75, clearcoat: 0.8, clearcoatRoughness: 0.1 })
+                );
+                bottleModel.add(body);
+
+                const neck = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.18, 0.24, 0.38, 48),
+                    new THREE.MeshStandardMaterial({ color: 0x059669, roughness: 0.3, metalness: 0.1 })
+                );
+                neck.position.y = 0.75; bottleModel.add(neck);
+
+                const sh = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.24, 0.42, 0.15, 48),
+                    new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.2, metalness: 0.05 })
+                );
+                sh.position.y = 0.53; bottleModel.add(sh);
+
+                const cap = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.18, 0.2, 0.14, 48),
+                    new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.4, metalness: 0.35 })
+                );
+                cap.position.y = 1.0; bottleModel.add(cap);
+
+                const rim = new THREE.Mesh(
+                    new THREE.TorusGeometry(0.19, 0.02, 16, 48),
+                    new THREE.MeshStandardMaterial({ color: 0x047857, roughness: 0.3, metalness: 0.2 })
+                );
+                rim.position.y = 0.93; rim.rotation.x = Math.PI / 2; bottleModel.add(rim);
+
+                const btm = new THREE.Mesh(
+                    new THREE.TorusGeometry(0.45, 0.015, 16, 48),
+                    new THREE.MeshStandardMaterial({ color: 0x047857, roughness: 0.3, metalness: 0.2 })
+                );
+                btm.position.y = -0.57; btm.rotation.x = Math.PI / 2; bottleModel.add(btm);
+
+                bottleScene.add(bottleModel);
+
+                container.addEventListener('mousedown', onDragStart);
+                window.addEventListener('mousemove', onDragMove);
+                window.addEventListener('mouseup', onDragEnd);
+                container.addEventListener('touchstart', onTouchStart, { passive: false });
+                container.addEventListener('touchmove', onTouchMove, { passive: false });
+                container.addEventListener('touchend', onTouchEnd);
+                container.addEventListener('touchcancel', onTouchEnd);
+                container.addEventListener('wheel', onWheel, { passive: false });
+
+                animateBottle();
+            }
+
+            function onDragStart(e) { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; }
+            function onDragMove(e) {
+                if (!isDragging) return;
+                targetRot.y += (e.clientX - prevMouse.x) * 0.01;
+                targetRot.x += (e.clientY - prevMouse.y) * 0.01;
+                targetRot.x = Math.max(-0.6, Math.min(0.6, targetRot.x));
+                prevMouse = { x: e.clientX, y: e.clientY };
+            }
+            function onDragEnd() { isDragging = false; }
+
+            function onTouchStart(e) {
+                if (e.touches.length === 1 && e.cancelable) {
+                    e.preventDefault();
+                    isDragging = true;
+                    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            }
+            function onTouchMove(e) {
+                if (isDragging && e.touches.length === 1 && e.cancelable) {
+                    e.preventDefault();
+                    targetRot.y += (e.touches[0].clientX - prevMouse.x) * 0.01;
+                    targetRot.x += (e.touches[0].clientY - prevMouse.y) * 0.01;
+                    targetRot.x = Math.max(-0.6, Math.min(0.6, targetRot.x));
+                    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            }
+            function onTouchEnd() { isDragging = false; }
+            function onWheel(e) {
+                if (!e.cancelable) return;
+                e.preventDefault();
+                bottleCamera.position.z = Math.max(2.2, Math.min(5, bottleCamera.position.z + e.deltaY * 0.001));
+            }
+
+            function animateBottle() {
+                requestAnimationFrame(animateBottle);
+                currentRot.x += (targetRot.x - currentRot.x) * 0.1;
+                currentRot.y += (targetRot.y - currentRot.y) * 0.1;
+                if (bottleModel) {
+                    bottleModel.rotation.x = currentRot.x;
+                    bottleModel.rotation.y = currentRot.y + 0.3;
+                }
+                if (bottleRenderer && bottleScene && bottleCamera) {
+                    bottleRenderer.render(bottleScene, bottleCamera);
+                }
+            }
+
+            window.addEventListener('resize', () => {
+                if (!bottleRenderer) return;
+                const c = document.getElementById('modelContainer');
+                const w = c.clientWidth || 400;
+                const h = c.clientHeight || 400;
+                bottleCamera.aspect = w / h;
+                bottleCamera.updateProjectionMatrix();
+                bottleRenderer.setSize(w, h);
+            });
+
+            // ═══════════════════════════════════════════════════════
+            // CROSS-MODULE SYNC — listen for events from other tabs
+            // ═══════════════════════════════════════════════════════
+            function initCrossModuleSync() {
+                // BroadcastChannel for same-origin tabs
+                try {
+                    if (typeof BroadcastChannel !== 'undefined') {
+                        state.broadcastChannel = new BroadcastChannel('ecocycle_ecoscan_v1');
+                        state.broadcastChannel.onmessage = function(evt) {
+                            const msg = evt.data || {};
+                            // Dashboard or another module asks for a refresh
+                            if (msg.type === 'request:refresh') {
+                                loadHistory();
+                                renderDemoGrid();
+                            }
+                        };
+                    }
+                } catch (e) { /* silent */ }
+
+                // Storage event (fires when localStorage is modified in another tab)
+                window.addEventListener('storage', function(e) {
+                    if (e.key === STORAGE_KEY) {
+                        loadHistory();
+                    }
+                });
+
+                // EcoSync events from backend
+                window.addEventListener('ecosync:settings', function() {
+                    // Settings changed elsewhere — nothing specific for EcoScan
+                });
+                window.addEventListener('ecosync:notification', function(e) {
+                    // Optional: could toast a notification
+                    console.log('[EcoScan] notification from EcoSync:', e.detail);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadHistory();
+                initBottleModel();
+                initCrossModuleSync();
+
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => loadAIModels(), { timeout: 2500 });
+                } else {
+                    setTimeout(loadAIModels, 400);
+                }
+
+                if (!navigator.bluetooth) {
+                    els.scaleConnectBtn.disabled = true;
+                    els.scaleConnectBtn.style.opacity = '0.5';
+                    els.scaleHint.textContent = 'Web Bluetooth not supported on this browser. Use Chrome/Edge on desktop or Android.';
+                }
+
+                window.startCamera = startCamera;
+                window.stopCamera = stopCamera;
+                window.captureScan = captureScan;
+                window.handleFileUpload = handleFileUpload;
+                window.clearHistory = clearHistory;
+                window.connectScale = connectScale;
+                window.disconnectScale = disconnectScale;
+            });
+
+            // Public API for external modules
+            window.__EcoScan = {
+                refreshFromStorage: function() { loadHistory(); renderDemoGrid(); },
+                getStats: function() { return window.EcoCycleXData.getStats(); },
+                getHistory: function() { return window.EcoCycleXData.getHistory(); }
+            };
+
+            console.log('[EcoScan AI] Multi-model scanner initialized with EcoSync integration.');
+        })();
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ECOSYNC CLIENT — connects EcoScan to the EcoCycle X Java backend
+         ═══════════════════════════════════════════════════════════════════════
+         Backend:
+           REST:      http://localhost:8080/api/*
+           WebSocket: ws://localhost:8080/ws/ecosync
+
+         Scans push to /api/materials with sourceModule='ecoscan'
+         so the dashboard can aggregate them with readings from EcoSmart.
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <script>
+    (function(){
+        'use strict';
+
+        var ECO_BACKEND = window.ECOCYCLE_API || 'http://localhost:8080';
+        var ECO_WS = ECO_BACKEND.replace(/^http/, 'ws') + '/ws/ecosync';
+
+        var token = localStorage.getItem('ecocycle_token') || null;
+        var authUser = null;
+        var ws = null;
+        var wsState = 'offline';
+        var attempts = 0;
+        var listeners = new Set();
+
+        function ecoApi(path, opts){
+            opts = opts || {};
+            var headers = Object.assign({'Content-Type':'application/json'}, opts.headers || {});
+            if(token) headers['Authorization'] = 'Bearer ' + token;
+            return fetch(ECO_BACKEND + path, Object.assign({}, opts, {headers: headers}))
+                .then(function(r){
+                    return r.json().catch(function(){ return {}; }).then(function(data){
+                        if(!r.ok) return { ok:false, status: r.status, error: data.error || r.statusText };
+                        return { ok:true, status: r.status, data: data.data !== undefined ? data.data : data };
+                    });
+                })
+                .catch(function(e){ return { ok:false, error: e.message, offline: true }; });
+        }
+
+        function ensureSession(){
+            if(token){
+                return ecoApi('/api/auth/me').then(function(r){
+                    if(r.ok){ authUser = r.data; return true; }
+                    token = null;
+                    localStorage.removeItem('ecocycle_token');
+                    return registerFresh();
+                });
+            }
+            return registerFresh();
+        }
+
+        function registerFresh(){
+            var email = 'ecoscan_' + Date.now() + '_' + Math.random().toString(36).slice(2,6) + '@ecocycle.local';
+            var pass = 's_' + Math.random().toString(36).slice(2, 14);
+            return ecoApi('/api/auth/register', {
+                method: 'POST',
+                body: JSON.stringify({ email: email, password: pass, displayName: 'EcoScan User' })
+            }).then(function(r){
+                if(r.ok && r.data && r.data.token){
+                    token = r.data.token;
+                    authUser = r.data.user;
+                    localStorage.setItem('ecocycle_token', token);
+                    localStorage.setItem('ecocycle_user', JSON.stringify(authUser));
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        function connect(){
+            if(ws && (ws.readyState === 0 || ws.readyState === 1)) return;
+            setWs('connecting');
+            try { ws = new WebSocket(ECO_WS); }
+            catch(e){ setWs('offline'); scheduleReconnect(); return; }
+
+            ws.onopen = function(){
+                setWs('connected');
+                attempts = 0;
+                // Subscribe to relevant modules
+                ['ecoscan','ecosmart','settings','notifications','ecoimpact','*'].forEach(function(m){
+                    try { ws.send(JSON.stringify({action:'subscribe', module:m})); } catch(e){}
+                });
+                // Chip indicator
+                var chipSync = document.getElementById('chipSync');
+                if(chipSync){ chipSync.className = 'model-chip ready'; chipSync.innerHTML = '<i class="fas fa-cloud"></i> Sync Live'; }
+            };
+
+            ws.onmessage = function(evt){
+                try {
+                    var msg = JSON.parse(evt.data);
+                    if(msg.type === 'pong') return;
+                    handleEvent(msg);
+                    listeners.forEach(function(fn){ try{ fn(msg); }catch(e){} });
+                } catch(e){}
+            };
+
+            ws.onclose = function(){
+                setWs('reconnecting');
+                var chipSync = document.getElementById('chipSync');
+                if(chipSync){ chipSync.className = 'model-chip loading'; chipSync.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sync…'; }
+                scheduleReconnect();
+            };
+            ws.onerror = function(){ setWs('offline'); };
+        }
+
+        function scheduleReconnect(){
+            attempts++;
+            var delay = Math.min(30000, 1000 * Math.pow(2, Math.min(attempts, 5)));
+            setTimeout(connect, delay);
+        }
+
+        function handleEvent(msg){
+            // Settings updated from another device
+            if(msg.type === 'settings.updated' && msg.payload && msg.payload.settings){
+                var stored = JSON.parse(localStorage.getItem('ecocycle_smart_settings_v1') || '{}');
+                Object.keys(msg.payload.settings).forEach(function(k){ stored[k] = msg.payload.settings[k]; });
+                localStorage.setItem('ecocycle_smart_settings_v1', JSON.stringify(stored));
+                window.dispatchEvent(new CustomEvent('ecosync:settings', { detail: msg.payload.settings }));
+            }
+            // Reading pushed from another client (EcoSmart or backend IoT gateway)
+            if(msg.type === 'reading:new' && msg.payload){
+                // Refresh local stats so dashboard-facing numbers stay fresh
+                if(window.__EcoScan && window.__EcoScan.refreshFromStorage){
+                    window.__EcoScan.refreshFromStorage();
+                }
+                window.dispatchEvent(new CustomEvent('ecosync:reading', { detail: msg.payload }));
+            }
+            // Alert created elsewhere
+            if(msg.type === 'alert:new' && msg.payload){
+                window.dispatchEvent(new CustomEvent('ecosync:alert', { detail: msg.payload }));
+            }
+            // Notification
+            if(msg.type === 'notification.created' && msg.payload){
+                window.dispatchEvent(new CustomEvent('ecosync:notification', { detail: msg.payload }));
+            }
+            // A scan was pushed by another EcoScan tab / device
+            if(msg.type === 'scan:new' && msg.payload){
+                window.dispatchEvent(new CustomEvent('ecosync:scan', { detail: msg.payload }));
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // PUSH HELPERS — used by EcoScan to sync up to the dashboard
+        // ═══════════════════════════════════════════════════════════════════
+
+        function pushSetting(key, value){
+            if(!token) return Promise.resolve({ok:false, error:'not_authenticated'});
+            var body = {}; body[key] = value;
+            return ecoApi('/api/settings', { method:'PATCH', body: JSON.stringify(body) });
+        }
+
+        /**
+         * Push an EcoScan result to the backend.
+         * Scans appear as materials with sourceModule='ecoscan'
+         * so the main dashboard can aggregate them alongside
+         * EcoSmart readings.
+         */
+        function pushScan(scan){
+            if(!token || !scan) return Promise.resolve({ok:false});
+            var quantity = scan.verifiedWeight || null;
+            var unit = scan.verifiedWeight ? 'g' : (scan.weightRange && scan.weightRange.indexOf('kg') !== -1 ? 'kg' : null);
+
+            return ecoApi('/api/materials', {
+                method: 'POST',
+                body: JSON.stringify({
+                    materialType: scan.category || 'unknown',
+                    subType: scan.object || null,
+                    quantity: quantity,
+                    unit: unit,
+                    estimatedValue: scan.value || null,
+                    recyclable: !!scan.recyclable,
+                    reusable: !!scan.reusable,
+                    confidence: scan.confidence || 0,
+                    detectionMethod: scan.detectionMethod || 'unknown',
+                    sourceModule: 'ecoscan',
+                    sourceRef: scan.id,
+                    meta: {
+                        object: scan.object,
+                        material: scan.material,
+                        category: scan.category,
+                        weightRange: scan.weightRange,
+                        weightTag: scan.weightTag,
+                        verifiedWeight: scan.verifiedWeight,
+                        reason: scan.reason,
+                        allDetections: scan.allDetections || [],
+                        timestamp: scan.timestamp
+                    }
+                })
+            });
+        }
+
+        /**
+         * Push a weight reading from the BLE scale (used when scale
+         * reading is captured as its own event independent of a scan).
+         */
+        function pushWeight(weight, materialCategory){
+            if(!token || !weight) return Promise.resolve({ok:false});
+            return ecoApi('/api/materials', {
+                method: 'POST',
+                body: JSON.stringify({
+                    materialType: materialCategory || 'unspecified',
+                    quantity: weight.grams,
+                    unit: 'g',
+                    sourceModule: 'ecoscan',
+                    sourceRef: 'weight_' + weight.timestamp,
+                    meta: { kg: weight.kg, timestamp: weight.timestamp }
+                })
+            });
+        }
+
+        function pushAlert(alert){
+            if(!token || !alert) return Promise.resolve({ok:false});
+            return ecoApi('/api/command/incidents', { method:'POST', body: JSON.stringify({
+                title: alert.title || 'EcoScan alert',
+                description: alert.message || '',
+                severity: alert.severity || 'medium',
+                source: 'ecoscan'
+            })}).catch(function(){ return {ok:false}; });
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // STATUS UI — updates the EcoSync pill in the header
+        // ═══════════════════════════════════════════════════════════════════
+        function setWs(state){
+            wsState = state;
+            var bar = document.getElementById('ecosyncBar');
+            var dot = document.getElementById('ecosyncDot');
+            var text = document.getElementById('ecosyncText');
+            if(!bar || !dot || !text) return;
+
+            bar.classList.remove('live','offline','connecting');
+            dot.classList.remove('live','loading');
+
+            if(state === 'connected'){
+                bar.classList.add('live');
+                dot.classList.add('live');
+                text.textContent = 'Sync Live';
+            } else if(state === 'connecting' || state === 'reconnecting'){
+                bar.classList.add('connecting');
+                dot.classList.add('loading');
+                text.textContent = state === 'connecting' ? 'Connecting…' : 'Reconnecting…';
+            } else {
+                bar.classList.add('offline');
+                text.textContent = 'Sync Offline';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // PUBLIC API
+        // ═══════════════════════════════════════════════════════════════════
+        window.EcoSync = {
+            isConnected: function(){ return wsState === 'connected'; },
+            getStatus: function(){ return wsState; },
+            api: ecoApi,
+            pushSetting: pushSetting,
+            pushScan: pushScan,
+            pushWeight: pushWeight,
+            pushAlert: pushAlert,
+            user: function(){ return authUser; },
+            onEvent: function(fn){ listeners.add(fn); return function(){ listeners.delete(fn); }; }
+        };
+
+        // Boot the client
+        (function bootClient(){
+            ensureSession().then(function(){ connect(); });
+        })();
+
+    })();
+    </script>
+</body>
+</html>

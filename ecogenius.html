@@ -1,0 +1,2787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050b16">
+<meta name="description" content="EcoGenius — The intelligent AI assistant and conversational command layer of EcoCycle X.">
+<title>EcoGenius — AI Assistant for EcoCycle X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#050b16;--bg-2:#080f1e;--bg-3:#0c1527;--bg-4:#131f36;--bg-5:#1a2844;
+  --cy:#06b6d4;--cy-2:#22d3ee;--cy-3:#67e8f9;
+  --jade:#10b981;--jade-2:#34d399;--jade-3:#6ee7b7;
+  --violet:#8b5cf6;--violet-2:#a78bfa;--violet-3:#c4b5fd;
+  --gold:#fbbf24;--gold-2:#fde68a;--blue:#3b82f6;--blue-2:#60a5fa;
+  --rose:#f43f5e;--rose-2:#fb7185;--orange:#fb923c;
+  --white:#ffffff;--text:#e2eef7;--text-2:#94a8bb;--text-3:#647a90;--text-4:#465a6f;
+  --line:rgba(255,255,255,0.06);--line-2:rgba(255,255,255,0.1);
+  --line-cy:rgba(34,211,238,0.2);--line-cy-2:rgba(34,211,238,0.4);
+  --line-jade:rgba(52,211,153,0.24);--line-violet:rgba(167,139,250,0.28);
+  --r-xs:6px;--r-sm:10px;--r-md:14px;--r-lg:20px;--r-full:9999px;
+  --tx:0.22s cubic-bezier(0.4,0,0.2,1);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --hdr:60px;--side:300px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  line-height:1.55;font-size:14px;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow:hidden;position:relative;letter-spacing:-0.005em;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 5% 0%,rgba(6,182,212,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 95% 100%,rgba(139,92,246,0.08) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 50%,rgba(16,185,129,0.04) 0%,transparent 60%);
+}
+a{color:inherit;text-decoration:none;transition:var(--tx)}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;font-size:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+input:focus,textarea:focus{outline:none}
+::selection{background:var(--cy);color:#000}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(34,211,238,0.15);border-radius:6px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,0.32);background-clip:content-box;border:2px solid transparent}
+
+/* ============ APP SHELL ============ */
+.app{display:grid;grid-template-columns:var(--side) 1fr;height:100vh;position:relative;z-index:1}
+@media(max-width:1024px){.app{grid-template-columns:1fr}}
+
+/* ============ SIDEBAR ============ */
+.sidebar{background:linear-gradient(180deg,var(--bg-2),var(--bg));border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+@media(max-width:1024px){
+  .sidebar{position:fixed;left:-320px;top:0;width:300px;height:100vh;z-index:300;transition:left 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:8px 0 40px rgba(0,0,0,0.6)}
+  .sidebar.open{left:0}
+}
+.sidebar-hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.brand-ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;position:relative;box-shadow:0 6px 20px rgba(139,92,246,0.35),inset 0 1px 0 rgba(255,255,255,0.2)}
+.brand-ic::after{content:'';position:absolute;inset:-2px;border-radius:12px;background:linear-gradient(135deg,rgba(34,211,238,0.4),rgba(139,92,246,0.4));z-index:-1;filter:blur(8px);opacity:0.7}
+.brand-txt{min-width:0}
+.brand-name{font-size:0.98rem;font-weight:900;color:var(--white);letter-spacing:-0.035em;line-height:1}
+.brand-name .g{background:linear-gradient(135deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand-tag{font-size:0.58rem;color:var(--cy-2);font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin-top:3px;opacity:0.85}
+.close-side{width:32px;height:32px;border-radius:50%;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);color:var(--text-3);transition:var(--tx);flex-shrink:0}
+.close-side:hover{background:rgba(244,63,94,0.12);color:var(--rose-2)}
+@media(max-width:1024px){.close-side{display:flex}}
+
+.sidebar-actions{padding:12px 14px;flex-shrink:0}
+.btn-newchat{width:100%;padding:10px 14px;border-radius:10px;background:linear-gradient(135deg,rgba(34,211,238,0.14),rgba(139,92,246,0.08));border:1px solid var(--line-cy-2);color:var(--cy-3);font-weight:700;font-size:0.82rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:var(--tx);letter-spacing:-0.005em}
+.btn-newchat:hover{background:linear-gradient(135deg,rgba(34,211,238,0.22),rgba(139,92,246,0.14));transform:translateY(-1px)}
+
+.sidebar-scroll{flex:1;overflow-y:auto;padding:0 14px 20px}
+.sidebar-sec{margin-bottom:16px}
+.sidebar-sec-t{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-4);padding:8px 8px 6px;font-weight:800;display:flex;align-items:center;justify-content:space-between}
+.conv-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:var(--tx);margin-bottom:2px;border:1px solid transparent;position:relative}
+.conv-item:hover{background:rgba(34,211,238,0.05);border-color:var(--line)}
+.conv-item.active{background:rgba(34,211,238,0.08);border-color:var(--line-cy)}
+.conv-item-ic{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(34,211,238,0.08);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:0.72rem}
+.conv-item-txt{flex:1;min-width:0}
+.conv-item-txt strong{display:block;font-size:0.78rem;color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-item-txt small{display:block;font-size:0.62rem;color:var(--text-4);font-family:var(--font-mono);margin-top:2px}
+.conv-item-del{opacity:0;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:0.7rem;transition:var(--tx)}
+.conv-item:hover .conv-item-del{opacity:1}
+.conv-item-del:hover{background:rgba(244,63,94,0.12);color:var(--rose-2)}
+
+.sidebar-ft{padding:12px 14px;border-top:1px solid var(--line);flex-shrink:0;font-size:0.68rem;color:var(--text-3)}
+.env-indicator{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text-3)}
+.env-indicator .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pulse 2s infinite}
+.env-indicator .dot.prod{background:var(--jade-2);box-shadow:0 0 8px var(--jade-2)}
+
+.mob-ovl{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:250;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.mob-ovl.open{opacity:1;pointer-events:auto}
+
+/* ============ MAIN ============ */
+.main{display:flex;flex-direction:column;min-width:0;height:100vh}
+
+.topbar{height:var(--hdr);flex-shrink:0;background:rgba(5,11,22,0.85);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 18px;position:relative;z-index:10}
+.menu-btn{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--text-2);transition:var(--tx)}
+.menu-btn:hover{color:var(--cy-2);border-color:var(--line-cy)}
+@media(max-width:1024px){.menu-btn{display:flex}}
+
+.topbar-title{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-title h1{font-size:0.95rem;font-weight:800;color:var(--white);letter-spacing:-0.02em;line-height:1.2}
+.topbar-title .sub{font-size:0.68rem;color:var(--text-3);font-family:var(--font-mono);display:flex;align-items:center;gap:6px}
+.topbar-title .sub .status-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.topbar-title .sub .status-dot.online{background:var(--jade-2);box-shadow:0 0 6px var(--jade-2)}
+
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-btn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--text-2);transition:var(--tx);position:relative}
+.tb-btn:hover{color:var(--cy-2);border-color:var(--line-cy);background:rgba(34,211,238,0.08)}
+.tb-btn.active{color:var(--cy-2);border-color:var(--line-cy-2);background:rgba(34,211,238,0.1)}
+.tb-btn.ghost{border-color:transparent;background:transparent}
+.tb-btn .dot-ind{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--jade-2);box-shadow:0 0 6px var(--jade-2)}
+@media(max-width:640px){.tb-btn.hide-sm{display:none}}
+
+.tb-user{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:var(--r-full);background:rgba(255,255,255,0.03);border:1px solid var(--line);cursor:pointer;transition:var(--tx)}
+.tb-user:hover{border-color:var(--line-cy);background:rgba(34,211,238,0.06)}
+.tb-user-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.72rem;flex-shrink:0}
+.tb-user-info{display:flex;flex-direction:column;line-height:1.1}
+.tb-user-info strong{font-size:0.72rem;color:var(--white);font-weight:700}
+.tb-user-info small{font-size:0.56rem;color:var(--cy-2);font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
+@media(max-width:640px){.tb-user-info{display:none}}
+
+/* ============ CHAT AREA ============ */
+.chat-wrap{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;overflow:hidden}
+.chat-scroll{flex:1;overflow-y:auto;padding:24px 0;scroll-behavior:smooth}
+@media(max-width:640px){.chat-scroll{padding:16px 0}}
+.chat-inner{max-width:880px;margin:0 auto;padding:0 24px;width:100%}
+@media(max-width:640px){.chat-inner{padding:0 14px}}
+
+/* ============ WELCOME ============ */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;min-height:calc(100vh - var(--hdr) - 140px);max-width:720px;margin:0 auto}
+.welcome-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:var(--r-full);background:linear-gradient(135deg,rgba(34,211,238,0.12),rgba(139,92,246,0.08));border:1px solid var(--line-cy-2);color:var(--cy-3);font-size:0.66rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:24px}
+.welcome-hero{width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.2rem;box-shadow:0 20px 60px rgba(139,92,246,0.4),inset 0 1px 0 rgba(255,255,255,0.2);margin-bottom:24px;position:relative}
+.welcome-hero::after{content:'';position:absolute;inset:-4px;border-radius:28px;background:linear-gradient(135deg,rgba(34,211,238,0.4),rgba(139,92,246,0.4));filter:blur(16px);z-index:-1;opacity:0.7}
+.welcome h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:900;color:var(--white);letter-spacing:-0.035em;line-height:1.15;margin-bottom:14px;max-width:600px}
+.welcome h2 .g{background:linear-gradient(135deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.welcome p{font-size:0.92rem;color:var(--text-2);line-height:1.65;max-width:520px;margin-bottom:8px}
+.welcome-env{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.24);color:var(--gold-2);font-size:0.72rem;font-weight:600;margin:20px auto 0;font-family:var(--font-mono);letter-spacing:-0.01em}
+
+.suggested{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:32px;width:100%;max-width:720px}
+.suggested-card{padding:14px 16px;border-radius:12px;background:linear-gradient(160deg,rgba(12,21,39,0.7),rgba(8,15,30,0.5));border:1px solid var(--line-2);cursor:pointer;transition:var(--tx);text-align:left;display:flex;align-items:flex-start;gap:11px}
+.suggested-card:hover{border-color:var(--line-cy);transform:translateY(-2px);background:linear-gradient(160deg,rgba(34,211,238,0.08),rgba(139,92,246,0.04))}
+.suggested-card-ic{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:rgba(34,211,238,0.1);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:0.8rem}
+.suggested-card-ic.violet{background:rgba(167,139,250,0.1);border-color:var(--line-violet);color:var(--violet-2)}
+.suggested-card-ic.jade{background:rgba(52,211,153,0.1);border-color:var(--line-jade);color:var(--jade-2)}
+.suggested-card-txt{flex:1;min-width:0}
+.suggested-card-txt strong{display:block;font-size:0.82rem;color:var(--white);font-weight:700;margin-bottom:3px;letter-spacing:-0.01em}
+.suggested-card-txt small{display:block;font-size:0.7rem;color:var(--text-3);line-height:1.4}
+
+/* ============ MESSAGES ============ */
+.msg-group{margin-bottom:22px;display:flex;flex-direction:column}
+.msg-group.user{align-items:flex-end}
+.msg-group.assistant{align-items:flex-start}
+.msg-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.66rem;color:var(--text-3);font-weight:600}
+.msg-group.user .msg-meta{flex-direction:row-reverse}
+.msg-meta-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.62rem;flex-shrink:0}
+.msg-group.assistant .msg-meta-av{background:linear-gradient(135deg,#22d3ee,#8b5cf6);color:#fff;font-weight:800}
+.msg-group.user .msg-meta-av{background:rgba(255,255,255,0.08);border:1px solid var(--line-2);color:var(--text-2);font-weight:800}
+.msg-meta time{font-family:var(--font-mono);font-size:0.6rem}
+
+.bubble{max-width:92%;padding:14px 18px;border-radius:16px;font-size:0.88rem;line-height:1.65;position:relative;word-wrap:break-word;overflow-wrap:break-word}
+@media(min-width:640px){.bubble{max-width:85%}}
+
+.msg-group.user .bubble{background:linear-gradient(135deg,rgba(34,211,238,0.16),rgba(139,92,246,0.1));border:1px solid var(--line-cy-2);color:var(--white);border-bottom-right-radius:5px;font-weight:500}
+.msg-group.assistant .bubble{background:linear-gradient(160deg,rgba(12,21,39,0.85),rgba(8,15,30,0.7));border:1px solid var(--line-2);color:var(--text);border-bottom-left-radius:5px}
+.msg-group.assistant .bubble.error{background:rgba(244,63,94,0.08);border-color:rgba(244,63,94,0.28);color:var(--rose-2)}
+.msg-group.assistant .bubble.speaking{border-color:var(--line-cy-2);box-shadow:0 0 0 3px rgba(34,211,238,0.12),0 0 20px rgba(34,211,238,0.15)}
+
+.bubble p{margin-bottom:10px}
+.bubble p:last-child{margin-bottom:0}
+.bubble strong{color:var(--white);font-weight:700}
+.bubble em{color:var(--cy-3);font-style:normal;font-weight:600}
+.bubble code{font-family:var(--font-mono);font-size:0.82em;background:rgba(0,0,0,0.35);padding:2px 6px;border-radius:5px;color:var(--jade-3)}
+.bubble ul,.bubble ol{margin:8px 0;padding-left:22px}
+.bubble li{margin-bottom:4px;line-height:1.55}
+.bubble a{color:var(--cy-3);text-decoration:underline;text-decoration-color:rgba(34,211,238,0.4);text-underline-offset:3px}
+
+/* Rich content — headings, tables, callouts */
+.bubble h3{font-size:1rem;font-weight:800;color:var(--white);margin:14px 0 8px;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px}
+.bubble h3:first-child{margin-top:0}
+.bubble h3 i{color:var(--cy-2);font-size:0.85rem}
+.bubble h4{font-size:0.88rem;font-weight:700;color:var(--cy-3);margin:12px 0 6px;letter-spacing:-0.01em;text-transform:uppercase}
+.bubble table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.8rem;border-radius:8px;overflow:hidden}
+.bubble table th{background:rgba(34,211,238,0.08);color:var(--cy-3);font-weight:800;text-align:left;padding:8px 10px;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--line-2)}
+.bubble table td{padding:8px 10px;border-bottom:1px dashed rgba(255,255,255,0.05);color:var(--text)}
+.bubble table tr:last-child td{border-bottom:0}
+.bubble .callout{padding:10px 14px;border-radius:10px;margin:12px 0;font-size:0.82rem;display:flex;gap:10px;align-items:flex-start;line-height:1.55}
+.bubble .callout i{flex-shrink:0;margin-top:2px;font-size:0.85rem}
+.bubble .callout.info{background:rgba(34,211,238,0.06);border:1px solid var(--line-cy);color:var(--cy-3)}
+.bubble .callout.warn{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.24);color:var(--gold-2)}
+.bubble .callout.danger{background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.24);color:var(--rose-2)}
+.bubble .callout.success{background:rgba(52,211,153,0.06);border:1px solid var(--line-jade);color:var(--jade-2)}
+
+.streaming-cursor{display:inline-block;width:8px;height:16px;background:var(--cy-2);margin-left:2px;vertical-align:middle;border-radius:1px;animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+
+/* Thinking */
+.thinking{display:flex;align-items:center;gap:8px;padding:12px 18px;border-radius:16px;border-bottom-left-radius:5px;background:linear-gradient(160deg,rgba(12,21,39,0.85),rgba(8,15,30,0.7));border:1px solid var(--line-2)}
+.thinking-dots{display:flex;gap:4px}
+.thinking-dots span{width:7px;height:7px;border-radius:50%;background:var(--cy-2);opacity:0.4;animation:thinkBounce 1.4s infinite ease-in-out}
+.thinking-dots span:nth-child(2){animation-delay:0.16s}
+.thinking-dots span:nth-child(3){animation-delay:0.32s}
+.thinking-label{font-size:0.76rem;color:var(--text-3);font-family:var(--font-mono)}
+@keyframes thinkBounce{0%,80%,100%{transform:translateY(0);opacity:0.4}40%{transform:translateY(-6px);opacity:1}}
+
+/* Reasoning steps (shown during "thinking") */
+.reasoning{display:flex;flex-direction:column;gap:6px;padding:10px 14px;border-radius:12px;background:rgba(139,92,246,0.05);border:1px solid var(--line-violet);margin:8px 0;font-size:0.78rem}
+.reasoning-step{display:flex;align-items:flex-start;gap:8px;color:var(--violet-3);font-family:var(--font-mono);font-size:0.72rem;opacity:0;animation:stepIn 0.35s forwards}
+.reasoning-step i{color:var(--violet-2);flex-shrink:0;margin-top:2px}
+@keyframes stepIn{to{opacity:1}}
+
+/* Action cards */
+.action-cards{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.action-card{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;background:rgba(34,211,238,0.05);border:1px solid var(--line-cy);transition:var(--tx);cursor:pointer;text-align:left;width:100%}
+.action-card:hover{background:rgba(34,211,238,0.1);border-color:var(--line-cy-2);transform:translateX(2px)}
+.action-card.primary{background:linear-gradient(135deg,rgba(34,211,238,0.12),rgba(139,92,246,0.08));border-color:var(--line-cy-2)}
+.action-card.primary:hover{background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(139,92,246,0.14))}
+.action-card-ic{width:34px;height:34px;border-radius:9px;flex-shrink:0;background:rgba(34,211,238,0.12);border:1px solid var(--line-cy);display:flex;align-items:center;justify-content:center;color:var(--cy-2);font-size:0.85rem}
+.action-card-ic.violet{background:rgba(167,139,250,0.12);border-color:var(--line-violet);color:var(--violet-2)}
+.action-card-ic.jade{background:rgba(52,211,153,0.12);border-color:var(--line-jade);color:var(--jade-2)}
+.action-card-ic.gold{background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.28);color:var(--gold-2)}
+.action-card-txt{flex:1;min-width:0}
+.action-card-txt strong{display:block;font-size:0.82rem;color:var(--white);font-weight:700;margin-bottom:2px;letter-spacing:-0.01em}
+.action-card-txt small{display:block;font-size:0.7rem;color:var(--text-3);line-height:1.4}
+.action-card-arrow{color:var(--text-3);font-size:0.75rem;flex-shrink:0;transition:var(--tx)}
+.action-card:hover .action-card-arrow{color:var(--cy-2);transform:translateX(2px)}
+
+/* Sources */
+.sources{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line-2)}
+.sources-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-4);font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sources-label i{color:var(--cy-2)}
+.source-chips{display:flex;flex-wrap:wrap;gap:6px}
+.source-chip{padding:3px 9px;border-radius:var(--r-full);background:rgba(34,211,238,0.08);border:1px solid var(--line-cy);color:var(--cy-3);font-size:0.62rem;font-weight:700;font-family:var(--font-mono);letter-spacing:-0.01em;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:var(--tx)}
+.source-chip:hover{background:rgba(34,211,238,0.14)}
+
+/* Message actions */
+.msg-actions{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.msg-action{padding:4px 9px;border-radius:var(--r-full);background:rgba(255,255,255,0.03);border:1px solid var(--line);color:var(--text-3);font-size:0.66rem;font-weight:600;display:inline-flex;align-items:center;gap:5px;transition:var(--tx);cursor:pointer}
+.msg-action:hover{background:rgba(34,211,238,0.08);border-color:var(--line-cy);color:var(--cy-2)}
+.msg-action.voted-up{background:rgba(52,211,153,0.12);border-color:var(--line-jade);color:var(--jade-2)}
+.msg-action.voted-down{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.28);color:var(--rose-2)}
+
+/* Speaker button (voice output) */
+.speaker-btn{
+  padding:4px 10px;border-radius:var(--r-full);
+  background:rgba(34,211,238,0.06);
+  border:1px solid var(--line-cy);
+  color:var(--cy-2);font-size:0.66rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:var(--tx);cursor:pointer;position:relative;
+}
+.speaker-btn:hover{background:rgba(34,211,238,0.14);border-color:var(--line-cy-2);transform:translateY(-1px)}
+.speaker-btn.speaking{
+  background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(139,92,246,0.14));
+  border-color:var(--cy-2);color:var(--white);
+  box-shadow:0 0 0 3px rgba(34,211,238,0.15);
+  animation:speakerPulse 1.5s ease-in-out infinite;
+}
+@keyframes speakerPulse{0%,100%{box-shadow:0 0 0 3px rgba(34,211,238,0.15)}50%{box-shadow:0 0 0 6px rgba(34,211,238,0.05)}}
+.speaker-btn i{font-size:0.7rem}
+/* Animated wave bars */
+.speaker-wave{display:inline-flex;align-items:flex-end;gap:2px;height:11px;margin-left:1px}
+.speaker-wave span{width:2px;background:currentColor;border-radius:1px;opacity:0.85;animation:waveBar 0.9s ease-in-out infinite}
+.speaker-wave span:nth-child(1){height:5px;animation-delay:0s}
+.speaker-wave span:nth-child(2){height:9px;animation-delay:0.12s}
+.speaker-wave span:nth-child(3){height:4px;animation-delay:0.24s}
+.speaker-wave span:nth-child(4){height:10px;animation-delay:0.36s}
+@keyframes waveBar{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
+
+/* Audio message player */
+.audio-msg{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:rgba(34,211,238,0.06);border:1px solid var(--line-cy);margin-top:6px}
+.audio-play{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--tx);cursor:pointer;font-size:0.72rem;box-shadow:0 4px 12px rgba(139,92,246,0.3)}
+.audio-play:hover{transform:scale(1.08)}
+.audio-wave{flex:1;height:24px;display:flex;align-items:center;gap:1.5px;overflow:hidden}
+.audio-wave-bar{width:2px;background:var(--cy-2);border-radius:2px;opacity:0.5;transition:opacity 0.15s}
+.audio-wave.playing .audio-wave-bar{opacity:1}
+.audio-dur{font-family:var(--font-mono);font-size:0.66rem;color:var(--cy-3);flex-shrink:0}
+
+/* Status notice */
+.notice{padding:9px 14px;border-radius:10px;font-size:0.74rem;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);color:var(--gold-2);margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.notice i{font-size:0.8rem;flex-shrink:0;margin-top:2px}
+.notice strong{color:var(--white);font-weight:800}
+.notice.error{background:rgba(244,63,94,0.06);border-color:rgba(244,63,94,0.22);color:var(--rose-2)}
+.notice.info{background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.22);color:var(--blue-2)}
+
+/* ============ COMPOSER ============ */
+.composer{flex-shrink:0;padding:16px 24px 20px;background:linear-gradient(180deg,transparent,rgba(5,11,22,0.85) 40%);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+@media(max-width:640px){.composer{padding:12px 12px 16px}}
+.composer-inner{max-width:880px;margin:0 auto}
+.composer-box{display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px;border-radius:16px;background:var(--bg-2);border:1px solid var(--line-2);transition:var(--tx);position:relative}
+.composer-box:focus-within{border-color:var(--line-cy-2);background:rgba(34,211,238,0.03);box-shadow:0 0 0 4px rgba(34,211,238,0.08)}
+.composer-box.recording{border-color:rgba(244,63,94,0.5);background:rgba(244,63,94,0.04);box-shadow:0 0 0 4px rgba(244,63,94,0.08)}
+.composer-ta{flex:1;min-height:24px;max-height:200px;background:none;border:0;color:var(--white);font-size:0.9rem;font-family:inherit;resize:none;outline:none;padding:8px 0;line-height:1.5}
+.composer-ta::placeholder{color:var(--text-3)}
+.composer-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.composer-btn{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--text-3);transition:var(--tx);background:transparent;border:1px solid transparent;position:relative}
+.composer-btn:hover:not([disabled]){background:rgba(255,255,255,0.05);color:var(--text-2);border-color:var(--line)}
+.composer-btn[disabled]{opacity:0.35;cursor:not-allowed}
+.composer-btn.mic{color:var(--cy-2)}
+.composer-btn.mic:hover:not([disabled]){background:rgba(34,211,238,0.1);border-color:var(--line-cy);color:var(--cy-3)}
+.composer-btn.mic.listening{background:linear-gradient(135deg,rgba(244,63,94,0.2),rgba(139,92,246,0.15));color:#fff;border-color:rgba(244,63,94,0.4);animation:micPulse 1.4s ease-in-out infinite}
+.composer-btn.mic.recording{background:linear-gradient(135deg,rgba(251,191,36,0.25),rgba(244,63,94,0.2));color:#fff;border-color:rgba(251,191,36,0.5);animation:micPulse 1.4s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,0.4)}50%{box-shadow:0 0 0 8px rgba(244,63,94,0)}}
+.composer-send{background:linear-gradient(135deg,#22d3ee,#8b5cf6);color:#fff;box-shadow:0 4px 16px rgba(139,92,246,0.3);transition:var(--tx)}
+.composer-send:hover:not([disabled]){transform:scale(1.05);box-shadow:0 6px 20px rgba(139,92,246,0.5)}
+.composer-send[disabled]{background:rgba(255,255,255,0.06);color:var(--text-3);box-shadow:none;opacity:1;cursor:not-allowed}
+.composer-hint{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;font-size:0.68rem;color:var(--text-4);font-family:var(--font-mono)}
+.composer-hint span{display:flex;align-items:center;gap:6px}
+.composer-hint kbd{font-family:var(--font-mono);font-size:0.58rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid var(--line-2);color:var(--text-3)}
+@media(max-width:640px){.composer-hint{font-size:0.6rem}}
+
+/* ============ VOICE OVERLAY ============ */
+.voice-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(2,6,14,0.92);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.voice-overlay.open{display:flex;animation:fadeIn 0.25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.voice-panel{
+  max-width:520px;width:100%;text-align:center;
+  padding:32px 24px 28px;
+  background:linear-gradient(160deg,rgba(12,21,39,0.9),rgba(8,15,30,0.85));
+  border:1px solid var(--line-cy-2);
+  border-radius:24px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(34,211,238,0.1);
+}
+.voice-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 14px;border-radius:var(--r-full);
+  background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);
+  color:var(--rose-2);font-size:0.66rem;font-weight:800;
+  letter-spacing:0.14em;text-transform:uppercase;margin-bottom:20px;
+}
+.voice-tag .live-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose);animation:pulse 1.4s infinite}
+.voice-orb{
+  width:110px;height:110px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#22d3ee,#8b5cf6 70%);
+  margin:0 auto 20px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:2.4rem;
+  box-shadow:0 0 60px rgba(139,92,246,0.5),0 0 100px rgba(34,211,238,0.3);
+  animation:orbPulse 2s ease-in-out infinite;
+  position:relative;
+}
+.voice-orb::after{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  border:2px solid rgba(34,211,238,0.3);
+  animation:orbRing 2s ease-out infinite;
+}
+@keyframes orbPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes orbRing{0%{transform:scale(1);opacity:0.8}100%{transform:scale(1.4);opacity:0}}
+.voice-wave-lg{
+  display:flex;align-items:center;justify-content:center;
+  gap:4px;height:60px;margin:16px 0 20px;
+}
+.voice-wave-lg span{
+  width:4px;background:linear-gradient(180deg,var(--cy-2),var(--violet-2));
+  border-radius:2px;min-height:6px;transition:height 0.15s;
+  animation:voiceWave 0.9s ease-in-out infinite;
+}
+.voice-wave-lg span:nth-child(1){height:12px;animation-delay:0s}
+.voice-wave-lg span:nth-child(2){height:24px;animation-delay:0.1s}
+.voice-wave-lg span:nth-child(3){height:38px;animation-delay:0.2s}
+.voice-wave-lg span:nth-child(4){height:52px;animation-delay:0.3s}
+.voice-wave-lg span:nth-child(5){height:38px;animation-delay:0.4s}
+.voice-wave-lg span:nth-child(6){height:24px;animation-delay:0.5s}
+.voice-wave-lg span:nth-child(7){height:12px;animation-delay:0.6s}
+@keyframes voiceWave{0%,100%{transform:scaleY(0.5)}50%{transform:scaleY(1)}}
+.voice-transcript{
+  min-height:60px;max-height:200px;overflow-y:auto;
+  padding:14px 16px;border-radius:14px;
+  background:rgba(34,211,238,0.04);
+  border:1px solid var(--line-cy);
+  color:var(--white);font-size:0.92rem;line-height:1.6;
+  text-align:left;margin-bottom:20px;
+}
+.voice-transcript .interim{color:var(--text-3);font-style:italic}
+.voice-transcript .placeholder{color:var(--text-4);font-style:italic}
+.voice-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.voice-act{
+  padding:11px 20px;border-radius:var(--r-full);
+  font-weight:700;font-size:0.84rem;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:var(--tx);cursor:pointer;
+  border:1px solid transparent;
+}
+.voice-act.cancel{background:rgba(255,255,255,0.05);border-color:var(--line-2);color:var(--text-2)}
+.voice-act.cancel:hover{background:rgba(244,63,94,0.1);border-color:rgba(244,63,94,0.3);color:var(--rose-2)}
+.voice-act.send{background:linear-gradient(135deg,#22d3ee,#8b5cf6);color:#fff;box-shadow:0 8px 24px rgba(139,92,246,0.4)}
+.voice-act.send:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(139,92,246,0.5)}
+.voice-act.record{
+  background:linear-gradient(135deg,rgba(251,191,36,0.16),rgba(244,63,94,0.12));
+  border-color:rgba(251,191,36,0.4);color:var(--gold-2);
+}
+.voice-act.record.active{background:linear-gradient(135deg,rgba(244,63,94,0.25),rgba(251,191,36,0.2));color:#fff;border-color:var(--rose)}
+.voice-hint{margin-top:14px;font-size:0.7rem;color:var(--text-4);font-family:var(--font-mono);line-height:1.6}
+
+/* ============ DIAGNOSTICS PANEL ============ */
+.diag-panel{position:fixed;right:0;bottom:0;top:var(--hdr);width:340px;max-width:90vw;background:linear-gradient(180deg,var(--bg-2),var(--bg));border-left:1px solid var(--line-cy);z-index:80;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:-20px 0 60px rgba(0,0,0,0.5)}
+.diag-panel.open{transform:translateX(0)}
+.diag-hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.diag-hd h3{font-size:0.85rem;font-weight:800;color:var(--white);display:flex;align-items:center;gap:8px}
+.diag-hd h3 i{color:var(--cy-2);font-size:0.8rem}
+.diag-body{flex:1;overflow-y:auto;padding:14px 16px;font-size:0.74rem}
+.diag-group{margin-bottom:16px}
+.diag-group-t{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-4);font-weight:800;margin-bottom:8px}
+.diag-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.04);font-size:0.72rem}
+.diag-row:last-child{border-bottom:0}
+.diag-row .k{color:var(--text-3);font-family:var(--font-mono);font-size:0.68rem}
+.diag-row .v{color:var(--text);font-family:var(--font-mono);font-size:0.7rem;text-align:right;word-break:break-all}
+.diag-row .v.ok{color:var(--jade-2)}
+.diag-row .v.warn{color:var(--gold-2)}
+.diag-row .v.err{color:var(--rose-2)}
+
+/* ============ SETTINGS DRAWER ============ */
+.settings-panel{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.95);
+  width:min(520px,92vw);max-height:88vh;overflow-y:auto;
+  background:linear-gradient(180deg,var(--bg-2),var(--bg));
+  border:1px solid var(--line-cy-2);border-radius:20px;
+  z-index:400;padding:24px;opacity:0;pointer-events:none;
+  transition:all 0.28s cubic-bezier(0.34,1.4,0.64,1);
+  box-shadow:0 40px 100px rgba(0,0,0,0.7),0 0 0 1px rgba(34,211,238,0.1);
+}
+.settings-panel.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.settings-ovl{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:390;opacity:0;pointer-events:none;transition:opacity 0.28s}
+.settings-ovl.open{opacity:1;pointer-events:auto}
+.settings-title{font-size:1rem;font-weight:800;color:var(--white);letter-spacing:-0.02em;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.settings-title i{color:var(--cy-2)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.settings-row:last-of-type{border-bottom:0}
+.settings-row-txt{flex:1;min-width:0}
+.settings-row-txt strong{display:block;font-size:0.84rem;color:var(--white);font-weight:700;margin-bottom:2px}
+.settings-row-txt small{display:block;font-size:0.72rem;color:var(--text-3);line-height:1.4}
+.settings-select{padding:8px 30px 8px 12px;border-radius:9px;background:var(--bg-3);border:1px solid var(--line-2);color:var(--text);font-size:0.78rem;font-weight:600;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a8bb' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;max-width:180px}
+.settings-select:focus{border-color:var(--line-cy-2);outline:none}
+.switch{position:relative;width:44px;height:24px;flex-shrink:0;display:inline-block}
+.switch input{opacity:0;width:0;height:0}
+.switch-sl{position:absolute;inset:0;background:#1e293b;border-radius:24px;cursor:pointer;transition:var(--tx);border:1px solid var(--line)}
+.switch-sl::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:50%;transform:translateY(-50%);background:#64748b;border-radius:50%;transition:var(--tx)}
+.switch input:checked + .switch-sl{background:rgba(34,211,238,0.25);border-color:var(--line-cy-2)}
+.switch input:checked + .switch-sl::before{transform:translate(20px,-50%);background:var(--cy-2);box-shadow:0 0 10px var(--cy-2)}
+.settings-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text-2);transition:var(--tx)}
+.settings-close:hover{background:rgba(244,63,94,0.15);color:var(--rose-2);transform:rotate(90deg)}
+.settings-range{width:100%;accent-color:var(--cy-2);margin-top:8px}
+
+/* ============ TOAST ============ */
+.toasts{position:fixed;top:76px;right:20px;z-index:4000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px;width:100%}
+.toast{padding:12px 16px;border-radius:12px;background:rgba(12,21,39,0.98);backdrop-filter:blur(20px);border:1px solid var(--line-cy);color:var(--white);font-size:0.8rem;font-weight:500;box-shadow:0 16px 40px rgba(0,0,0,0.5);display:flex;align-items:flex-start;gap:10px;animation:toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:auto;line-height:1.5}
+.toast.warn{border-color:rgba(251,191,36,0.4)}
+.toast.error{border-color:rgba(244,63,94,0.4)}
+.toast i{font-size:0.95rem;flex-shrink:0;margin-top:1px}
+.toast i.ok{color:var(--jade-2)}
+.toast i.wn{color:var(--gold-2)}
+.toast i.er{color:var(--rose-2)}
+.toast i.in{color:var(--cy-2)}
+.toast span{flex:1}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px) scale(0.94)}to{opacity:1;transform:translateX(0) scale(1)}}
+@media(max-width:600px){.toasts{left:12px;right:12px;max-width:none;top:70px}}
+
+/* ============ UTILS ============ */
+.hidden{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+*:focus-visible{outline:2px solid var(--cy-2);outline-offset:2px;border-radius:4px}
+button:focus-visible{outline-offset:2px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-hd">
+      <div class="brand">
+        <div class="brand-ic"><i class="fas fa-brain"></i></div>
+        <div class="brand-txt">
+          <div class="brand-name">Eco<span class="g">Genius</span></div>
+          <div class="brand-tag">AI for EcoCycle X</div>
+        </div>
+      </div>
+      <button class="close-side" onclick="closeSidebar()" aria-label="Close sidebar" type="button"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="sidebar-actions">
+      <button class="btn-newchat" onclick="startNewChat()" type="button">
+        <i class="fas fa-plus"></i> New Conversation
+      </button>
+    </div>
+
+    <div class="sidebar-scroll">
+      <div class="sidebar-sec">
+        <div class="sidebar-sec-t"><span>Recent conversations</span></div>
+        <div id="convList"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-ft">
+      <div class="env-indicator">
+        <span class="dot" id="envDot"></span>
+        <span id="envLabel">DEVELOPMENT</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="mob-ovl" id="mobOvl" onclick="closeSidebar()"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn" onclick="openSidebar()" aria-label="Menu" type="button"><i class="fas fa-bars"></i></button>
+
+      <div class="topbar-title">
+        <div>
+          <h1>EcoGenius</h1>
+          <div class="sub" id="topbarSub">
+            <span class="status-dot" id="topbarStatusDot"></span>
+            <span id="topbarStatusText">Local Knowledge Engine</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="tb-btn hide-sm" id="autoSpeakBtn" onclick="toggleAutoSpeak()" aria-label="Toggle auto-speak" title="Auto-speak responses" type="button">
+          <i class="fas fa-volume-high"></i>
+        </button>
+        <button class="tb-btn hide-sm" onclick="openVoiceSettings()" aria-label="Voice settings" title="Voice settings" type="button">
+          <i class="fas fa-sliders"></i>
+        </button>
+        <button class="tb-btn hide-sm" onclick="clearCurrentChat()" aria-label="Clear conversation" title="Clear conversation" type="button">
+          <i class="fas fa-broom"></i>
+        </button>
+        <button class="tb-btn hide-sm" onclick="showSuggested()" aria-label="Show suggested prompts" title="Suggested prompts" type="button">
+          <i class="fas fa-wand-magic-sparkles"></i>
+        </button>
+        <button class="tb-btn" id="diagBtn" onclick="toggleDiag()" aria-label="Developer diagnostics" title="Developer diagnostics" type="button">
+          <i class="fas fa-terminal"></i>
+        </button>
+        <button class="tb-user" onclick="showAbout()" aria-label="About EcoGenius" type="button">
+          <div class="tb-user-av" id="userAv">U</div>
+          <div class="tb-user-info">
+            <strong id="userName">Guest</strong>
+            <small id="userRole">GUEST</small>
+          </div>
+        </button>
+      </div>
+    </header>
+
+    <div class="chat-wrap">
+      <div class="chat-scroll" id="chatScroll" role="log" aria-live="polite" aria-label="Conversation">
+        <div class="chat-inner" id="chatInner"></div>
+      </div>
+
+      <div class="composer">
+        <div class="composer-inner">
+          <div class="composer-box" id="composerBox">
+            <label for="composerInput" class="sr-only">Ask EcoGenius</label>
+            <textarea id="composerInput" class="composer-ta" placeholder="Ask anything, or tap the mic and speak…" rows="1" autocomplete="off" aria-label="Message input"></textarea>
+            <div class="composer-actions">
+              <button class="composer-btn mic" id="micBtn" onclick="openVoiceOverlay()" aria-label="Voice input" title="Speak your message" type="button">
+                <i class="fas fa-microphone"></i>
+              </button>
+              <button class="composer-btn composer-send" id="sendBtn" onclick="sendMessage()" aria-label="Send message" title="Send" type="button" disabled>
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+          <div class="composer-hint">
+            <span><kbd>Enter</kbd> send · <kbd>Shift</kbd>+<kbd>Enter</kbd> newline · <kbd>/</kbd> focus · <kbd>⌘K</kbd> new</span>
+            <span id="composerStatus"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="diag-panel" id="diagPanel" aria-hidden="true">
+    <div class="diag-hd">
+      <h3><i class="fas fa-terminal"></i> Diagnostics</h3>
+      <button class="tb-btn ghost" onclick="toggleDiag()" aria-label="Close" type="button"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="diag-body" id="diagBody"></div>
+  </aside>
+</div>
+
+<!-- VOICE OVERLAY -->
+<div class="voice-overlay" id="voiceOverlay" role="dialog" aria-modal="true" aria-label="Voice input">
+  <div class="voice-panel">
+    <div class="voice-tag"><span class="live-dot"></span><span id="voiceState">Listening</span></div>
+    <div class="voice-orb"><i class="fas fa-microphone"></i></div>
+    <div class="voice-wave-lg">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="voice-transcript" id="voiceTranscript">
+      <span class="placeholder">Start speaking — your words will appear here…</span>
+    </div>
+    <div class="voice-actions">
+      <button class="voice-act record" id="audioRecBtn" onclick="toggleAudioRecording()" type="button">
+        <i class="fas fa-circle"></i> <span id="audioRecLabel">Record audio</span>
+      </button>
+      <button class="voice-act cancel" onclick="cancelVoice()" type="button"><i class="fas fa-times"></i> Cancel</button>
+      <button class="voice-act send" id="voiceSendBtn" onclick="sendVoiceMessage()" type="button"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+    <div class="voice-hint" id="voiceHint">
+      Speak naturally. Tap "Record audio" to also attach your voice recording.
+    </div>
+  </div>
+</div>
+
+<!-- VOICE SETTINGS PANEL -->
+<div class="settings-ovl" id="voiceSettingsOvl" onclick="closeVoiceSettings()"></div>
+<div class="settings-panel" id="voiceSettingsPanel" role="dialog" aria-modal="true" aria-label="Voice settings">
+  <button class="settings-close" onclick="closeVoiceSettings()" aria-label="Close" type="button"><i class="fas fa-times"></i></button>
+  <div class="settings-title"><i class="fas fa-sliders"></i> Voice &amp; Speech</div>
+
+  <div class="settings-row">
+    <div class="settings-row-txt">
+      <strong>Auto-speak responses</strong>
+      <small>Read every EcoGenius reply aloud automatically</small>
+    </div>
+    <label class="switch"><input type="checkbox" id="setAutoSpeak" onchange="onAutoSpeakChange()"><span class="switch-sl"></span></label>
+  </div>
+
+  <div class="settings-row">
+    <div class="settings-row-txt">
+      <strong>Voice</strong>
+      <small>Preferred speech synthesis voice</small>
+    </div>
+    <select class="settings-select" id="setVoice" onchange="onVoiceSelect()"></select>
+  </div>
+
+  <div class="settings-row" style="flex-direction:column;align-items:stretch">
+    <div class="settings-row-txt">
+      <strong>Speed</strong>
+      <small id="rateLabel">Normal (1.0×)</small>
+    </div>
+    <input type="range" class="settings-range" id="setRate" min="0.5" max="1.8" step="0.05" value="1.0" oninput="onRateChange()">
+  </div>
+
+  <div class="settings-row" style="flex-direction:column;align-items:stretch">
+    <div class="settings-row-txt">
+      <strong>Pitch</strong>
+      <small id="pitchLabel">Normal (1.0×)</small>
+    </div>
+    <input type="range" class="settings-range" id="setPitch" min="0.6" max="1.5" step="0.05" value="1.0" oninput="onPitchChange()">
+  </div>
+
+  <div class="settings-row">
+    <div class="settings-row-txt">
+      <strong>Test the voice</strong>
+      <small>Hear a preview with current settings</small>
+    </div>
+    <button class="voice-act send" onclick="testVoice()" type="button" style="padding:8px 16px;font-size:0.78rem"><i class="fas fa-play"></i> Test</button>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   ECOGENIUS — AI ASSISTANT FOR ECOCYCLE X
+   Voice-enabled · EcoScan-integrated · Dashboard-connected
+   ============================================================ */
+(function(){
+'use strict';
+
+/* ============ CONFIG ============ */
+var CONFIG = {
+  environment: 'development',
+  api: {
+    baseUrl: null,
+    endpoints: {
+      session:'/v1/auth/session',
+      chat:'/v1/ai/chat',
+      toolsExec:'/v1/ai/tools/execute',
+      knowledge:'/v1/knowledge/search',
+      features:'/v1/platform/features',
+      feedback:'/v1/ai/feedback',
+      realtime:'/v1/realtime'
+    }
+  },
+  ai: {
+    provider:'local_knowledge_engine',
+    model:null,
+    streaming:false,
+    supportsTools:true
+  },
+  features: {
+    attachments:false,
+    voiceInput:true,
+    voiceOutput:true,
+    realtime:false,
+    deepLinks:true,
+    feedback:true,
+    diagnostics:true
+  },
+  behaviour: {
+    maxHistoryTurns:30,
+    confirmHighImpactActions:true,
+    requireAuthForLiveData:true
+  },
+  voice: {
+    autoSpeak:false,
+    rate:1.0,
+    pitch:1.0,
+    preferredVoiceURI:null,
+    lang:'en-US'
+  },
+  version:'2.0.0-voice'
+};
+
+/* ============ STATE ============ */
+var STATE = {
+  user:{ name:'Guest', role:'guest', ecoId:null, authenticated:false },
+  sessionStart:Date.now(),
+  conversations:[],
+  activeConvId:null,
+  isThinking:false,
+  aborted:false,
+  diagOpen:false,
+  lastError:null,
+  apiHealth:'unconfigured',
+  aiHealth:'local',
+  rtHealth:'unconfigured',
+  featureCache:null,
+  topicContext:null,
+  broadcastChannel:null,
+  dashboardStats:null,
+  scanStats:null
+};
+
+/* ============ FEATURE REGISTRY ============ */
+var FEATURES = [
+  {id:'ecogenius',name:'EcoGenius',route:'ecogenius.html',module:'ecocore',icon:'fa-brain',color:'violet',
+   description:'AI assistant and conversational command layer',keywords:['genius','ai','assistant','chat','help']},
+  {id:'dashboard',name:'Main Dashboard',route:'dashboard.html',module:'ecocore',icon:'fa-chart-pie',color:'cy',
+   description:'Central overview of your EcoCycle X activity',keywords:['dashboard','home','overview','hub']},
+  {id:'ecoaccount',name:'EcoAccount',route:'ecoaccount.html',module:'ecoaccount',icon:'fa-id-card',color:'cy',
+   description:'Your EcoID, profile, roles and permissions',keywords:['account','profile','identity','ecoid','settings']},
+  {id:'ecoscan',name:'EcoScan AI',route:'ecoscan.html',module:'ecoscan',icon:'fa-camera',color:'cy',
+   description:'AI material identification — scan, classify, verify',keywords:['scan','camera','identify','material','photo']},
+  {id:'ecocollect',name:'EcoCollect',route:'ecocollect.html',module:'ecocollect',icon:'fa-truck',color:'jade',
+   description:'Request and manage collections and pickups',keywords:['collect','pickup','delivery','truck','waste']},
+  {id:'ecomarket',name:'EcoMarket',route:'ecomarket.html',module:'ecomarket',icon:'fa-store',color:'cy',
+   description:'Marketplace for recyclable materials and products',keywords:['market','shop','buy','sell','trade','listing','price']},
+  {id:'ecowallet',name:'EcoWallet',route:'ecowallet.html',module:'ecowallet',icon:'fa-wallet',color:'gold',
+   description:'Payments, rewards, EcoPoints ledger',keywords:['wallet','payment','reward','points','balance','money']},
+  {id:'ecoconnect',name:'EcoConnect',route:'ecoconnect.html',module:'ecoconnect',icon:'fa-network-wired',color:'cy',
+   description:'Network of recyclers, collectors, artisans, partners',keywords:['connect','partner','network','recycler','artisan']},
+  {id:'ecosmart',name:'EcoSmart',route:'ecosmart.html',module:'ecosmart',icon:'fa-microchip',color:'violet',
+   description:'Smart bins, scales, sensors, connected devices',keywords:['smart','device','sensor','bin','scale','iot']},
+  {id:'ecoimpact',name:'EcoImpact',route:'ecoimpact.html',module:'ecoimpact',icon:'fa-seedling',color:'jade',
+   description:'Measure, verify and report environmental impact',keywords:['impact','environment','carbon','recovery','report']},
+  {id:'ecocommand',name:'EcoCommand',route:'ecocommand.html',module:'ecocommand',icon:'fa-tower-broadcast',color:'rose',
+   description:'Operations control centre for admins',keywords:['command','ops','operations','admin','control','incident']}
+];
+
+/* ============ KNOWLEDGE BASE (expanded) ============ */
+var KNOWLEDGE = [
+  {id:'kb_platform_overview',category:'platform',title:'What is EcoCycle X?',
+   tags:['ecocycle x','platform','overview','what is','about','circular economy'],
+   aliases:['ecocycle','ecocyclex'],
+   content:'EcoCycle X is a **circular-economy platform** that helps people, organisations and communities turn waste into value. It connects material identification, collection, marketplace trading, partner networks, payments, smart devices and verified impact measurement into a single system.\n\nThe guiding idea: **"Nothing is Waste. Everything Has Value."** Instead of treating materials as problems, EcoCycle X treats them as resources that can be recovered, reused, transformed, traded and measured.\n\nA material identified in EcoScan AI can be collected through EcoCollect, traded on EcoMarket, tracked by EcoSmart, rewarded through EcoWallet, verified through EcoImpact, and overseen through EcoCommand — all connected by a shared backend.',
+   actions:['ecoscan','ecocollect','ecomarket','ecoimpact']},
+  {id:'kb_lifecycle',category:'platform',title:'The EcoCycle X lifecycle',
+   tags:['lifecycle','journey','flow','circular','how it works','process'],
+   aliases:['material lifecycle','value flow'],
+   content:'Every material moves through a connected lifecycle:\n\n1. **IDENTIFY** — EcoScan AI classifies the material\n2. **COLLECT** — EcoCollect organises pickup or delivery\n3. **VERIFY** — evidence reviewed and approved\n4. **LIST or MATCH** — EcoMarket lists it, or EcoConnect matches a partner\n5. **MOVE** — transport from source to destination\n6. **RECEIVE** — partner confirms delivery\n7. **REUSE / RECYCLE / TRANSFORM** — the material gets a new life\n8. **SHARE or TRADE** — the value is exchanged\n9. **MEASURE** — EcoImpact records verified impact\n10. **REPEAT** — the cycle continues',
+   actions:['ecoscan','ecocollect','ecomarket','ecoimpact']},
+  {id:'kb_no_waste',category:'platform',title:'"Nothing is Waste" principle',
+   tags:['nothing is waste','philosophy','mission','purpose','value'],
+   aliases:['everything has value'],
+   content:'**"Nothing Is Waste. Everything Has Value."** is the central principle of EcoCycle X.\n\nA plastic bottle becomes a planter or fibre. An old phone becomes recoverable metals. Cardboard becomes packaging again. The principle also applies to people: skills, time and local knowledge have value in a circular economy.\n\nEcoGenius will never tell you a material has "no use" — instead, it will help you find the most responsible pathway given your context.',
+   actions:['ecoimpact','ecomarket']},
+
+  {id:'kb_module_ecoscan',category:'module',title:'EcoScan AI — material identification',
+   tags:['ecoscan','scan','camera','identify','material','photo','classification'],
+   aliases:['scan a material','identify this'],
+   content:'**EcoScan AI** uses multi-model image recognition to identify materials. Point your camera at an item and EcoScan proposes a material category.\n\n**How it works:**\n- COCO-SSD detects multiple objects in the frame\n- MobileNet classifies the primary material\n- Optional Roboflow YOLO custom models for waste-specific detection\n- A BLE digital scale can provide verified weight\n\n**Honesty rule:** EcoScan provides *suggestions*, not confirmed facts. Every identification has a confidence level. Low-confidence scans are labelled "Needs Verification".',
+   actions:['ecoscan','ecocollect','ecomarket']},
+  {id:'kb_module_ecocollect',category:'module',title:'EcoCollect — collections',
+   tags:['ecocollect','collection','pickup','delivery','collector','handover'],
+   aliases:['request pickup','book collection'],
+   content:'**EcoCollect** manages the physical movement of materials.\n\n**Flow:**\n1. You create a request (materials, location, size)\n2. Matched with a verified collector\n3. Collection scheduled\n4. Collector arrives, records weight and condition\n5. Handover evidence submitted\n6. Verification reviewed\n7. Verified records unlock rewards and impact\n\n**Honesty rule:** EcoCollect never marks a collection as verified just because it was requested — evidence has to be submitted and reviewed.',
+   actions:['ecocollect']},
+  {id:'kb_module_ecomarket',category:'module',title:'EcoMarket — circular marketplace',
+   tags:['ecomarket','market','marketplace','buy','sell','listing','trade','donate'],
+   aliases:['where can i sell','marketplace'],
+   content:'**EcoMarket** is where circular value changes hands. You can list:\n\n- **Recyclable raw materials** — plastic, paper, metal, glass, e-waste, textiles\n- **Reusable items** — furniture, clothing, electronics\n- **Upcycled products** — items made from recovered materials\n- **Creative works** — art, crafts, designs\n\n**Listing states:** Draft → Pending Review → Active → Reserved → Sold/Exchanged/Donated → Archived.\n\nEvery listing is reviewed before going live. Every transaction requires provider confirmation before being marked complete.',
+   actions:['ecomarket']},
+  {id:'kb_module_wallet',category:'module',title:'EcoWallet — payments & rewards',
+   tags:['ecowallet','wallet','paytri','payment','reward','ecopoints','balance'],
+   aliases:['my wallet','my balance','my points'],
+   content:'**EcoWallet** (with the **PayTri** reward layer) manages payments, rewards, fees and EcoPoints.\n\nIt operates as an **immutable ledger**: balances are computed from recorded entries, so every number is traceable.\n\n**Honesty rules:**\n- EcoGenius never claims a payment completed unless the provider confirms\n- If no provider is connected, EcoWallet shows "Payment Provider Not Connected" instead of simulating success\n- EcoPoints are reward units with no fixed cash value unless a documented conversion exists',
+   actions:['ecowallet']},
+  {id:'kb_module_econnect',category:'module',title:'EcoConnect — partner network',
+   tags:['ecoconnect','connect','partner','network','recycler','artisan','ngo'],
+   aliases:['find a recycler','find a partner'],
+   content:'**EcoConnect** is the circular-economy network. It connects:\n\n- Individuals and households\n- Schools and eco-clubs\n- Recyclers and collectors\n- Repairers and artisans\n- NGOs and community organisations\n- Businesses and manufacturers\n- Donation centres and EcoHubs\n- Local authorities\n\nYou can discover verified participants, view profiles, send connection requests, publish material needs or offers, and collaborate in partnership workspaces.\n\n**Verification:** a badge appears only after an authorised reviewer approves the organisation.',
+   actions:['ecoconnect']},
+  {id:'kb_module_esmart',category:'module',title:'EcoSmart — connected devices',
+   tags:['ecosmart','smart','device','sensor','bin','scale','iot','gps','weight'],
+   aliases:['smart bin','connected devices','sensors'],
+   content:'**EcoSmart** connects physical devices to EcoCycle X:\n\n- Smart bins and fill-level sensors\n- Digital scales (weight measurement)\n- Environmental sensors (temperature, humidity, air quality)\n- GPS-enabled equipment\n- Energy monitors and IoT gateways\n\nEach device has real metadata — device ID, owner, location, firmware, calibration status, health.\n\n**Guiding rule:** *"No verified device data, no claim of live intelligence."* If a device is not connected, EcoGenius says so rather than inventing a reading.',
+   actions:['ecosmart']},
+  {id:'kb_module_eimpact',category:'module',title:'EcoImpact — verified measurement',
+   tags:['ecoimpact','impact','environment','carbon','verification','report','sustainability'],
+   aliases:['my impact','environmental impact'],
+   content:'**EcoImpact** records and reports the environmental, social and economic impact of circular-economy activities.\n\n**Three-layer calculation model:**\n\n| Layer | Type | Example |\n|-------|------|---------|\n| 1 | Measured | kg recovered, items reused |\n| 2 | Calculated | emissions avoided (with documented method) |\n| 3 | Estimated | uncertainty-stated projections |\n\nEvery calculation carries its methodology version, source, assumptions and limitations.\n\n**Rule:** No evidence, no verification. No verified data, no confirmed impact claim.',
+   actions:['ecoimpact']},
+  {id:'kb_module_ecommand',category:'module',title:'EcoCommand — operations centre',
+   tags:['ecocommand','command','ops','operations','admin','control','monitor','incident'],
+   aliases:['operations centre','admin console'],
+   content:'**EcoCommand** is the operational heart of EcoCycle X. Authorised administrators and operators get a real-time view across every module: users, materials, collections, marketplace activity, transactions, partners, devices, impact records, alerts, incidents and tasks.\n\nAccess is strictly **role-gated**. Every sensitive action is logged in an immutable audit trail with actor, role, timestamp and reason.\n\nOrdinary users see only what their role permits.',
+   actions:['ecocommand']},
+
+  /* MATERIALS */
+  {id:'kb_mat_pet',category:'material',title:'PET plastic bottles',
+   tags:['pet','plastic','bottle','bottles','recycle','polyethylene terephthalate'],
+   aliases:['water bottle','soda bottle'],
+   content:'**PET** (polyethylene terephthalate) is the clear, strong plastic used for most beverage bottles.\n\n**Preparation:**\n- Rinse and dry\n- Remove caps and labels (caps are often HDPE or PP)\n- Flatten to save space\n- Keep separate from other plastics if your collector requires it\n\n**What it becomes:** new bottles, fibre for clothing, fleece, carpet, containers.\n\n**Avoid:** heating PET, reusing it for hot liquids, prolonged direct sunlight storage.\n\n**Safety:** never burn PET — it releases harmful fumes.\n\n⚠️ Local collection rules vary — check with your collector or EcoHub.',
+   actions:['ecoscan','ecocollect','ecomarket']},
+  {id:'kb_mat_hdpe',category:'material',title:'HDPE plastic',
+   tags:['hdpe','plastic','high density polyethylene','milk','detergent'],
+   aliases:['milk bottle','detergent bottle'],
+   content:'**HDPE** (High-Density Polyethylene) is the sturdier, often opaque plastic used for milk jugs, detergent bottles, shampoo bottles and pipes.\n\nOne of the most widely recycled plastics. Recycled HDPE becomes drainage pipes, plastic lumber, bins, and new containers.\n\n**Preparation:** empty, rinse, remove caps and non-HDPE parts, crush to save space.',
+   actions:['ecoscan','ecocollect']},
+  {id:'kb_mat_glass',category:'material',title:'Glass',
+   tags:['glass','bottle','jar','container','recycle'],
+   aliases:['glass bottle','glass jar'],
+   content:'Glass is **infinitely recyclable** without loss of quality.\n\nClear, green and brown glass can all be recycled, but colours are often separated at processing.\n\n**Preparation:**\n- Remove lids\n- Rinse\n- Keep separate from ceramics, Pyrex, window glass and mirrors\n\n**Why separation matters:** ceramics and Pyrex have different melting points and contaminate glass batches.\n\n**Safety:** handle broken glass with gloves and thick wrapping.',
+   actions:['ecoscan','ecocollect','ecomarket']},
+  {id:'kb_mat_aluminium',category:'material',title:'Aluminium cans and metals',
+   tags:['aluminium','aluminum','metal','can','cans','scrap','tin'],
+   aliases:['soda can','beer can'],
+   content:'**Aluminium** is highly recyclable and economically valuable — it can be recycled indefinitely without quality loss.\n\n**Preparation:** empty, rinse, and crush if space is limited.\n\nOther metals (steel, copper, brass) are also valuable but usually collected separately and priced by weight.\n\n**Safety:** watch sharp edges; wear gloves when handling scrap metal. Do not mix metals unless your collector accepts mixed loads.',
+   actions:['ecoscan','ecocollect','ecomarket']},
+  {id:'kb_mat_paper',category:'material',title:'Paper and cardboard',
+   tags:['paper','cardboard','newspaper','magazine','recycle'],
+   aliases:['paper recycling','cardboard box'],
+   content:'Clean, dry paper and cardboard recycle well.\n\n**Keep away from:**\n- Greasy cardboard (used for pizza)\n- Wet paper\n- Laminated paper\n- Paper with heavy plastic coating\n\n**Preparation:** flatten boxes to save space.\n\n**Most common rejection reason:** food contamination. A light rinse or removing the greasy layer matters.\n\n**Note:** shredded paper is often not accepted in kerbside streams (fibres too short) but may be accepted at drop-off points.',
+   actions:['ecoscan','ecocollect']},
+  {id:'kb_mat_ewaste',category:'material',title:'Electronic waste (e-waste)',
+   tags:['e-waste','ewaste','electronic','electronics','phone','computer','battery'],
+   aliases:['old phone','broken laptop'],
+   content:'**E-waste** includes old phones, computers, TVs, chargers and circuit boards. It contains valuable metals (copper, gold, silver, rare earths) but also potentially hazardous substances.\n\n**Safety rules:**\n- ❌ Never burn cables or circuit boards — toxic fumes\n- ❌ Never put e-waste in general waste\n- ⚠️ Batteries are a separate category — lithium batteries can cause fires in collection vehicles\n- ✅ E-waste should go to a **certified e-waste recycler** or designated drop-off point\n\nCheck with your EcoHub or an EcoConnect-verified recycler.',
+   actions:['ecoscan','ecocollect','ecoconnect']},
+  {id:'kb_mat_textiles',category:'material',title:'Textiles and clothing',
+   tags:['textile','textiles','clothing','clothes','fabric','cotton'],
+   aliases:['old clothes','fabric scraps'],
+   content:'Textiles can be **reused** (donated, resold, given to a tailor) or **recycled** into insulation, cleaning cloths, stuffing or new yarn.\n\n**Key points:**\n- Clean textiles are always more valuable — dirty or wet textiles are often landfilled\n- Sort by fibre type if possible (cotton, wool, polyester)\n- Natural fibres biodegrade; synthetics do not\n- **Reuse is always preferable to recycling for textiles** — fast fashion is one of the largest waste streams globally',
+   actions:['ecomarket','ecoconnect','ecoscan']},
+  {id:'kb_mat_organic',category:'material',title:'Organic material and composting',
+   tags:['organic','compost','food waste','garden waste','biodegradable'],
+   aliases:['food scraps','compost'],
+   content:'**Organic material** — food scraps, garden waste, leaves — can be composted into healthy soil. Composting reduces methane emissions from landfills and creates a valuable input for growing more food.\n\n**Good for home compost:** vegetable scraps, coffee grounds, eggshells, dry leaves, grass clippings.\n\n**Avoid in home compost:** meat, dairy, oily food, diseased plants, pet waste (attract pests or harbour pathogens).\n\nLarge-scale composting is available through some EcoHubs and community programmes.',
+   actions:['ecoscan','ecoconnect']},
+
+  /* EDUCATION */
+  {id:'kb_lm_recycling_basics',category:'education',title:'Recycling basics',
+   tags:['recycling','basics','how to recycle','separation','sorting'],
+   aliases:['how does recycling work'],
+   content:'Recycling has four key stages:\n\n1. **SORT** — separate materials at the source\n2. **COLLECT** — materials are picked up or delivered\n3. **PROCESS** — cleaned, shredded, melted or pulped into raw material\n4. **REMANUFACTURE** — the raw material becomes a new product\n\n**Two things usually break the chain:**\n\n⚠️ **Contamination** — food, liquids, mixed materials in the wrong bin\n⚠️ **Low quality** — soiled or damaged items\n\n**Rule of thumb:** when in doubt, keep materials clean and dry, and put each category separately.',
+   actions:['ecoscan','ecocollect','ecoimpact']},
+  {id:'kb_lm_circular_economy',category:'education',title:'What is the circular economy?',
+   tags:['circular economy','circularity','sustainability','linear','regenerative'],
+   aliases:['circular economy explained'],
+   content:'The traditional (**linear**) economy is: *take → make → dispose*.\n\nThe (**circular**) economy is: *design → use → recover → regenerate*.\n\nInstead of resources being used once and thrown away, they flow back into new products, new uses, or back into nature safely.\n\n**Three pillars:**\n\n1. Design out waste and pollution\n2. Keep products and materials in use\n3. Regenerate natural systems\n\n**Order of priority:** prevent → reuse → repair → recycle → recover.',
+   actions:['ecoimpact','ecomarket']},
+  {id:'kb_lm_waste_hierarchy',category:'education',title:'The waste hierarchy',
+   tags:['waste hierarchy','prevent','reuse','recycle','recover','dispose'],
+   aliases:['best option for waste'],
+   content:'The waste hierarchy ranks options from best to worst:\n\n| Rank | Option | Description |\n|------|--------|-------------|\n| 1 | **PREVENT** | Don\'t create the waste |\n| 2 | **REUSE** | Use the item again |\n| 3 | **REPAIR** | Fix it so it lasts longer |\n| 4 | **RECYCLE** | Turn into raw material |\n| 5 | **RECOVER** | Extract energy |\n| 6 | **DISPOSE** | Landfill / incineration |\n\nEcoCycle X is built around this order. EcoGenius always suggests the highest option available for your situation.',
+   actions:['ecomarket','ecoconnect','ecoimpact']},
+  {id:'kb_lm_creative_reuse',category:'education',title:'Creative reuse — turning materials into something new',
+   tags:['creative','reuse','upcycle','upcycling','craft','art','diy','project'],
+   aliases:['what can i make','reuse ideas'],
+   content:'**Upcycling** is turning a material into something of equal or higher value than the original.\n\n**Simple ideas:**\n\n- **PET bottles** → self-watering planters, bird feeders, pencil holders\n- **Bottle caps** → mosaics, coasters, decorative art\n- **Cardboard** → storage boxes, furniture prototypes, children\'s projects\n- **Old clothing** → tote bags, patchwork, cushion covers\n- **Tires** → garden planters, playground equipment\n- **Pallets** → furniture, shelving, planters\n\nDocument the materials you use and list your creations on EcoMarket as creative products.',
+   actions:['ecomarket','ecoconnect']},
+  {id:'kb_lm_entrepreneurship',category:'education',title:'Circular entrepreneurship',
+   tags:['business','entrepreneur','startup','income','earn','revenue'],
+   aliases:['make money recycling','circular business'],
+   content:'Circular economy activities can support real livelihoods.\n\n**Common models:**\n\n| Model | Description |\n|-------|-------------|\n| Collection & sorting | Collect from households, sell to processors |\n| Upcycling & craft | Buy low-value materials, sell designed products |\n| Repair services | Extend life of electronics, clothing, furniture |\n| Aggregation | Coordinate other collectors, sell bulk |\n| Education & workshops | Teach circular skills |\n\nAll of these can be listed on EcoMarket, linked to partners on EcoConnect, and (when a payment provider is configured) receive payments through EcoWallet.',
+   actions:['ecomarket','ecoconnect','ecowallet']},
+
+  /* SAFETY */
+  {id:'kb_safety_hazmat',category:'safety',title:'Handling hazardous materials safely',
+   tags:['hazardous','hazmat','safety','dangerous','chemical','medical','sharps'],
+   aliases:['dangerous waste','chemical waste'],
+   content:'**Materials that require specialist handling — never put in normal recycling:**\n\n- Paints and solvents\n- Pesticides and herbicides\n- Motor oil and automotive fluids\n- Medical waste and syringes/sharps\n- Pressurised cylinders\n- Asbestos\n- Industrial chemicals\n\n**Protocol:**\n1. Do not mix with other waste\n2. Keep in original or clearly labelled containers\n3. Contact a certified hazardous-waste handler or your local authority\n\nEcoGenius will not provide disposal instructions for hazardous materials beyond "contact a certified handler." **If unsure, treat it as hazardous.**',
+   actions:['ecoconnect']},
+  {id:'kb_policy_honesty',category:'safety',title:'How EcoGenius handles honesty',
+   tags:['honesty','accuracy','fake','invented','trust','truth'],
+   aliases:['can i trust this'],
+   content:'**EcoGenius follows strict honesty rules:**\n\n1. It never invents platform features, users, transactions, prices, weights, rewards or impact figures\n2. If information is unavailable or an integration is not connected, it says so clearly\n3. It distinguishes general knowledge from user-specific live data — and only uses the latter when a real backend confirms it\n4. It labels estimates as estimates and never presents a guess as a fact\n5. It never claims an action succeeded unless the backend confirms it',
+   actions:[]},
+
+  /* FAQ */
+  {id:'kb_faq_start',category:'faq',title:'How do I get started with EcoCycle X?',
+   tags:['start','begin','first','setup','onboarding'],
+   aliases:['where do i start','how do i begin'],
+   content:'**A good first path:**\n\n1. Set up your **EcoAccount** so your identity and permissions are established\n2. Scan a material with **EcoScan AI** to see how identification works\n3. Request a collection through **EcoCollect** if you have materials to recover\n4. Explore **EcoConnect** to find recyclers, collectors or artisans near you\n5. Check **EcoMarket** to see what materials and products are being traded\n6. As your activity grows, **EcoImpact** will start showing your verified impact',
+   actions:['ecoaccount','ecoscan','ecocollect','ecomarket','ecoimpact']},
+  {id:'kb_faq_earn',category:'faq',title:'How do I earn from recycling?',
+   tags:['earn','money','income','reward','payment','sell','get paid'],
+   aliases:['make money recycling'],
+   content:'**Three main ways value flows back to you:**\n\n1. **Marketplace sales** — list materials or upcycled products on EcoMarket, get paid when a buyer confirms\n2. **Reward programmes** — some partner programmes reward verified collections with EcoPoints or configured rewards\n3. **Services** — offer collection, repair or workshop services and be paid directly\n\n**Important honesty note:** EcoGenius never tells you that money has arrived unless the payment provider confirms it. If no provider is connected, EcoWallet shows "Payment Provider Not Connected" rather than pretending a payment happened.',
+   actions:['ecomarket','ecowallet']},
+  {id:'kb_faq_impact',category:'faq',title:'How is impact calculated?',
+   tags:['impact calculation','how is impact measured','methodology','carbon'],
+   aliases:['measure impact','carbon calculation'],
+   content:'Impact is built in **three layers:**\n\n| Layer | Type | Example |\n|-------|------|---------|\n| 1 | **Measured** | kg recovered, items reused, events held |\n| 2 | **Calculated** | emissions avoided per kg (documented source) |\n| 3 | **Estimated** | uncertainty-stated projections |\n\nEvery calculation carries its **methodology version, source, assumptions and limitations**.\n\n**Rule:** EcoImpact never presents an estimate as a measured fact, and it never invents environmental savings.',
+   actions:['ecoimpact']}
+];
+
+/* ============ UTILITIES ============ */
+function $(id){ return document.getElementById(id); }
+function uid(p){ return (p||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function now(){ return Date.now(); }
+function esc(s){
+  if(s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function fmtTime(t){ try{ return new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function fmtRel(t){
+  if(!t) return '';
+  var d = now() - t;
+  if(d < 60000) return 'just now';
+  if(d < 3600000) return Math.floor(d/60000)+'m ago';
+  if(d < 86400000) return Math.floor(d/3600000)+'h ago';
+  return Math.floor(d/86400000)+'d ago';
+}
+function initials(s){
+  if(!s) return '?';
+  var a = String(s).trim().split(/\s+/);
+  return (a[0].charAt(0) + (a[1] ? a[1].charAt(0) : '')).toUpperCase();
+}
+
+/* ============ TOAST ============ */
+function toast(msg, type){
+  type = type || 'info';
+  var stack = $('toasts');
+  if(!stack) return;
+  var el = document.createElement('div');
+  el.className = 'toast ' + (type==='error'?'error':type==='warn'?'warn':'');
+  var icons = {info:'fa-circle-info',success:'fa-check-circle',warn:'fa-exclamation-triangle',error:'fa-exclamation-circle'};
+  var clss = {info:'in',success:'ok',warn:'wn',error:'er'};
+  el.setAttribute('role','alert');
+  el.innerHTML = '<i class="fas '+icons[type]+' '+clss[type]+'"></i><span>'+esc(msg)+'</span>';
+  stack.appendChild(el);
+  setTimeout(function(){
+    el.style.transition='all 0.3s';el.style.opacity='0';el.style.transform='translateX(30px)';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 300);
+  }, 3400);
+}
+
+/* ============================================================
+   VOICE OUTPUT — Text-to-Speech
+   ============================================================ */
+var VoiceOutput = {
+  supported: typeof speechSynthesis !== 'undefined' && typeof SpeechSynthesisUtterance !== 'undefined',
+  speakingMsgId: null,
+  utterance: null,
+  voices: [],
+  voicesLoaded: false,
+
+  init: function(){
+    if(!this.supported) return;
+    var self = this;
+    this.loadVoices();
+    if(speechSynthesis.onvoiceschanged !== undefined){
+      speechSynthesis.onvoiceschanged = function(){ self.loadVoices(); };
+    }
+    // Restore settings
+    try {
+      var s = JSON.parse(localStorage.getItem('ecogenius_voice_settings_v1') || '{}');
+      if(s.autoSpeak !== undefined) CONFIG.voice.autoSpeak = !!s.autoSpeak;
+      if(s.rate) CONFIG.voice.rate = s.rate;
+      if(s.pitch) CONFIG.voice.pitch = s.pitch;
+      if(s.preferredVoiceURI) CONFIG.voice.preferredVoiceURI = s.preferredVoiceURI;
+    } catch(e){}
+    this.updateAutoSpeakUI();
+  },
+
+  loadVoices: function(){
+    if(!this.supported) return;
+    var v = speechSynthesis.getVoices();
+    if(v && v.length){
+      this.voices = v;
+      this.voicesLoaded = true;
+      this.populateVoiceSelector();
+    }
+  },
+
+  cleanText: function(text){
+    if(!text) return '';
+    return String(text)
+      .replace(/\*\*([^*]+)\*\*/g, '$1')       // bold
+      .replace(/\*([^*]+)\*/g, '$1')            // italic
+      .replace(/`([^`]+)`/g, '$1')              // code
+      .replace(/!\[[^\]]*\]\([^)]+\)/g, '')     // images
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')  // links
+      .replace(/^\s*[-•]\s+/gm, '')             // bullets
+      .replace(/^\s*\d+\.\s+/gm, '')            // numbered
+      .replace(/^\s*#{1,6}\s+/gm, '')           // headings
+      .replace(/\n\s*\n/g, '. ')                // paragraph breaks
+      .replace(/\n/g, '. ')
+      .replace(/\s+/g, ' ')
+      .replace(/\.\s*\./g, '.')
+      .trim();
+  },
+
+  speak: function(msgId, text){
+    if(!this.supported){
+      toast('Voice output not supported in this browser', 'warn');
+      return;
+    }
+    if(!text){
+      toast('Nothing to read', 'warn');
+      return;
+    }
+
+    // If already speaking this message → stop
+    if(this.speakingMsgId === msgId){
+      this.stop();
+      return;
+    }
+
+    this.stop();
+
+    var clean = this.cleanText(text);
+    if(clean.length > 4000) clean = clean.slice(0, 4000) + '…';
+
+    var u = new SpeechSynthesisUtterance(clean);
+    u.rate = CONFIG.voice.rate || 1.0;
+    u.pitch = CONFIG.voice.pitch || 1.0;
+    u.lang = CONFIG.voice.lang || 'en-US';
+
+    // Preferred voice
+    if(this.voicesLoaded && this.voices.length){
+      var preferred = null;
+      if(CONFIG.voice.preferredVoiceURI){
+        preferred = this.voices.find(function(v){ return v.voiceURI === CONFIG.voice.preferredVoiceURI; });
+      }
+      if(!preferred){
+        // Try popular natural voices first
+        preferred = this.voices.find(function(v){
+          return /Samantha|Google UK English Female|Google US English|Microsoft Aria|Microsoft Jenny|Microsoft Zira/i.test(v.name);
+        });
+      }
+      if(!preferred){
+        preferred = this.voices.find(function(v){ return /^en[-_]/i.test(v.lang); });
+      }
+      if(!preferred) preferred = this.voices[0];
+      if(preferred) u.voice = preferred;
+    }
+
+    var self = this;
+    u.onend = function(){
+      if(self.speakingMsgId === msgId) self.speakingMsgId = null;
+      updateSpeakerUI(msgId, 'idle');
+      updateBubbleSpeaking(msgId, false);
+    };
+    u.onerror = function(e){
+      // Ignore 'interrupted' and 'canceled' errors — they fire when we stop()
+      if(e && e.error && /interrupted|canceled/i.test(e.error)){
+        return;
+      }
+      if(self.speakingMsgId === msgId) self.speakingMsgId = null;
+      updateSpeakerUI(msgId, 'idle');
+      updateBubbleSpeaking(msgId, false);
+    };
+
+    this.utterance = u;
+    this.speakingMsgId = msgId;
+
+    // Chrome sometimes needs a slight delay after cancel()
+    setTimeout(function(){
+      try { speechSynthesis.speak(u); } catch(e){ console.warn('TTS speak failed:', e); }
+    }, 60);
+
+    updateSpeakerUI(msgId, 'speaking');
+    updateBubbleSpeaking(msgId, true);
+  },
+
+  stop: function(){
+    if(!this.supported) return;
+    var prev = this.speakingMsgId;
+    try { speechSynthesis.cancel(); } catch(e){}
+    if(prev){
+      updateSpeakerUI(prev, 'idle');
+      updateBubbleSpeaking(prev, false);
+    }
+    this.speakingMsgId = null;
+    this.utterance = null;
+  },
+
+  isSpeaking: function(msgId){
+    return this.speakingMsgId === msgId;
+  },
+
+  updateAutoSpeakUI: function(){
+    var btn = $('autoSpeakBtn');
+    if(!btn) return;
+    btn.classList.toggle('active', CONFIG.voice.autoSpeak);
+    btn.querySelector('i').className = CONFIG.voice.autoSpeak ? 'fas fa-volume-high' : 'fas fa-volume-xmark';
+    btn.title = CONFIG.voice.autoSpeak ? 'Auto-speak: ON' : 'Auto-speak: OFF';
+    var sw = $('setAutoSpeak');
+    if(sw) sw.checked = CONFIG.voice.autoSpeak;
+  },
+
+  populateVoiceSelector: function(){
+    var sel = $('setVoice');
+    if(!sel) return;
+    if(!this.voices.length) return;
+
+    // Filter to English by default; include all if few
+    var en = this.voices.filter(function(v){ return /^en/i.test(v.lang); });
+    var list = en.length >= 3 ? en : this.voices;
+
+    var html = '<option value="">Auto (recommended)</option>';
+    list.forEach(function(v){
+      var label = v.name + (v.lang ? ' · ' + v.lang : '');
+      var selected = CONFIG.voice.preferredVoiceURI === v.voiceURI ? ' selected' : '';
+      html += '<option value="' + esc(v.voiceURI) + '"' + selected + '>' + esc(label) + '</option>';
+    });
+    sel.innerHTML = html;
+  }
+};
+
+function updateSpeakerUI(msgId, state){
+  var btn = document.getElementById('speaker-' + msgId);
+  if(!btn) return;
+  if(state === 'speaking'){
+    btn.classList.add('speaking');
+    btn.innerHTML = '<i class="fas fa-stop"></i> Stop <span class="speaker-wave"><span></span><span></span><span></span><span></span></span>';
+  } else {
+    btn.classList.remove('speaking');
+    btn.innerHTML = '<i class="fas fa-volume-high"></i> Listen';
+  }
+}
+function updateBubbleSpeaking(msgId, isSpeaking){
+  var bubble = document.getElementById('bubble-' + msgId);
+  if(!bubble) return;
+  bubble.classList.toggle('speaking', isSpeaking);
+}
+
+/* ============================================================
+   VOICE INPUT — Speech Recognition
+   ============================================================ */
+var VoiceInput = {
+  supported: !!(window.SpeechRecognition || window.webkitSpeechRecognition),
+  recognition: null,
+  active: false,
+  finalText: '',
+  interimText: '',
+  onComplete: null, // callback
+
+  init: function(){
+    if(!this.supported) return;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var r = new SR();
+    r.continuous = true;
+    r.interimResults = true;
+    r.lang = CONFIG.voice.lang || 'en-US';
+    r.maxAlternatives = 1;
+
+    var self = this;
+
+    r.onresult = function(e){
+      var interim = '', final = '';
+      for(var i = e.resultIndex; i < e.results.length; i++){
+        var t = e.results[i][0].transcript;
+        if(e.results[i].isFinal) final += t;
+        else interim += t;
+      }
+      if(final) self.finalText += final + ' ';
+      self.interimText = interim;
+      self.renderTranscript();
+    };
+
+    r.onerror = function(e){
+      var msg = 'Voice error';
+      if(e.error === 'not-allowed' || e.error === 'service-not-allowed') msg = 'Microphone permission denied';
+      else if(e.error === 'no-speech') msg = 'No speech detected';
+      else if(e.error === 'audio-capture') msg = 'No microphone found';
+      else if(e.error === 'network') msg = 'Network error during recognition';
+      else msg = 'Voice error: ' + e.error;
+      if(e.error !== 'no-speech' && e.error !== 'aborted') toast(msg, 'error');
+    };
+
+    r.onend = function(){
+      // Restart if we're still supposed to be listening
+      if(self.active){
+        try { r.start(); } catch(e){ /* already started */ }
+      }
+    };
+
+    this.recognition = r;
+  },
+
+  start: function(){
+    if(!this.supported){
+      toast('Voice input not supported in this browser', 'error');
+      return false;
+    }
+    if(this.active) return true;
+    this.finalText = '';
+    this.interimText = '';
+    this.active = true;
+    try {
+      this.recognition.start();
+      return true;
+    } catch(e){
+      console.warn('Recognition start error:', e);
+      this.active = false;
+      return false;
+    }
+  },
+
+  stop: function(){
+    this.active = false;
+    if(this.recognition){
+      try { this.recognition.stop(); } catch(e){}
+    }
+  },
+
+  reset: function(){
+    this.finalText = '';
+    this.interimText = '';
+    this.renderTranscript();
+  },
+
+  getTranscript: function(){
+    return (this.finalText + ' ' + this.interimText).trim();
+  },
+
+  renderTranscript: function(){
+    var el = $('voiceTranscript');
+    if(!el) return;
+    var final = this.finalText.trim();
+    var interim = this.interimText.trim();
+    if(!final && !interim){
+      el.innerHTML = '<span class="placeholder">Start speaking — your words will appear here…</span>';
+      return;
+    }
+    var html = '';
+    if(final) html += esc(final);
+    if(interim) html += (final ? ' ' : '') + '<span class="interim">' + esc(interim) + '</span>';
+    el.innerHTML = html;
+    el.scrollTop = el.scrollHeight;
+  }
+};
+
+/* ============================================================
+   AUDIO RECORDER — MediaRecorder for voice messages
+   ============================================================ */
+var AudioRecorder = {
+  supported: !!(navigator.mediaDevices && typeof MediaRecorder !== 'undefined'),
+  recorder: null,
+  stream: null,
+  chunks: [],
+  blob: null,
+  active: false,
+  startedAt: 0,
+  duration: 0,
+  onComplete: null,
+
+  start: function(){
+    if(!this.supported){
+      toast('Audio recording not supported', 'error');
+      return Promise.reject(new Error('not_supported'));
+    }
+    var self = this;
+    this.chunks = [];
+    this.blob = null;
+    return navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream){
+      self.stream = stream;
+      // Pick a supported mime
+      var mime = '';
+      var candidates = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
+      for(var i = 0; i < candidates.length; i++){
+        if(MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(candidates[i])){
+          mime = candidates[i]; break;
+        }
+      }
+      var opts = mime ? { mimeType: mime } : undefined;
+      self.recorder = new MediaRecorder(stream, opts);
+      self.recorder.ondataavailable = function(e){
+        if(e.data && e.data.size > 0) self.chunks.push(e.data);
+      };
+      self.recorder.onstop = function(){
+        self.blob = new Blob(self.chunks, { type: self.recorder.mimeType || 'audio/webm' });
+        self.duration = Math.round((now() - self.startedAt) / 1000);
+        self.cleanup();
+        if(self.onComplete) self.onComplete(self.blob, self.duration);
+      };
+      self.startedAt = now();
+      self.active = true;
+      self.recorder.start();
+      return true;
+    }).catch(function(err){
+      var msg = 'Microphone access failed';
+      if(err.name === 'NotAllowedError') msg = 'Microphone permission denied';
+      else if(err.name === 'NotFoundError') msg = 'No microphone found';
+      toast(msg, 'error');
+      throw err;
+    });
+  },
+
+  stop: function(){
+    if(!this.active) return;
+    this.active = false;
+    try { this.recorder.stop(); } catch(e){}
+  },
+
+  cleanup: function(){
+    if(this.stream){
+      try { this.stream.getTracks().forEach(function(t){ t.stop(); }); } catch(e){}
+      this.stream = null;
+    }
+  },
+
+  getBlob: function(){ return this.blob; },
+  getDuration: function(){ return this.duration; },
+  isActive: function(){ return this.active; }
+};
+
+/* ============================================================
+   VOICE OVERLAY UI
+   ============================================================ */
+function openVoiceOverlay(){
+  var ovl = $('voiceOverlay');
+  if(!ovl) return;
+
+  if(!VoiceInput.supported){
+    toast('Voice input not supported. Try Chrome, Edge, or Safari.', 'warn');
+    return;
+  }
+
+  VoiceInput.reset();
+  AudioRecorder.blob = null;
+  AudioRecorder.duration = 0;
+
+  ovl.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Update hint
+  var hint = $('voiceHint');
+  if(hint){
+    hint.textContent = 'Speak naturally. Tap "Record audio" to also attach your voice recording.';
+  }
+  var recLbl = $('audioRecLabel');
+  if(recLbl) recLbl.textContent = 'Record audio';
+  var recBtn = $('audioRecBtn');
+  if(recBtn) recBtn.classList.remove('active');
+  var stateEl = $('voiceState');
+  if(stateEl) stateEl.textContent = 'Listening';
+
+  // Start listening
+  var started = VoiceInput.start();
+  if(!started){
+    closeVoiceOverlay();
+    return;
+  }
+
+  // Focus for accessibility
+  setTimeout(function(){
+    var sendBtn = $('voiceSendBtn');
+    if(sendBtn) sendBtn.focus();
+  }, 100);
+}
+
+function closeVoiceOverlay(){
+  var ovl = $('voiceOverlay');
+  if(!ovl) return;
+  ovl.classList.remove('open');
+  document.body.style.overflow = '';
+  VoiceInput.stop();
+  if(AudioRecorder.isActive()) AudioRecorder.stop();
+}
+
+function cancelVoice(){
+  VoiceInput.stop();
+  if(AudioRecorder.isActive()) AudioRecorder.stop();
+  VoiceInput.reset();
+  closeVoiceOverlay();
+}
+
+function sendVoiceMessage(){
+  var text = VoiceInput.getTranscript();
+  var blob = AudioRecorder.getBlob();
+  var duration = AudioRecorder.getDuration();
+
+  if(!text && !blob){
+    toast('Say something or record audio first', 'warn');
+    return;
+  }
+
+  VoiceInput.stop();
+  if(AudioRecorder.isActive()) AudioRecorder.stop();
+
+  // Build the message with optional audio
+  var audioData = null;
+  if(blob){
+    // Convert to base64 data URL for persistence
+    var reader = new FileReader();
+    reader.onload = function(e){
+      audioData = {
+        dataUrl: e.target.result,
+        duration: duration,
+        mimeType: blob.type
+      };
+      finalizeVoiceSend(text || '(voice message)', audioData);
+    };
+    reader.readAsDataURL(blob);
+  } else {
+    finalizeVoiceSend(text, null);
+  }
+
+  closeVoiceOverlay();
+}
+
+function finalizeVoiceSend(text, audioData){
+  if(!text || !text.trim()){
+    toast('No speech detected', 'warn');
+    return;
+  }
+
+  var msg = {
+    role: 'user',
+    text: text,
+    audio: audioData
+  };
+  appendMessage(msg);
+  renderConversations();
+  renderChat();
+
+  // Now trigger the AI pipeline with this text
+  processUserText(text);
+}
+
+function toggleAudioRecording(){
+  var btn = $('audioRecBtn');
+  var lbl = $('audioRecLabel');
+  var stateEl = $('voiceState');
+
+  if(AudioRecorder.isActive()){
+    AudioRecorder.stop();
+    btn.classList.remove('active');
+    if(lbl) lbl.textContent = 'Record audio';
+    if(stateEl) stateEl.textContent = 'Listening';
+    toast('Audio attached — tap Send to submit', 'success');
+    return;
+  }
+
+  if(!AudioRecorder.supported){
+    toast('Audio recording not supported in this browser', 'warn');
+    return;
+  }
+
+  AudioRecorder.onComplete = function(blob, duration){
+    // Blob ready
+  };
+
+  AudioRecorder.start().then(function(){
+    btn.classList.add('active');
+    if(lbl) lbl.textContent = 'Stop recording';
+    if(stateEl) stateEl.textContent = 'Recording + Listening';
+    toast('Recording… tap again to stop', 'info');
+  }).catch(function(){});
+}
+
+/* ============================================================
+   CONVERSATIONS
+   ============================================================ */
+function loadConversations(){
+  try {
+    var raw = localStorage.getItem('ecogenius_conversations_v1');
+    if(raw){
+      var d = JSON.parse(raw);
+      if(Array.isArray(d)) STATE.conversations = d;
+    }
+  } catch(e){}
+}
+function saveConversations(){
+  try {
+    STATE.conversations.forEach(function(c){
+      if(c.messages.length > CONFIG.behaviour.maxHistoryTurns * 2){
+        c.messages = c.messages.slice(-CONFIG.behaviour.maxHistoryTurns * 2);
+      }
+    });
+    if(STATE.conversations.length > 20){
+      STATE.conversations = STATE.conversations.slice(0, 20);
+    }
+    localStorage.setItem('ecogenius_conversations_v1', JSON.stringify(STATE.conversations));
+  } catch(e){}
+}
+function getActiveConversation(){
+  for(var i=0;i<STATE.conversations.length;i++){
+    if(STATE.conversations[i].id === STATE.activeConvId) return STATE.conversations[i];
+  }
+  return null;
+}
+function startNewChat(){
+  var conv = { id:uid('conv'), title:'New conversation', createdAt:now(), updatedAt:now(), messages:[] };
+  STATE.conversations.unshift(conv);
+  STATE.activeConvId = conv.id;
+  saveConversations();
+  closeSidebar();
+  renderConversations();
+  renderChat();
+}
+function switchConversation(id){
+  VoiceOutput.stop();
+  STATE.activeConvId = id;
+  closeSidebar();
+  renderConversations();
+  renderChat();
+}
+function deleteConversation(id){
+  STATE.conversations = STATE.conversations.filter(function(c){ return c.id !== id; });
+  if(STATE.activeConvId === id){
+    STATE.activeConvId = STATE.conversations.length ? STATE.conversations[0].id : null;
+  }
+  saveConversations();
+  renderConversations();
+  renderChat();
+}
+function clearCurrentChat(){
+  var c = getActiveConversation();
+  if(!c) return;
+  if(!confirm('Clear this conversation?')) return;
+  VoiceOutput.stop();
+  c.messages = [];
+  c.title = 'New conversation';
+  c.updatedAt = now();
+  saveConversations();
+  renderConversations();
+  renderChat();
+}
+function ensureActiveConversation(){
+  if(!STATE.activeConvId || !getActiveConversation()){
+    if(STATE.conversations.length === 0) startNewChat();
+    else STATE.activeConvId = STATE.conversations[0].id;
+  }
+}
+function appendMessage(msg){
+  ensureActiveConversation();
+  var c = getActiveConversation();
+  if(!c) return null;
+  msg.id = msg.id || uid('msg');
+  msg.ts = msg.ts || now();
+  c.messages.push(msg);
+  c.updatedAt = now();
+  if(c.title === 'New conversation' && msg.role === 'user'){
+    c.title = msg.text.slice(0, 46) + (msg.text.length > 46 ? '…' : '');
+  }
+  saveConversations();
+  return msg;
+}
+
+/* ============================================================
+   FEATURE RESOLUTION
+   ============================================================ */
+var NAV_INTENT_PHRASES = ['open ','go to ','goto ','go ','take me to ','show me ','navigate to ','navigate ','launch ','where is ','where can i find ','how do i access ','how do i open ','how do i get to ','i want to open ','i want to see ','i want to go to ','take me ','bring me to ','show ','find '];
+
+function scoreFeature(feature, text){
+  var t = ' ' + text.toLowerCase() + ' ';
+  var score = 0;
+  if(t.indexOf(' ' + feature.id + ' ') !== -1) score += 50;
+  if(t.indexOf(' ' + feature.name.toLowerCase() + ' ') !== -1) score += 60;
+  feature.keywords.forEach(function(k){
+    if(t.indexOf(' ' + k + ' ') !== -1) score += 12;
+    else if(t.indexOf(k) !== -1) score += 6;
+  });
+  if(feature.description){
+    var words = feature.description.toLowerCase().split(/\s+/);
+    words.forEach(function(w){
+      if(w.length > 4 && t.indexOf(' ' + w + ' ') !== -1) score += 2;
+    });
+  }
+  return score;
+}
+
+function resolveFeatures(text){
+  return FEATURES.map(function(f){ return { feature:f, score:scoreFeature(f, text) }; })
+    .filter(function(r){ return r.score >= 10; })
+    .sort(function(a,b){ return b.score - a.score; });
+}
+
+function detectNavigationIntent(text){
+  var t = text.toLowerCase().trim();
+  var hasVerb = NAV_INTENT_PHRASES.some(function(p){ return t.indexOf(p) !== -1; });
+  var isShort = t.split(/\s+/).length <= 3;
+  var matches = resolveFeatures(t);
+  if(matches.length === 0) return null;
+  if(hasVerb || isShort){
+    if(matches.length === 1) return { feature:matches[0].feature, confidence:'high' };
+    if(matches.length > 1 && matches[0].score >= matches[1].score * 1.8){
+      return { feature:matches[0].feature, confidence:'high' };
+    }
+    return { features:matches.slice(0,3).map(function(m){ return m.feature; }), confidence:'ambiguous' };
+  }
+  return null;
+}
+
+/* ============================================================
+   KNOWLEDGE RETRIEVAL
+   ============================================================ */
+var STOPWORDS = ['the','a','an','and','or','but','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','shall','should','may','might','must','can','could','i','me','my','we','our','you','your','he','she','it','they','them','this','that','these','those','of','to','in','on','at','by','for','with','about','from','up','down','into','out','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','just','also','if','what','which','who','whom','tell','know','want','need','get','got'];
+
+function searchKnowledge(query, limit){
+  limit = limit || 3;
+  var q = query.toLowerCase().trim();
+  if(!q) return [];
+  var tokens = q.split(/[^a-z0-9-]+/).filter(function(t){ return t.length > 2 && STOPWORDS.indexOf(t) === -1; });
+  if(tokens.length === 0) tokens = q.split(/[^a-z0-9-]+/).filter(function(t){ return t.length > 0; });
+
+  var scored = KNOWLEDGE.map(function(entry){
+    var score = 0;
+    var lower = entry.title.toLowerCase();
+    var tagsLower = (entry.tags || []).map(function(t){ return t.toLowerCase(); });
+    var aliasesLower = (entry.aliases || []).map(function(t){ return t.toLowerCase(); });
+    var contentLower = entry.content.toLowerCase();
+    var idLower = entry.id.toLowerCase();
+    tokens.forEach(function(tok){
+      if(lower.indexOf(tok) !== -1) score += 10;
+      if(tagsLower.some(function(t){ return t === tok; })) score += 15;
+      else if(tagsLower.some(function(t){ return t.indexOf(tok) !== -1; })) score += 8;
+      if(aliasesLower.some(function(t){ return t.indexOf(tok) !== -1; })) score += 6;
+      if(contentLower.indexOf(tok) !== -1) score += 3;
+      if(idLower.indexOf(tok) !== -1) score += 4;
+    });
+    if(tagsLower.some(function(t){ return q.indexOf(t) !== -1; })) score += 20;
+    if(aliasesLower.some(function(t){ return q.indexOf(t) !== -1; })) score += 18;
+    return { entry:entry, score:score };
+  }).filter(function(r){ return r.score > 4; })
+    .sort(function(a,b){ return b.score - a.score; })
+    .slice(0, limit);
+  return scored.map(function(r){ return r.entry; });
+}
+
+/* ============================================================
+   LOCAL AI ENGINE (enhanced)
+   ============================================================ */
+function buildActionCard(feature, subtitle){
+  return { type:'action', featureId:feature.id, title:feature.name, subtitle:subtitle||feature.description, icon:feature.icon, color:feature.color||'cy', route:feature.route };
+}
+
+function localAnswer(userText){
+  var response = { text:'', cards:[], sources:[], actions:[], meta:{ engine:'local_knowledge_engine' } };
+
+  // 1. Navigation intent
+  var nav = detectNavigationIntent(userText);
+  if(nav){
+    if(nav.confidence === 'high'){
+      var f = nav.feature;
+      response.text = 'I can take you to **' + f.name + '**.\n\n' + f.description + '.';
+      response.cards.push(buildActionCard(f, 'Open ' + f.name));
+      response.meta.intent = 'navigate';
+      return response;
+    }
+    if(nav.confidence === 'ambiguous'){
+      response.text = 'I found a few places in EcoCycle X that could match. Which one would you like to open?';
+      nav.features.forEach(function(f){ response.cards.push(buildActionCard(f, 'Open ' + f.name)); });
+      response.meta.intent = 'navigate_ambiguous';
+      return response;
+    }
+  }
+
+  // 2. Dashboard stats query
+  if(/\b(my|show|what|tell|how many|stats|statistics|recent|my scans|my dashboard)\b/i.test(userText) &&
+     /\b(scans|scanned|dashboard|activity|stats|statistics|recent|history|my data)\b/i.test(userText)){
+    var stats = loadDashboardStats();
+    if(stats && (stats.total > 0)){
+      response.text = '**Your EcoScan & Dashboard Activity**\n\n' +
+        'From your local dashboard data:\n\n' +
+        '| Metric | Value |\n' +
+        '|--------|-------|\n' +
+        '| Total scans | ' + (stats.total || 0) + ' |\n' +
+        '| Recyclable | ' + (stats.recyclable || 0) + ' |\n' +
+        '| Reusable | ' + (stats.reusable || 0) + ' |\n' +
+        '| Avg confidence | ' + Math.round((stats.avgConfidence || 0) * 100) + '% |\n' +
+        (stats.lastScanAt ? '| Last scan | ' + fmtRel(stats.lastScanAt) + ' |\n' : '') +
+        '\nThis data is read from your local browser storage — it is the same data that powers the dashboard.';
+      response.cards.push(buildActionCard(FEATURES.find(function(f){ return f.id === 'dashboard'; })));
+      response.cards.push(buildActionCard(FEATURES.find(function(f){ return f.id === 'ecoscan'; })));
+      response.meta.intent = 'dashboard_stats';
+      return response;
+    } else {
+      response.text = 'You haven\'t recorded any scans or activity yet in this browser.\n\n' +
+        '**To get started:**\n' +
+        '- Open **EcoScan AI** to scan your first material\n' +
+        '- Or open the **Dashboard** to see your overall EcoCycle X state';
+      response.cards.push(buildActionCard(FEATURES.find(function(f){ return f.id === 'ecoscan'; }), 'Scan your first material'));
+      response.cards.push(buildActionCard(FEATURES.find(function(f){ return f.id === 'dashboard'; })));
+      response.meta.intent = 'dashboard_empty';
+      return response;
+    }
+  }
+
+  // 3. Knowledge search
+  var matches = searchKnowledge(userText, 3);
+  if(matches.length > 0){
+    var best = matches[0];
+    response.text = best.content;
+    matches.forEach(function(m){
+      response.sources.push({ id:m.id, title:m.title, category:m.category });
+    });
+    if(best.actions && best.actions.length){
+      best.actions.forEach(function(fid){
+        var f = FEATURES.find(function(x){ return x.id === fid; });
+        if(f) response.cards.push(buildActionCard(f));
+      });
+    }
+    if(matches.length > 1){
+      response.meta.related = matches.slice(1).map(function(m){ return { id:m.id, title:m.title }; });
+    }
+    response.meta.intent = 'knowledge';
+    return response;
+  }
+
+  // 4. Live data intents — honest not-connected
+  if(/\b(my|show me my|view my|see my)\b.*\b(impact|collection|collections|wallet|balance|points|rewards|devices)\b/i.test(userText)){
+    var which = 'EcoImpact';
+    if(/collection/i.test(userText)) which = 'EcoCollect';
+    else if(/wallet|balance|points|rewards/i.test(userText)) which = 'EcoWallet';
+    else if(/device/i.test(userText)) which = 'EcoSmart';
+    var feat = FEATURES.find(function(x){ return x.name === which; });
+    response.text = 'I cannot show your personal **' + which + '** data from this environment because the EcoCycle X backend is **not connected**.\n\n' +
+      'This is a frontend instance — I can explain how the module works and take you to it, but only the real backend can show your actual records.\n\n' +
+      'When the backend is connected, this request would return your real, permission-checked data from ' + which + '.';
+    response.cards.push(buildActionCard(feat, 'Open ' + which + ' (view your real data there)'));
+    response.meta.intent = 'live_data_unavailable';
+    response.notice = 'Integration status: BACKEND NOT CONNECTED';
+    return response;
+  }
+
+  // 5. Fallback
+  response.text = 'I don\'t have a specific answer for that yet. Here are some things I can help with:\n\n' +
+    '- Explain any EcoCycle X module — EcoScan AI, EcoCollect, EcoMarket, EcoWallet, EcoConnect, EcoSmart, EcoImpact, EcoCommand\n' +
+    '- Explain materials — PET, glass, aluminium, e-waste, textiles, organic\n' +
+    '- Guide you through recycling, reuse and upcycling\n' +
+    '- Show your scan statistics from the dashboard\n' +
+    '- Navigate you to any registered feature\n\n' +
+    'Try rephrasing, or pick one of the suggestions below.';
+  response.meta.intent = 'fallback';
+
+  ['platform_overview','lifecycle','lm_recycling_basics','lm_creative_reuse'].forEach(function(topic){
+    var kb = KNOWLEDGE.find(function(k){ return k.id.indexOf(topic) !== -1; });
+    if(kb){
+      response.cards.push({ type:'suggestion', title:kb.title, body:'Ask about this topic', icon:'fa-lightbulb', query:kb.title });
+    }
+  });
+  return response;
+}
+
+function loadDashboardStats(){
+  try {
+    // Read from the shared stats key used by EcoScan
+    var raw = localStorage.getItem('ecocycle_shared_stats_v1');
+    if(raw){
+      var s = JSON.parse(raw);
+      if(s && typeof s.total === 'number') return s;
+    }
+    // Fallback: read scan history
+    var hRaw = localStorage.getItem('ecocycle_ecoscan_history_v4');
+    if(hRaw){
+      var h = JSON.parse(hRaw);
+      if(Array.isArray(h)){
+        var total = h.length;
+        var recyclable = h.filter(function(r){ return r.recyclable; }).length;
+        var reusable = h.filter(function(r){ return r.reusable; }).length;
+        var avgConf = total ? h.reduce(function(s, r){ return s + (r.confidence || 0); }, 0) / total : 0;
+        return { total:total, recyclable:recyclable, reusable:reusable, avgConfidence:avgConf, lastScanAt:h[0] ? h[0].timestamp : null };
+      }
+    }
+  } catch(e){}
+  return null;
+}
+
+/* ============================================================
+   AI CLIENT
+   ============================================================ */
+function aiSend(userText){
+  return new Promise(function(resolve, reject){
+    if(CONFIG.ai.provider === 'backend_proxy' && apiConfigured()){
+      apiRequest(CONFIG.api.endpoints.chat, {
+        method:'POST',
+        body: JSON.stringify({ messages: conversationHistoryForAI(), model: CONFIG.ai.model })
+      }).then(function(data){
+        if(!data || typeof data.text !== 'string'){ reject(new Error('INVALID_AI_RESPONSE')); return; }
+        resolve(data);
+      }).catch(reject);
+      return;
+    }
+    setTimeout(function(){
+      try { resolve(localAnswer(userText)); }
+      catch(err){ reject(err); }
+    }, 320 + Math.random() * 380);
+  });
+}
+
+function conversationHistoryForAI(){
+  var c = getActiveConversation();
+  if(!c) return [];
+  return c.messages.slice(-CONFIG.behaviour.maxHistoryTurns).map(function(m){
+    return { role:m.role, content:m.text };
+  });
+}
+
+/* ============================================================
+   API CLIENT
+   ============================================================ */
+function apiConfigured(){ return !!(CONFIG.api.baseUrl); }
+function apiRequest(path, opts){
+  return new Promise(function(resolve, reject){
+    if(!apiConfigured()){ reject(new Error('CONFIGURATION_REQUIRED: API base URL not set')); return; }
+    fetch(CONFIG.api.baseUrl + path, Object.assign({ credentials:'include', headers:{'Content-Type':'application/json'} }, opts || {}))
+      .then(function(r){
+        if(!r.ok) return r.json().catch(function(){ return {}; }).then(function(err){ reject(new Error(err.message || ('HTTP ' + r.status))); });
+        return r.json();
+      })
+      .then(resolve).catch(reject);
+  });
+}
+function fetchSession(){
+  if(!apiConfigured()) return Promise.reject(new Error('not_configured'));
+  return apiRequest(CONFIG.api.endpoints.session, { method:'GET' });
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function navigateToFeature(featureId){
+  var f = FEATURES.find(function(x){ return x.id === featureId; });
+  if(!f){ toast('Feature not registered', 'error'); return; }
+  auditLog('navigate', { feature:featureId, route:f.route });
+  VoiceOutput.stop();
+  toast('Opening ' + f.name + '…', 'info');
+  try { window.location.href = f.route; }
+  catch(e){ toast('Navigation blocked. Route: ' + f.route, 'warn'); }
+}
+
+/* ============================================================
+   AUDIT
+   ============================================================ */
+function auditLog(action, detail){
+  try {
+    var log = [];
+    var raw = localStorage.getItem('ecogenius_audit_v1');
+    if(raw) log = JSON.parse(raw) || [];
+    log.unshift({ ts:now(), actor:STATE.user.ecoId||'anonymous', role:STATE.user.role, action:action, detail:detail||{}, env:CONFIG.environment });
+    if(log.length > 300) log = log.slice(0, 300);
+    localStorage.setItem('ecogenius_audit_v1', JSON.stringify(log));
+  } catch(e){}
+}
+
+/* ============================================================
+   RENDER — Conversations
+   ============================================================ */
+function renderConversations(){
+  var wrap = $('convList');
+  if(!wrap) return;
+  if(STATE.conversations.length === 0){
+    wrap.innerHTML = '<div style="padding:14px 10px;font-size:0.72rem;color:var(--text-4);text-align:center;line-height:1.5">No conversations yet.<br>Start one to begin.</div>';
+    return;
+  }
+  wrap.innerHTML = STATE.conversations.map(function(c){
+    return '<div class="conv-item' + (c.id === STATE.activeConvId ? ' active' : '') + '" onclick="switchConversation(\'' + c.id + '\')">' +
+      '<div class="conv-item-ic"><i class="fas fa-comment"></i></div>' +
+      '<div class="conv-item-txt">' +
+        '<strong>' + esc(c.title) + '</strong>' +
+        '<small>' + fmtRel(c.updatedAt) + '</small>' +
+      '</div>' +
+      '<button class="conv-item-del" onclick="event.stopPropagation();deleteConversation(\'' + c.id + '\')" aria-label="Delete conversation" type="button">' +
+        '<i class="fas fa-trash"></i>' +
+      '</button>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   RENDER — Chat
+   ============================================================ */
+function renderChat(){
+  var c = getActiveConversation();
+  var inner = $('chatInner');
+  if(!inner) return;
+
+  if(!c || c.messages.length === 0){ renderWelcome(); return; }
+
+  var html = '';
+  c.messages.forEach(function(m){ html += renderMessage(m); });
+  inner.innerHTML = html;
+  scrollChatToBottom();
+}
+
+function renderWelcome(){
+  var inner = $('chatInner');
+  if(!inner) return;
+
+  var suggestions = [
+    { q:'What is EcoCycle X?', s:'Platform overview', ic:'fa-circle-info', c:'cy' },
+    { q:'How does recycling work?', s:'Recycling basics', ic:'fa-recycle', c:'jade' },
+    { q:'How can I sell recyclable materials?', s:'Marketplace flow', ic:'fa-store', c:'cy' },
+    { q:'What can I make from PET bottles?', s:'Creative reuse', ic:'fa-palette', c:'violet' },
+    { q:'Show my scan statistics', s:'Dashboard data', ic:'fa-chart-pie', c:'cy' },
+    { q:'How does EcoImpact measure impact?', s:'Impact methodology', ic:'fa-seedling', c:'jade' },
+    { q:'Go to EcoMarket', s:'Navigate to module', ic:'fa-arrow-right', c:'cy' },
+    { q:'Open EcoScan AI', s:'Scan materials', ic:'fa-camera', c:'cy' }
+  ];
+
+  inner.innerHTML =
+    '<div class="welcome">' +
+      '<div class="welcome-badge"><i class="fas fa-brain"></i> The AI Brain of EcoCycle X</div>' +
+      '<div class="welcome-hero"><i class="fas fa-comment-dots"></i></div>' +
+      '<h2>Ask me anything about <span class="g">EcoCycle X</span></h2>' +
+      '<p>I understand every module. I can explain how they work, guide you through the platform, answer recycling and circular-economy questions, show your scan data, and take you to the right place — by typing or by voice.</p>' +
+      '<div class="welcome-env"><i class="fas fa-microphone"></i><span>Tap the mic to speak · Every reply can be read aloud</span></div>' +
+      '<div class="suggested">' +
+        suggestions.map(function(sg){
+          return '<button class="suggested-card" onclick="askSuggested(\'' + esc(sg.q).replace(/'/g,"\\'") + '\')" type="button">' +
+            '<div class="suggested-card-ic ' + sg.c + '"><i class="fas ' + sg.ic + '"></i></div>' +
+            '<div class="suggested-card-txt"><strong>' + esc(sg.q) + '</strong><small>' + esc(sg.s) + '</small></div>' +
+          '</button>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+}
+
+function renderMessage(m){
+  var cls = 'msg-group ' + m.role;
+  var avatar = m.role === 'user' ? initials(STATE.user.name) : '<i class="fas fa-brain" style="font-size:0.6rem"></i>';
+  var time = fmtTime(m.ts);
+  var bubbleExtraCls = (m.status === 'error') ? ' error' : '';
+  var bubbleContent = renderText(m.text);
+
+  // Audio player for user messages with audio
+  if(m.audio && m.audio.dataUrl){
+    bubbleContent += renderAudioPlayer(m);
+  }
+
+  if(m.cards && m.cards.length){
+    bubbleContent += '<div class="action-cards">' + m.cards.map(renderCard).join('') + '</div>';
+  }
+
+  if(m.sources && m.sources.length){
+    bubbleContent += '<div class="sources">' +
+      '<div class="sources-label"><i class="fas fa-book-open"></i> Sources</div>' +
+      '<div class="source-chips">' +
+        m.sources.map(function(s){
+          return '<span class="source-chip" onclick="showSource(\'' + esc(s.id) + '\')" title="' + esc(s.title) + '">' +
+            '<i class="fas fa-file-lines"></i>' + esc(s.title.length > 32 ? s.title.slice(0,32)+'…' : s.title) +
+          '</span>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  var actionsHtml = '';
+  if(m.role === 'assistant' && m.status !== 'error'){
+    actionsHtml = '<div class="msg-actions">' +
+      '<button class="speaker-btn" id="speaker-' + m.id + '" onclick="speakMessage(\'' + m.id + '\')" type="button" aria-label="Read aloud"><i class="fas fa-volume-high"></i> Listen</button>' +
+      '<button class="msg-action" onclick="copyMessage(\'' + m.id + '\')" type="button"><i class="fas fa-copy"></i> Copy</button>' +
+      '<button class="msg-action" onclick="retryFromMessage(\'' + m.id + '\')" type="button"><i class="fas fa-rotate"></i> Regenerate</button>' +
+      '<button class="msg-action" id="fb-up-' + m.id + '" onclick="rateMessage(\'' + m.id + '\',\'up\')" type="button"><i class="fas fa-thumbs-up"></i></button>' +
+      '<button class="msg-action" id="fb-dn-' + m.id + '" onclick="rateMessage(\'' + m.id + '\',\'down\')" type="button"><i class="fas fa-thumbs-down"></i></button>' +
+    '</div>';
+  }
+
+  if(m.role === 'assistant' && m.status === 'error'){
+    actionsHtml = '<div class="msg-actions">' +
+      '<button class="msg-action" onclick="retryFromMessage(\'' + m.id + '\')" type="button"><i class="fas fa-rotate"></i> Retry</button>' +
+      '<button class="msg-action" onclick="showDiagnostics()" type="button"><i class="fas fa-terminal"></i> Diagnostics</button>' +
+    '</div>';
+  }
+
+  var noticeHtml = '';
+  if(m.notice){
+    noticeHtml = '<div class="notice" style="margin-top:10px"><i class="fas fa-circle-info"></i><span>' + esc(m.notice) + '</span></div>';
+  }
+
+  return '<div class="' + cls + '">' +
+    '<div class="msg-meta">' +
+      '<div class="msg-meta-av">' + avatar + '</div>' +
+      '<span>' + (m.role === 'user' ? 'You' : 'EcoGenius') + '</span>' +
+      '<time>' + time + '</time>' +
+    '</div>' +
+    '<div class="bubble' + bubbleExtraCls + '" id="bubble-' + m.id + '">' +
+      bubbleContent +
+      noticeHtml +
+    '</div>' +
+    actionsHtml +
+  '</div>';
+}
+
+function renderAudioPlayer(m){
+  if(!m.audio || !m.audio.dataUrl) return '';
+  var dur = m.audio.duration || 0;
+  var bars = '';
+  for(var i = 0; i < 40; i++){
+    var h = 4 + Math.abs(Math.sin(i * 0.7)) * 16;
+    bars += '<div class="audio-wave-bar" style="height:' + h + 'px"></div>';
+  }
+  return '<div class="audio-msg">' +
+    '<button class="audio-play" onclick="playAudioMessage(\'' + m.id + '\')" aria-label="Play voice message" type="button">' +
+      '<i class="fas fa-play" id="play-icon-' + m.id + '"></i>' +
+    '</button>' +
+    '<div class="audio-wave" id="audio-wave-' + m.id + '">' + bars + '</div>' +
+    '<div class="audio-dur">' + dur + 's</div>' +
+  '</div>';
+}
+
+function playAudioMessage(msgId){
+  var c = getActiveConversation();
+  if(!c) return;
+  var m = c.messages.find(function(x){ return x.id === msgId; });
+  if(!m || !m.audio || !m.audio.dataUrl) return;
+
+  var audio = new Audio(m.audio.dataUrl);
+  var icon = document.getElementById('play-icon-' + msgId);
+  var wave = document.getElementById('audio-wave-' + msgId);
+  if(icon) icon.className = 'fas fa-pause';
+  if(wave) wave.classList.add('playing');
+
+  audio.onended = function(){
+    if(icon) icon.className = 'fas fa-play';
+    if(wave) wave.classList.remove('playing');
+  };
+  audio.play().catch(function(){ toast('Playback failed', 'error'); });
+}
+
+function renderCard(card){
+  if(card.type === 'action'){
+    var f = FEATURES.find(function(x){ return x.id === card.featureId; });
+    if(!f) return '';
+    var colorCls = f.color === 'violet' ? 'violet' : f.color === 'jade' ? 'jade' : f.color === 'gold' ? 'gold' : '';
+    return '<button class="action-card primary" onclick="navigateToFeature(\'' + f.id + '\')" type="button">' +
+      '<div class="action-card-ic ' + colorCls + '"><i class="fas ' + f.icon + '"></i></div>' +
+      '<div class="action-card-txt"><strong>' + esc(card.title || f.name) + '</strong><small>' + esc(card.subtitle || f.description) + '</small></div>' +
+      '<i class="fas fa-arrow-right action-card-arrow"></i>' +
+    '</button>';
+  }
+  if(card.type === 'suggestion'){
+    return '<button class="action-card" onclick="askSuggested(\'' + esc(card.query).replace(/'/g,"\\'") + '\')" type="button">' +
+      '<div class="action-card-ic"><i class="fas ' + card.icon + '"></i></div>' +
+      '<div class="action-card-txt"><strong>' + esc(card.title) + '</strong><small>' + esc(card.body) + '</small></div>' +
+      '<i class="fas fa-arrow-right action-card-arrow"></i>' +
+    '</button>';
+  }
+  return '';
+}
+
+function renderText(text){
+  if(!text) return '';
+  var h = esc(text);
+  // Code blocks (``` ... ```)
+  h = h.replace(/```([\s\S]*?)```/g, function(_, code){
+    return '<pre style="background:rgba(0,0,0,0.4);padding:10px 14px;border-radius:8px;overflow-x:auto;font-family:var(--font-mono);font-size:0.75rem;color:var(--jade-3);margin:10px 0;line-height:1.5">' + code.trim() + '</pre>';
+  });
+  // Inline code
+  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Bold
+  h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  h = h.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  // Headings ### → h4, ## → h3
+  h = h.replace(/^###\s+(.+)$/gm, '<h4>$1</h4>');
+  h = h.replace(/^##\s+(.+)$/gm, '<h3><i class="fas fa-circle-info"></i>$1</h3>');
+
+  // Split into blocks by blank lines
+  var blocks = h.split(/\n\s*\n/);
+  blocks = blocks.map(function(block){
+    block = block.trim();
+    if(!block) return '';
+
+    // Table detection
+    if(/^\|.+\|\s*$/.test(block.split('\n')[0])){
+      var lines = block.split('\n').filter(function(l){ return l.trim(); });
+      if(lines.length >= 2 && /^\|[\s\-:|]+\|/.test(lines[1])){
+        var header = lines[0].split('|').slice(1,-1).map(function(s){ return s.trim(); });
+        var body = lines.slice(2).map(function(l){ return l.split('|').slice(1,-1).map(function(s){ return s.trim(); }); });
+        var t = '<table><thead><tr>' + header.map(function(c){ return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>';
+        body.forEach(function(row){
+          t += '<tr>' + row.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>';
+        });
+        t += '</tbody></table>';
+        return t;
+      }
+    }
+
+    // Callout detection
+    if(/^⚠️/.test(block)){
+      return '<div class="callout warn"><i class="fas fa-exclamation-triangle"></i><div>' + block.replace(/^⚠️\s*/, '') + '</div></div>';
+    }
+    if(/^❌/.test(block)){
+      return '<div class="callout danger"><i class="fas fa-times-circle"></i><div>' + block.replace(/^❌\s*/, '') + '</div></div>';
+    }
+    if(/^✅/.test(block)){
+      return '<div class="callout success"><i class="fas fa-check-circle"></i><div>' + block.replace(/^✅\s*/, '') + '</div></div>';
+    }
+    if(/^ℹ️/.test(block)){
+      return '<div class="callout info"><i class="fas fa-circle-info"></i><div>' + block.replace(/^ℹ️\s*/, '') + '</div></div>';
+    }
+
+    // Heading-only block
+    if(/^<h[34]>/.test(block)) return block;
+
+    // Unordered list
+    var lines = block.split('\n');
+    if(lines.length > 1 && lines.every(function(l){ return /^\s*[-•*]\s+/.test(l); })){
+      return '<ul>' + lines.map(function(l){ return '<li>' + l.replace(/^\s*[-•*]\s+/, '') + '</li>'; }).join('') + '</ul>';
+    }
+    // Ordered list
+    if(lines.length > 1 && lines.every(function(l){ return /^\s*\d+\.\s+/.test(l); })){
+      return '<ol>' + lines.map(function(l){ return '<li>' + l.replace(/^\s*\d+\.\s+/, '') + '</li>'; }).join('') + '</ol>';
+    }
+
+    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+  });
+  return blocks.join('');
+}
+
+function scrollChatToBottom(){
+  var s = $('chatScroll');
+  if(s) s.scrollTop = s.scrollHeight;
+}
+
+/* ============================================================
+   SEND MESSAGE
+   ============================================================ */
+function sendMessage(){
+  var input = $('composerInput');
+  if(!input) return;
+  var text = input.value.trim();
+  if(!text || STATE.isThinking) return;
+  input.value = '';
+  autoResizeComposer();
+  updateSendButton();
+  appendMessage({ role:'user', text:text });
+  renderConversations();
+  renderChat();
+  processUserText(text);
+}
+
+function processUserText(text){
+  STATE.isThinking = true;
+  showThinking();
+  VoiceOutput.stop();
+
+  aiSend(text).then(function(result){
+    hideThinking();
+    STATE.isThinking = false;
+    var msg = appendMessage({
+      role:'assistant',
+      text: result.text || '',
+      cards: result.cards || [],
+      sources: result.sources || [],
+      notice: result.notice || null,
+      status:'ok',
+      meta: result.meta || {}
+    });
+    auditLog('chat.answer', { intent: result.meta ? result.meta.intent : 'unknown', sources: (result.sources||[]).map(function(s){ return s.id; }) });
+    renderChat();
+    renderConversations();
+
+    // Auto-speak if enabled
+    if(CONFIG.voice.autoSpeak && VoiceOutput.supported && msg){
+      setTimeout(function(){
+        VoiceOutput.speak(msg.id, msg.text);
+      }, 300);
+    }
+  }).catch(function(err){
+    hideThinking();
+    STATE.isThinking = false;
+    STATE.lastError = (err && err.message) || 'unknown';
+    auditLog('chat.error', { message:STATE.lastError });
+    appendMessage({ role:'assistant', text:interpretError(err), status:'error' });
+    renderChat();
+  });
+}
+
+function interpretError(err){
+  var m = (err && err.message) || 'UNKNOWN';
+  if(m.indexOf('CONFIGURATION_REQUIRED') !== -1){
+    return 'The AI backend is **not connected** in this environment. Configuration is required before real AI responses can be generated.\n\nThe local knowledge engine remains available for platform and educational questions.';
+  }
+  if(m.indexOf('HTTP') !== -1) return 'I couldn\'t reach the AI service (' + m + '). Please try again, or check the diagnostics panel.';
+  if(m.indexOf('INVALID_AI_RESPONSE') !== -1) return 'The AI service returned an unexpected response format. This has been logged.';
+  return 'Something went wrong while generating a response. You can retry, or open diagnostics for details.';
+}
+
+function showThinking(){
+  var inner = $('chatInner');
+  if(!inner) return;
+  var el = document.createElement('div');
+  el.id = 'thinkingEl';
+  el.className = 'msg-group assistant';
+  el.innerHTML =
+    '<div class="msg-meta">' +
+      '<div class="msg-meta-av"><i class="fas fa-brain" style="font-size:0.6rem"></i></div>' +
+      '<span>EcoGenius</span>' +
+    '</div>' +
+    '<div class="thinking">' +
+      '<div class="thinking-dots"><span></span><span></span><span></span></div>' +
+      '<div class="thinking-label">Thinking…</div>' +
+    '</div>';
+  inner.appendChild(el);
+  scrollChatToBottom();
+}
+function hideThinking(){
+  var el = $('thinkingEl');
+  if(el && el.parentNode) el.parentNode.removeChild(el);
+}
+
+/* ============================================================
+   COMPOSER
+   ============================================================ */
+function autoResizeComposer(){
+  var ta = $('composerInput');
+  if(!ta) return;
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 200) + 'px';
+}
+function updateSendButton(){
+  var ta = $('composerInput');
+  var btn = $('sendBtn');
+  if(!ta || !btn) return;
+  btn.disabled = !ta.value.trim() || STATE.isThinking;
+}
+function askSuggested(text){
+  var ta = $('composerInput');
+  if(!ta) return;
+  ta.value = text;
+  autoResizeComposer();
+  updateSendButton();
+  ta.focus();
+  setTimeout(sendMessage, 60);
+}
+function showSuggested(){
+  if(getActiveConversation() && getActiveConversation().messages.length > 0) startNewChat();
+  else renderWelcome();
+}
+
+/* ============================================================
+   MESSAGE ACTIONS
+   ============================================================ */
+function speakMessage(msgId){
+  var c = getActiveConversation();
+  if(!c) return;
+  var m = c.messages.find(function(x){ return x.id === msgId; });
+  if(!m) return;
+  VoiceOutput.speak(msgId, m.text);
+  auditLog('voice.speak', { msgId:msgId });
+}
+
+function copyMessage(id){
+  var c = getActiveConversation();
+  if(!c) return;
+  var m = c.messages.find(function(x){ return x.id === id; });
+  if(!m) return;
+  var text = m.text || '';
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ toast('Response copied', 'success'); }).catch(function(){ fallbackCopy(text); });
+  } else { fallbackCopy(text); }
+  auditLog('chat.copy', { msgId:id });
+}
+function fallbackCopy(text){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); toast('Response copied', 'success'); }
+  catch(e){ toast('Copy failed', 'error'); }
+  document.body.removeChild(ta);
+}
+
+function retryFromMessage(id){
+  var c = getActiveConversation();
+  if(!c) return;
+  var idx = c.messages.findIndex(function(x){ return x.id === id; });
+  if(idx < 0) return;
+  var userMsg = null;
+  for(var i = idx - 1; i >= 0; i--){
+    if(c.messages[i].role === 'user'){ userMsg = c.messages[i]; break; }
+  }
+  if(!userMsg){ toast('Nothing to retry', 'warn'); return; }
+  c.messages = c.messages.slice(0, idx);
+  saveConversations();
+  renderChat();
+  setTimeout(function(){ processUserText(userMsg.text); }, 60);
+}
+
+function rateMessage(id, dir){
+  var up = $('fb-up-' + id);
+  var dn = $('fb-dn-' + id);
+  if(up) up.classList.toggle('voted-up', dir === 'up');
+  if(dn) dn.classList.toggle('voted-down', dir === 'down');
+  auditLog('chat.feedback', { msgId:id, direction:dir });
+  toast(dir === 'up' ? 'Thanks — marked as helpful' : 'Feedback recorded', 'success');
+  if(apiConfigured()){
+    apiRequest(CONFIG.api.endpoints.feedback, { method:'POST', body: JSON.stringify({ messageId:id, direction:dir }) }).catch(function(){});
+  }
+}
+
+function showSource(sourceId){
+  var entry = KNOWLEDGE.find(function(k){ return k.id === sourceId; });
+  if(!entry){ toast('Source not found', 'warn'); return; }
+  var f = null;
+  if(entry.actions && entry.actions.length){
+    f = FEATURES.find(function(x){ return x.id === entry.actions[0]; });
+  }
+  appendMessage({
+    role:'assistant',
+    text:'**Source: ' + entry.title + '** (' + entry.category + ')\n\n' + entry.content,
+    cards: f ? [buildActionCard(f)] : [],
+    status:'ok'
+  });
+  renderChat();
+  renderConversations();
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+function showAbout(){
+  var voiceStatus = VoiceOutput.supported ? 'Supported' : 'Not supported';
+  var inputStatus = VoiceInput.supported ? 'Supported' : 'Not supported';
+  var audioStatus = AudioRecorder.supported ? 'Supported' : 'Not supported';
+  appendMessage({
+    role:'assistant',
+    text:'**About EcoGenius**\n\n' +
+      'EcoGenius is the AI assistant and voice-enabled command layer of EcoCycle X. It understands every module, guides users, retrieves verified data when a backend is connected, and can navigate users to the correct feature.\n\n' +
+      '**🎤 Voice capabilities**\n' +
+      '- Voice input (speech recognition): ' + inputStatus + '\n' +
+      '- Voice output (text-to-speech): ' + voiceStatus + '\n' +
+      '- Audio message recording: ' + audioStatus + '\n' +
+      '- Speak button on every reply\n' +
+      '- Auto-speak mode available in Voice Settings\n\n' +
+      '**Session**\n' +
+      '- User: ' + STATE.user.name + '\n' +
+      '- Role: ' + STATE.user.role + '\n' +
+      '- Environment: ' + CONFIG.environment.toUpperCase() + '\n' +
+      '- AI provider: ' + (CONFIG.ai.provider === 'backend_proxy' && apiConfigured() ? 'Backend proxy (connected)' : 'Local Knowledge Engine'),
+    cards:[]
+  });
+  renderChat();
+  renderConversations();
+}
+
+/* ============================================================
+   DIAGNOSTICS
+   ============================================================ */
+function toggleDiag(){
+  var p = $('diagPanel');
+  if(!p) return;
+  STATE.diagOpen = !STATE.diagOpen;
+  p.classList.toggle('open', STATE.diagOpen);
+  p.setAttribute('aria-hidden', STATE.diagOpen ? 'false' : 'true');
+  if(STATE.diagOpen) renderDiag();
+  var b = $('diagBtn');
+  if(b) b.classList.toggle('active', STATE.diagOpen);
+}
+function showDiagnostics(){ if(!STATE.diagOpen) toggleDiag(); }
+
+function renderDiag(){
+  var wrap = $('diagBody');
+  if(!wrap) return;
+  function row(k, v, cls){
+    var cls2 = cls ? ' ' + cls : '';
+    return '<div class="diag-row"><span class="k">' + esc(k) + '</span><span class="v' + cls2 + '">' + esc(v) + '</span></div>';
+  }
+  var apiStatus = apiConfigured() ? STATE.apiHealth : 'unconfigured';
+  var apiCls = apiStatus === 'ok' ? 'ok' : apiStatus === 'unconfigured' ? 'warn' : 'err';
+  var aiStatus = CONFIG.ai.provider === 'backend_proxy' ? (apiConfigured() ? 'connected' : 'pending') : 'local';
+  var aiCls = aiStatus === 'connected' ? 'ok' : aiStatus === 'local' ? 'warn' : 'err';
+  var authStatus = STATE.user.authenticated ? 'authenticated' : 'guest';
+  var authCls = STATE.user.authenticated ? 'ok' : 'warn';
+
+  wrap.innerHTML =
+    '<div class="diag-group"><div class="diag-group-t">Environment</div>' +
+      row('Environment', CONFIG.environment, CONFIG.environment === 'production' ? 'ok' : 'warn') +
+      row('Version', CONFIG.version) +
+      row('Session start', fmtTime(STATE.sessionStart)) +
+    '</div>' +
+    '<div class="diag-group"><div class="diag-group-t">Authentication</div>' +
+      row('Status', authStatus, authCls) +
+      row('Role', STATE.user.role || '—') +
+      row('EcoID', STATE.user.ecoId || '—') +
+    '</div>' +
+    '<div class="diag-group"><div class="diag-group-t">Backend</div>' +
+      row('API configured', apiConfigured() ? 'yes' : 'NO', apiCls) +
+      row('Last error', STATE.lastError || 'none', STATE.lastError ? 'err' : '') +
+    '</div>' +
+    '<div class="diag-group"><div class="diag-group-t">AI Provider</div>' +
+      row('Provider', CONFIG.ai.provider, aiCls) +
+      row('Model', CONFIG.ai.model || 'not set') +
+    '</div>' +
+    '<div class="diag-group"><div class="diag-group-t">Voice</div>' +
+      row('Speech Synthesis', VoiceOutput.supported ? 'available' : 'unavailable', VoiceOutput.supported ? 'ok' : 'err') +
+      row('Voices loaded', String(VoiceOutput.voices.length), VoiceOutput.voices.length ? 'ok' : 'warn') +
+      row('Speech Recognition', VoiceInput.supported ? 'available' : 'unavailable', VoiceInput.supported ? 'ok' : 'err') +
+      row('Audio Recorder', AudioRecorder.supported ? 'available' : 'unavailable', AudioRecorder.supported ? 'ok' : 'err') +
+      row('Auto-speak', CONFIG.voice.autoSpeak ? 'on' : 'off', CONFIG.voice.autoSpeak ? 'ok' : '') +
+      row('Rate', String(CONFIG.voice.rate)) +
+      row('Pitch', String(CONFIG.voice.pitch)) +
+    '</div>' +
+    '<div class="diag-group"><div class="diag-group-t">Registries</div>' +
+      row('Features', FEATURES.length) +
+      row('Knowledge', KNOWLEDGE.length) +
+      row('Conversations', STATE.conversations.length) +
+    '</div>';
+}
+
+/* ============================================================
+   VOICE SETTINGS
+   ============================================================ */
+function openVoiceSettings(){
+  var p = $('voiceSettingsPanel');
+  var o = $('voiceSettingsOvl');
+  if(p) p.classList.add('open');
+  if(o) o.classList.add('open');
+  // Populate UI
+  var auto = $('setAutoSpeak');
+  if(auto) auto.checked = CONFIG.voice.autoSpeak;
+  var rate = $('setRate');
+  if(rate) rate.value = CONFIG.voice.rate;
+  var pitch = $('setPitch');
+  if(pitch) pitch.value = CONFIG.voice.pitch;
+  updateRateLabel();
+  updatePitchLabel();
+  VoiceOutput.populateVoiceSelector();
+}
+function closeVoiceSettings(){
+  var p = $('voiceSettingsPanel');
+  var o = $('voiceSettingsOvl');
+  if(p) p.classList.remove('open');
+  if(o) o.classList.remove('open');
+}
+function onAutoSpeakChange(){
+  var sw = $('setAutoSpeak');
+  CONFIG.voice.autoSpeak = sw && sw.checked;
+  VoiceOutput.updateAutoSpeakUI();
+  saveVoiceSettings();
+  toast(CONFIG.voice.autoSpeak ? 'Auto-speak enabled' : 'Auto-speak disabled', 'info');
+}
+function onVoiceSelect(){
+  var sel = $('setVoice');
+  if(!sel) return;
+  CONFIG.voice.preferredVoiceURI = sel.value || null;
+  saveVoiceSettings();
+  testVoice();
+}
+function onRateChange(){
+  var r = $('setRate');
+  if(!r) return;
+  CONFIG.voice.rate = parseFloat(r.value);
+  updateRateLabel();
+  saveVoiceSettings();
+}
+function onPitchChange(){
+  var p = $('setPitch');
+  if(!p) return;
+  CONFIG.voice.pitch = parseFloat(p.value);
+  updatePitchLabel();
+  saveVoiceSettings();
+}
+function updateRateLabel(){
+  var el = $('rateLabel');
+  if(el) el.textContent = (CONFIG.voice.rate === 1.0 ? 'Normal' : CONFIG.voice.rate.toFixed(2)) + ' (' + CONFIG.voice.rate.toFixed(2) + '×)';
+}
+function updatePitchLabel(){
+  var el = $('pitchLabel');
+  if(el) el.textContent = (CONFIG.voice.pitch === 1.0 ? 'Normal' : CONFIG.voice.pitch.toFixed(2)) + ' (' + CONFIG.voice.pitch.toFixed(2) + '×)';
+}
+function saveVoiceSettings(){
+  try {
+    localStorage.setItem('ecogenius_voice_settings_v1', JSON.stringify({
+      autoSpeak: CONFIG.voice.autoSpeak,
+      rate: CONFIG.voice.rate,
+      pitch: CONFIG.voice.pitch,
+      preferredVoiceURI: CONFIG.voice.preferredVoiceURI
+    }));
+  } catch(e){}
+}
+function testVoice(){
+  VoiceOutput.stop();
+  setTimeout(function(){
+    var u = new SpeechSynthesisUtterance('Hello. I am EcoGenius. Every reply I give can be read aloud — just tap the Listen button on any response.');
+    u.rate = CONFIG.voice.rate;
+    u.pitch = CONFIG.voice.pitch;
+    u.lang = CONFIG.voice.lang;
+    if(VoiceOutput.voices.length){
+      var preferred = null;
+      if(CONFIG.voice.preferredVoiceURI){
+        preferred = VoiceOutput.voices.find(function(v){ return v.voiceURI === CONFIG.voice.preferredVoiceURI; });
+      }
+      if(!preferred) preferred = VoiceOutput.voices.find(function(v){ return /Samantha|Google UK English Female|Google US English|Microsoft Aria/i.test(v.name); });
+      if(preferred) u.voice = preferred;
+    }
+    try { speechSynthesis.speak(u); } catch(e){}
+  }, 100);
+}
+function toggleAutoSpeak(){
+  CONFIG.voice.autoSpeak = !CONFIG.voice.autoSpeak;
+  VoiceOutput.updateAutoSpeakUI();
+  saveVoiceSettings();
+  toast(CONFIG.voice.autoSpeak ? 'Auto-speak enabled' : 'Auto-speak disabled', 'info');
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+function openSidebar(){
+  var s = $('sidebar');
+  var o = $('mobOvl');
+  if(s) s.classList.add('open');
+  if(o) o.classList.add('open');
+}
+function closeSidebar(){
+  var s = $('sidebar');
+  var o = $('mobOvl');
+  if(s) s.classList.remove('open');
+  if(o) o.classList.remove('open');
+}
+
+/* ============================================================
+   USER / SESSION
+   ============================================================ */
+function loadUser(){
+  try {
+    var raw = localStorage.getItem('ecocycle_user_v1') || localStorage.getItem('ecocycle_user');
+    if(raw){
+      var u = JSON.parse(raw);
+      STATE.user.name = u.name || u.displayName || 'Guest';
+      STATE.user.ecoId = u.ecoId || u.ecoID || null;
+      STATE.user.role = u.role || 'guest';
+      STATE.user.authenticated = !!STATE.user.ecoId;
+    }
+  } catch(e){}
+  updateUserChip();
+}
+function updateUserChip(){
+  var av = $('userAv');
+  var nm = $('userName');
+  var rl = $('userRole');
+  if(av) av.textContent = initials(STATE.user.name);
+  if(nm) nm.textContent = STATE.user.name;
+  if(rl){
+    var roleLabels = {guest:'GUEST',member:'MEMBER',collector:'COLLECTOR',recycler:'RECYCLER',artisan:'ARTISAN',admin:'ADMIN',super_admin:'SUPER ADMIN'};
+    rl.textContent = roleLabels[STATE.user.role] || String(STATE.user.role || 'guest').toUpperCase();
+  }
+}
+
+/* ============================================================
+   CROSS-MODULE INTEGRATION
+   ============================================================ */
+function initCrossModuleSync(){
+  // BroadcastChannel
+  try {
+    if(typeof BroadcastChannel !== 'undefined'){
+      STATE.broadcastChannel = new BroadcastChannel('ecocycle_ecoscan_v1');
+      STATE.broadcastChannel.onmessage = function(evt){
+        var msg = evt.data || {};
+        if(msg.type === 'ecoscan:scan'){
+          STATE.scanStats = loadDashboardStats();
+        }
+      };
+    }
+  } catch(e){}
+
+  // Storage events
+  window.addEventListener('storage', function(e){
+    if(e.key === 'ecocycle_shared_stats_v1' || e.key === 'ecocycle_ecoscan_history_v4'){
+      STATE.scanStats = loadDashboardStats();
+    }
+  });
+
+  // EcoSync backend events
+  window.addEventListener('ecosync:reading', function(){ STATE.scanStats = loadDashboardStats(); });
+  window.addEventListener('ecosync:scan', function(){ STATE.scanStats = loadDashboardStats(); });
+
+  // Load initial stats
+  STATE.scanStats = loadDashboardStats();
+}
+
+/* ============================================================
+   KEYBOARD / ACCESSIBILITY
+   ============================================================ */
+function bindKeyboard(){
+  document.addEventListener('keydown', function(e){
+    // Focus composer
+    if(e.key === '/' && document.activeElement !== $('composerInput') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
+      e.preventDefault();
+      var ta = $('composerInput');
+      if(ta) ta.focus();
+      return;
+    }
+    // Escape closes overlays
+    if(e.key === 'Escape'){
+      var vo = $('voiceOverlay');
+      if(vo && vo.classList.contains('open')){ cancelVoice(); return; }
+      var vs = $('voiceSettingsPanel');
+      if(vs && vs.classList.contains('open')){ closeVoiceSettings(); return; }
+      if(STATE.diagOpen){ toggleDiag(); return; }
+      closeSidebar();
+    }
+    // Cmd/Ctrl + K new chat
+    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      startNewChat();
+      return;
+    }
+    // Cmd/Ctrl + M: voice input
+    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'm'){
+      e.preventDefault();
+      openVoiceOverlay();
+      return;
+    }
+  });
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot(){
+  loadUser();
+  loadConversations();
+  ensureActiveConversation();
+
+  // Init voice
+  VoiceOutput.init();
+  VoiceInput.init();
+
+  // Env indicator
+  var dot = $('envDot');
+  var lbl = $('envLabel');
+  if(dot && lbl){
+    lbl.textContent = CONFIG.environment.toUpperCase();
+    dot.classList.remove('dev','prod');
+    dot.classList.add(CONFIG.environment === 'production' ? 'prod' : 'dev');
+  }
+
+  // Topbar status
+  var st = $('topbarStatusText');
+  if(st){
+    if(CONFIG.ai.provider === 'backend_proxy' && apiConfigured()){
+      st.textContent = 'Connected via backend';
+      var sd = $('topbarStatusDot');
+      if(sd) sd.classList.add('online');
+    } else {
+      st.textContent = 'Local Knowledge Engine · Voice ready';
+    }
+  }
+
+  // Composer
+  var ta = $('composerInput');
+  if(ta){
+    ta.addEventListener('input', function(){ autoResizeComposer(); updateSendButton(); });
+    ta.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); }
+    });
+    setTimeout(function(){ ta.focus(); }, 150);
+  }
+
+  // Render
+  renderConversations();
+  renderChat();
+  updateSendButton();
+
+  bindKeyboard();
+  initCrossModuleSync();
+
+  // Session fetch
+  if(apiConfigured()){
+    fetchSession().then(function(sess){
+      if(sess && sess.user){
+        STATE.user = Object.assign(STATE.user, sess.user);
+        STATE.user.authenticated = true;
+        updateUserChip();
+        STATE.apiHealth = 'ok';
+      }
+    }).catch(function(err){
+      STATE.apiHealth = 'error';
+      STATE.lastError = err.message || 'session_fetch_failed';
+    });
+  }
+
+  if(!CONFIG.features.diagnostics){
+    var db = $('diagBtn');
+    if(db) db.style.display = 'none';
+  }
+
+  auditLog('boot', { env:CONFIG.environment, ai:CONFIG.ai.provider, voice:true });
+
+  console.log('[EcoGenius] Boot complete', {
+    environment: CONFIG.environment,
+    ai: CONFIG.ai.provider,
+    voiceOut: VoiceOutput.supported,
+    voiceIn: VoiceInput.supported,
+    audioRec: AudioRecorder.supported,
+    features: FEATURES.length,
+    knowledge: KNOWLEDGE.length
+  });
+}
+
+/* ============================================================
+   EXPORTS
+   ============================================================ */
+window.sendMessage = sendMessage;
+window.askSuggested = askSuggested;
+window.startNewChat = startNewChat;
+window.switchConversation = switchConversation;
+window.deleteConversation = deleteConversation;
+window.clearCurrentChat = clearCurrentChat;
+window.showSuggested = showSuggested;
+window.showAbout = showAbout;
+window.toggleDiag = toggleDiag;
+window.showDiagnostics = showDiagnostics;
+window.openSidebar = openSidebar;
+window.closeSidebar = closeSidebar;
+window.copyMessage = copyMessage;
+window.retryFromMessage = retryFromMessage;
+window.rateMessage = rateMessage;
+window.showSource = showSource;
+window.navigateToFeature = navigateToFeature;
+
+// Voice
+window.openVoiceOverlay = openVoiceOverlay;
+window.closeVoiceOverlay = closeVoiceOverlay;
+window.cancelVoice = cancelVoice;
+window.sendVoiceMessage = sendVoiceMessage;
+window.toggleAudioRecording = toggleAudioRecording;
+window.speakMessage = speakMessage;
+window.openVoiceSettings = openVoiceSettings;
+window.closeVoiceSettings = closeVoiceSettings;
+window.onAutoSpeakChange = onAutoSpeakChange;
+window.onVoiceSelect = onVoiceSelect;
+window.onRateChange = onRateChange;
+window.onPitchChange = onPitchChange;
+window.toggleAutoSpeak = toggleAutoSpeak;
+window.testVoice = testVoice;
+window.playAudioMessage = playAudioMessage;
+
+window.__EcoGenius = {
+  CONFIG: CONFIG,
+  STATE: STATE,
+  FEATURES: FEATURES,
+  KNOWLEDGE: KNOWLEDGE,
+  VoiceOutput: VoiceOutput,
+  VoiceInput: VoiceInput,
+  AudioRecorder: AudioRecorder,
+  dashboardStats: loadDashboardStats,
+  version: CONFIG.version
+};
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+
+})();
+</script>
+</body>
+</html>

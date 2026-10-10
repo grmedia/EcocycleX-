@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn More — EcoCycle X</title>
+    <meta name="description" content="Discover how EcoCycle X uses AI, smart recycling, and circular economy technology to turn waste into value. Learn about our nine core systems and future vision.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --forest-950:#040a06;
+            --forest-900:#0a1f0e;
+            --forest-800:#0f2b14;
+            --forest-700:#1a4a2a;
+            --forest-600:#2d6a3e;
+            --forest-500:#3f8c55;
+            --forest-400:#5aad72;
+            --forest-300:#7ccd92;
+            --forest-200:#a8e6b8;
+            --forest-100:#d4f3dd;
+            --forest-50:#edf9f0;
+            --emerald:#059669;
+            --emerald-dark:#047857;
+            --emerald-light:#10b981;
+            --emerald-glow:#34d399;
+            --gold:#f59e0b;
+            --gold-dark:#d97706;
+            --gold-light:#fbbf24;
+            --gold-pale:#fde68a;
+            --slate-900:#0f172a;
+            --slate-800:#1e293b;
+            --slate-700:#334155;
+            --slate-500:#64748b;
+            --slate-400:#94a3b8;
+            --slate-300:#cbd5e1;
+            --slate-200:#e2e8f0;
+            --white:#ffffff;
+            --off-white:#f7faf8;
+            --bg-base:#0b1120;
+            --bg-card:rgba(255,255,255,0.04);
+            --bg-glass:rgba(15,23,42,0.72);
+            --border-glass:rgba(255,255,255,0.10);
+            --border-glass-strong:rgba(255,255,255,0.18);
+            --shadow-sm:0 2px 8px rgba(0,20,0,0.08);
+            --shadow-md:0 8px 30px rgba(0,20,0,0.12);
+            --shadow-lg:0 20px 60px rgba(0,20,0,0.20);
+            --shadow-xl:0 40px 80px rgba(0,20,0,0.30);
+            --shadow-glow:0 0 50px rgba(16,185,129,0.25);
+            --shadow-gold:0 8px 30px rgba(245,158,11,0.25);
+            --radius-sm:8px;
+            --radius-md:16px;
+            --radius-lg:24px;
+            --radius-xl:32px;
+            --radius-full:9999px;
+            --transition:0.3s cubic-bezier(0.4,0,0.2,1);
+            --transition-bounce:0.5s cubic-bezier(0.34,1.56,0.64,1);
+            --font:'Inter',sans-serif;
+            --max-width:1280px;
+            --nav-height:76px;
+            --gradient-primary:linear-gradient(135deg,#059669,#047857);
+            --gradient-accent:linear-gradient(135deg,#f59e0b,#fbbf24);
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+        body{font-family:var(--font);background:var(--bg-base);color:var(--slate-200);line-height:1.6;overflow-x:hidden;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;position:relative}
+        img{max-width:100%;display:block}
+        a{text-decoration:none;color:inherit;transition:var(--transition)}
+        button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
+        ul{list-style:none}
+        section{position:relative;padding:80px 0;overflow:hidden}
+        .container{max-width:var(--max-width);margin:0 auto;padding:0 20px}
+        .text-center{text-align:center}
+        .flex{display:flex}
+        .flex-col{flex-direction:column}
+        .items-center{align-items:center}
+        .justify-between{justify-content:space-between}
+        .gap-1{gap:8px}
+        .gap-2{gap:16px}
+        .gap-3{gap:24px}
+        .gap-4{gap:32px}
+        .mt-1{margin-top:8px}
+        .mt-2{margin-top:16px}
+        .mt-3{margin-top:24px}
+        .mt-4{margin-top:32px}
+        .mb-1{margin-bottom:8px}
+        .mb-2{margin-bottom:16px}
+        .mb-3{margin-bottom:24px}
+        .mb-4{margin-bottom:32px}
+        .text-gradient{background:linear-gradient(135deg,var(--emerald-light),var(--gold-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+        .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(16,185,129,0.15);color:var(--emerald-light);border:1px solid rgba(16,185,129,0.10)}
+        .badge-gold{background:rgba(245,158,11,0.15);color:var(--gold-light);border-color:rgba(245,158,11,0.10)}
+        .badge-blue{background:rgba(59,130,246,0.15);color:#60a5fa;border-color:rgba(59,130,246,0.10)}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 28px;border-radius:var(--radius-full);font-weight:600;font-size:0.95rem;transition:var(--transition-bounce);border:none;cursor:pointer;text-align:center;line-height:1.2;min-height:52px;position:relative;overflow:hidden;text-decoration:none;will-change:transform}
+        .btn:active{transform:scale(0.95)}
+        .btn-primary{background:var(--gradient-primary);color:var(--white);box-shadow:0 4px 20px rgba(5,150,105,0.35)}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(5,150,105,0.50)}
+        .btn-accent{background:var(--gradient-accent);color:var(--forest-950);box-shadow:0 4px 20px rgba(245,158,11,0.30)}
+        .btn-accent:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,158,11,0.45)}
+        .btn-outline{background:transparent;color:var(--forest-300);border:1.5px solid var(--forest-400)}
+        .btn-outline:hover{background:var(--forest-400);color:var(--forest-950);transform:translateY(-2px)}
+        .btn-lg{padding:17px 36px;font-size:1.05rem;min-height:58px}
+        .btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);animation:rippleEffect 0.6s ease-out;pointer-events:none;transform:scale(0)}
+        @keyframes rippleEffect{to{transform:scale(4);opacity:0}}
+
+        #scrollProgress{position:fixed;top:0;left:0;height:3px;background:var(--gradient-primary);width:0%;z-index:10001;transition:width 0.1s}
+        #backToTop{position:fixed;bottom:30px;right:30px;width:48px;height:48px;border-radius:50%;background:var(--gradient-primary);color:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:var(--shadow-lg);z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;transform:translateY(20px);cursor:pointer}
+        #backToTop.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+        #backToTop:hover{transform:translateY(-4px)}
+
+        .menu-panel{position:fixed;top:0;right:-100%;width:100%;max-width:420px;height:100vh;background:rgba(10,15,27,0.98);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:10002;transition:right 0.4s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;padding:20px;border-left:1px solid rgba(255,255,255,0.08)}
+        .menu-panel.open{right:0}
+        .menu-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+        .menu-close{font-size:1.8rem;color:var(--slate-400);cursor:pointer;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+        .menu-close:hover{background:rgba(255,255,255,0.05);color:white}
+        .menu-links{display:flex;flex-direction:column;gap:4px}
+        .menu-link{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:var(--radius-md);color:var(--slate-300);font-weight:500;transition:var(--transition)}
+        .menu-link:hover,.menu-link.active{background:rgba(16,185,129,0.08);color:var(--emerald-light)}
+        .menu-link i{width:22px;text-align:center}
+
+        .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-height);z-index:10000;background:rgba(10,15,27,0.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,0.05);transition:var(--transition)}
+        .nav.scrolled{background:rgba(5,20,15,0.95);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+        .nav .container{display:flex;align-items:center;justify-content:space-between;height:100%}
+        .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.4rem;color:var(--white)}
+        .logo-icon{width:44px;height:44px;border-radius:14px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:white;box-shadow:0 0 20px rgba(5,150,105,0.4)}
+        .logo-icon i{animation:spinSlow 8s linear infinite}
+        @keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        .logo span{color:var(--emerald-light)}
+        .nav-links{display:flex;gap:4px}
+        .nav-link{padding:8px 16px;border-radius:var(--radius-full);font-weight:500;font-size:0.9rem;color:var(--slate-300);transition:var(--transition);cursor:pointer}
+        .nav-link:hover,.nav-link.active{color:var(--emerald-light);background:rgba(16,185,129,0.08)}
+        .nav-actions{display:flex;gap:8px;align-items:center}
+        .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:12px}
+        .hamburger span{width:24px;height:2px;background:var(--slate-300);border-radius:2px;transition:var(--transition)}
+        .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);background:var(--emerald-light)}
+        .hamburger.open span:nth-child(2){opacity:0}
+        .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);background:var(--emerald-light)}
+
+        .hero{position:relative;min-height:100vh;display:flex;align-items:center;padding-top:var(--nav-height);background:linear-gradient(135deg,#040a06 0%,#0a1f0e 30%,#0f2b14 60%,#0b1120 100%);overflow:hidden}
+        .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(16,185,129,0.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,158,11,0.06) 0%,transparent 50%);pointer-events:none;z-index:0}
+        .hero-particles{position:absolute;inset:0;z-index:1;pointer-events:none}
+        .particle{position:absolute;border-radius:50%;background:var(--emerald-glow);opacity:0.2;animation:floatParticle 8s infinite ease-in-out}
+        @keyframes floatParticle{0%,100%{transform:translateY(0) translateX(0);opacity:0.2}25%{transform:translateY(-30px) translateX(15px);opacity:0.5}50%{transform:translateY(-10px) translateX(-10px);opacity:0.3}75%{transform:translateY(-40px) translateX(20px);opacity:0.6}}
+        .hero-content{position:relative;z-index:2;max-width:700px}
+        .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 12px;border-radius:var(--radius-full);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.15);color:var(--emerald-light);font-size:0.8rem;font-weight:600;letter-spacing:0.05em;margin-bottom:20px;animation:fadeInUp 0.8s ease-out forwards;opacity:0}
+        .hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.05;letter-spacing:-0.04em;color:var(--white);margin-bottom:20px;animation:fadeInUp 0.8s ease-out 0.15s forwards;opacity:0}
+        .hero p{font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,0.7);max-width:600px;margin-bottom:32px;animation:fadeInUp 0.8s ease-out 0.3s forwards;opacity:0}
+        .hero-actions{display:flex;gap:12px;flex-wrap:wrap;animation:fadeInUp 0.8s ease-out 0.45s forwards;opacity:0}
+        .hero-strip{display:flex;gap:16px;flex-wrap:wrap;margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);animation:fadeInUp 0.8s ease-out 0.6s forwards;opacity:0}
+        .hero-strip span{font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.05em}
+        .hero-visual{position:absolute;top:50%;right:0;transform:translateY(-50%);width:45%;max-width:600px;z-index:2;pointer-events:none}
+        .recycle-symbol{position:relative;width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 30px rgba(16,185,129,0.4))}
+        .recycle-symbol .ring{position:absolute;border-radius:50%;border:2px solid rgba(16,185,129,0.4);animation:rotateRing 20s linear infinite}
+        .recycle-symbol .ring.ring-1{width:85%;height:85%;border-color:rgba(16,185,129,0.3)}
+        .recycle-symbol .ring.ring-2{width:70%;height:70%;border-color:rgba(245,158,11,0.4);animation-direction:reverse;animation-duration:15s}
+        .recycle-symbol .ring.ring-3{width:55%;height:55%;border-color:rgba(16,185,129,0.5)}
+        .recycle-symbol .core{width:40%;height:40%;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.6),rgba(4,120,87,0.8));box-shadow:0 0 60px rgba(16,185,129,0.5);animation:pulseGlow 3s infinite}
+        @keyframes rotateRing{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.3)}50%{box-shadow:0 0 50px rgba(16,185,129,0.7)}}
+        .floating-card{position:absolute;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-md);padding:12px 16px;box-shadow:var(--shadow-lg);font-size:0.8rem;color:var(--slate-200);display:flex;flex-direction:column;gap:4px;min-width:160px;animation:floatCard 6s ease-in-out infinite;pointer-events:auto;cursor:default}
+        .floating-card .label{font-size:0.7rem;color:rgba(255,255,255,0.5)}
+        .floating-card .value{font-weight:600;color:var(--emerald-light)}
+        .floating-card.demo::after{content:'DEMO';font-size:0.6rem;background:rgba(245,158,11,0.2);color:var(--gold-light);padding:2px 8px;border-radius:var(--radius-full);margin-left:4px}
+        .floating-card.estimate::after{content:'AI ESTIMATE';font-size:0.6rem;background:rgba(59,130,246,0.2);color:#60a5fa;padding:2px 8px;border-radius:var(--radius-full);margin-left:4px}
+        .card-1{top:10%;left:-5%;animation-delay:0s}
+        .card-2{top:25%;right:-8%;animation-delay:1s}
+        .card-3{bottom:15%;left:-10%;animation-delay:2s}
+        .card-4{bottom:30%;right:-5%;animation-delay:3s}
+        .card-5{top:50%;left:-3%;animation-delay:4s}
+        @keyframes floatCard{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-15px) rotate(1deg)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+        .curve-bottom{position:absolute;bottom:-1px;left:0;width:100%;overflow:hidden;line-height:0}
+        .curve-bottom svg{width:100%;height:60px}
+
+        .section-heading{text-align:center;max-width:700px;margin:0 auto 60px}
+        .section-heading h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.02em;color:var(--white)}
+        .section-heading p{color:rgba(255,255,255,0.6);margin-top:12px}
+
+        .feature-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border-glass);transition:var(--transition-bounce);cursor:pointer;position:relative;overflow:hidden}
+        .feature-card:hover{background:rgba(255,255,255,0.06);border-color:var(--border-glass-strong);transform:translateY(-4px);box-shadow:var(--shadow-md)}
+        .feature-card .icon{width:48px;height:48px;border-radius:14px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:white;margin-bottom:16px}
+        .feature-card h3{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:8px}
+        .feature-card p{font-size:0.85rem;color:rgba(255,255,255,0.6)}
+
+        /* Enhanced scroll animations */
+        .reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease,transform 0.8s ease}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+        .reveal-left{opacity:0;transform:translateX(-60px);transition:all 0.8s ease}
+        .reveal-left.visible{opacity:1;transform:translateX(0)}
+        .reveal-right{opacity:0;transform:translateX(60px);transition:all 0.8s ease}
+        .reveal-right.visible{opacity:1;transform:translateX(0)}
+        .reveal-scale{opacity:0;transform:scale(0.8);transition:all 0.8s ease}
+        .reveal-scale.visible{opacity:1;transform:scale(1)}
+        .reveal-rotate{opacity:0;transform:rotateY(90deg);transition:all 0.8s ease}
+        .reveal-rotate.visible{opacity:1;transform:rotateY(0)}
+        .reveal-blur{opacity:0;filter:blur(8px);transition:all 0.8s ease}
+        .reveal-blur.visible{opacity:1;filter:blur(0)}
+
+        @media (max-width:1024px){.hero-visual{display:none}.nav-links{display:none}.hamburger{display:flex}}
+        @media (max-width:480px){.hero h1{font-size:2rem}.hero p{font-size:0.95rem}.btn{padding:12px 20px;min-height:46px}}
+        @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}.particle,.floating-card,.ring,.core{animation:none!important}}
+    </style>
+</head>
+<body>
+    <div id="scrollProgress"></div>
+    <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+    <nav class="nav" id="nav">
+        <div class="container">
+            <a class="logo" href="index.html">
+                <div class="logo-icon"><i class="fas fa-recycle"></i></div>
+                <span>ECO<span style="color:var(--emerald-light)">CYCLE</span> X</span>
+            </a>
+            <div class="nav-links">
+                <a href="#what" class="nav-link">What is EcoCycle X?</a>
+                <a href="#systems" class="nav-link">9 Systems</a>
+                <a href="#how" class="nav-link">How It Works</a>
+                <a href="#guide" class="nav-link">Guide</a>
+                <a href="#who" class="nav-link">Who Can Use</a>
+            </div>
+            <div class="nav-actions">
+                <a href="dashboard.html" class="btn btn-outline btn-sm">Dashboard</a>
+                <button class="hamburger" id="hamburger" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="menu-panel" id="menuPanel">
+        <div class="menu-panel-header">
+            <a class="logo" href="index.html" style="font-size:1.2rem;">
+                <div class="logo-icon" style="width:38px;height:38px;"><i class="fas fa-recycle"></i></div>
+                <span>ECO<span style="color:var(--emerald-light)">CYCLE</span> X</span>
+            </a>
+            <button class="menu-close" id="menuClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="menu-links">
+            <a href="dashboard.html" class="menu-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            <a href="ecoscan.html" class="menu-link"><i class="fas fa-camera"></i> EcoScan AI</a>
+            <a href="ecomarket.html" class="menu-link"><i class="fas fa-store"></i> EcoMarket</a>
+            <a href="ecocollect.html" class="menu-link"><i class="fas fa-truck"></i> EcoCollect</a>
+            <a href="ecowallet.html" class="menu-link"><i class="fas fa-wallet"></i> EcoWallet</a>
+            <a href="ecoconnect.html" class="menu-link"><i class="fas fa-network-wired"></i> EcoConnect</a>
+            <a href="ecogenius.html" class="menu-link"><i class="fas fa-brain"></i> EcoGenius</a>
+            <a href="ecosmart.html" class="menu-link"><i class="fas fa-microchip"></i> EcoSmart</a>
+            <a href="ecoimpact.html" class="menu-link"><i class="fas fa-leaf"></i> EcoImpact</a>
+            <a href="ecocommand.html" class="menu-link"><i class="fas fa-satellite"></i> EcoCommand</a>
+            <a href="ecoaccount.html" class="menu-link"><i class="fas fa-id-card"></i> EcoAccount</a>
+            <a href="learn-more.html" class="menu-link active"><i class="fas fa-info-circle"></i> Learn More</a>
+            <a href="settings.html" class="menu-link"><i class="fas fa-cog"></i> Settings</a>
+            <a href="help.html" class="menu-link"><i class="fas fa-question-circle"></i> Help</a>
+        </div>
+    </div>
+
+    <section class="hero" id="home">
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge"><i class="fas fa-info-circle"></i> LEARN MORE • ECOCYCLE X</div>
+                <h1>WELCOME TO <span class="text-gradient">ECOCYCLE X</span></h1>
+                <p><strong>NOTHING IS WASTE. EVERYTHING HAS VALUE.</strong><br>EcoCycle X connects artificial intelligence, people, recycling, collections, marketplaces, smart technology and environmental data to help turn waste into value.</p>
+                <div class="hero-actions">
+                    <a href="#what" class="btn btn-primary btn-lg"><i class="fas fa-arrow-down"></i> Explore How It Works</a>
+                    <a href="dashboard.html" class="btn btn-outline btn-lg"><i class="fas fa-chart-pie"></i> Open Dashboard</a>
+                </div>
+                <div class="hero-strip">
+                    <span>SCAN</span><span>•</span><span>IDENTIFY</span><span>•</span><span>VALUE</span><span>•</span><span>CONNECT</span><span>•</span><span>TRANSFORM</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="recycle-symbol">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                <div class="core"></div>
+            </div>
+            <div class="floating-card card-1 demo"><span class="label">AI SCAN</span><span class="value">Plastic Bottle</span></div>
+            <div class="floating-card card-2 estimate"><span class="label">MATERIAL</span><span class="value">PET — Recyclable</span></div>
+            <div class="floating-card card-3 demo"><span class="label">WEIGHT</span><span class="value">~250g (AI Estimate)</span></div>
+            <div class="floating-card card-4"><span class="label">VALUE</span><span class="value">$0.20 (Market Est.)</span></div>
+            <div class="floating-card card-5"><span class="label">ACTION</span><span class="value">Sell / Recycle</span></div>
+        </div>
+        <div class="curve-bottom"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60"><path fill="#0b1120" d="M0,0 C360,50 1080,50 1440,0 L1440,60 L0,60 Z"/></svg></div>
+    </section>
+
+    <section id="what" style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>WHAT IS ECOCYCLE X?</h2>
+                <p>EcoCycle X is not just a recycling app — it is a <span class="text-gradient">digital circular‑economy ecosystem</span>. It helps you identify waste, understand what can be done with it, discover its potential value, connect with buyers and collectors, request collections, earn from recoverable materials, learn about sustainability, and track your environmental contribution.</p>
+            </div>
+            <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;">
+                <div class="feature-card reveal-left"><div class="icon"><i class="fas fa-camera"></i></div><h3>AI Waste Scanning</h3><p>Identify materials and recyclability instantly.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon"><i class="fas fa-store"></i></div><h3>Marketplace</h3><p>Buy, sell, and trade recyclable materials.</p></div>
+                <div class="feature-card reveal-right"><div class="icon"><i class="fas fa-truck"></i></div><h3>Smart Collections</h3><p>Request pickups from verified collectors.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon"><i class="fas fa-wallet"></i></div><h3>EcoWallet</h3><p>Manage earnings, points, and rewards.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon"><i class="fas fa-leaf"></i></div><h3>Impact Tracking</h3><p>See your environmental contribution.</p></div>
+                <div class="feature-card reveal-left"><div class="icon"><i class="fas fa-microchip"></i></div><h3>Smart Technology</h3><p>Smart bins, sensors, and connected devices.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:linear-gradient(180deg,#0b1120,#0a1f0e);">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>THE PROBLEM ECOCYCLE X SOLVES</h2>
+                <p>Waste is treated only as something to throw away. People don't know which materials are recyclable, where to find buyers, or how to manage waste efficiently. Limited data leads to missed opportunities, illegal dumping, and environmental harm.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+                <div class="feature-card reveal-scale"><div class="icon">❓</div><h3>Confusion</h3><p>Unclear what can be recycled.</p></div>
+                <div class="feature-card reveal-left"><div class="icon">🔍</div><h3>No Connections</h3><p>Hard to find buyers or recyclers.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">🚛</div><h3>Inefficient Pickups</h3><p>Collections not optimised.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon">📊</div><h3>No Data</h3><p>Lack of insights for improvement.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon">🏚️</div><h3>Illegal Dumping</h3><p>No easy way to report problems.</p></div>
+                <div class="feature-card reveal"><div class="icon">💰</div><h3>Missed Value</h3><p>Recoverable materials wasted.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>FROM WASTE TO VALUE — THE JOURNEY</h2>
+                <p>Follow the circular path that turns discarded items into opportunities.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;" class="reveal">
+                <span class="badge">WASTE</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">AI IDENTIFICATION</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">MEASUREMENT</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">VALUE</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">BEST ACTION</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">CONNECTION</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">COLLECTION</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">RECYCLING/REUSE</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">EARNINGS</span> <i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                <span class="badge">IMPACT</span>
+            </div>
+            <div class="reveal-scale" style="text-align:center;margin-top:40px;">
+                <div style="display:inline-block;position:relative;">
+                    <div style="width:200px;height:200px;border-radius:50%;border:2px dashed var(--emerald-light);display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-recycle" style="font-size:3rem;color:var(--emerald-light);"></i>
+                    </div>
+                </div>
+                <p class="text-muted mt-2">A continuous loop of value creation.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="systems" style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>THE 9 ECOCYCLE X SYSTEMS</h2>
+                <p>Each system is a powerful tool in your circular-economy toolkit.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
+                <a href="ecoscan.html" class="feature-card reveal-left"><div class="icon"><i class="fas fa-camera"></i></div><h3>1. EcoScan AI</h3><p>AI waste scanning. Photograph any item to identify material, category, recyclability, reusability, repairability, estimated weight, value, and recommended action.</p></a>
+                <a href="ecomarket.html" class="feature-card reveal-scale"><div class="icon"><i class="fas fa-store"></i></div><h3>2. EcoMarket</h3><p>Buy, sell, and trade recyclable materials. AI helps create listings and matches materials with potential buyers, recyclers, or manufacturers.</p></a>
+                <a href="ecocollect.html" class="feature-card reveal-right"><div class="icon"><i class="fas fa-truck"></i></div><h3>3. EcoCollect</h3><p>Request pickups from verified collectors and track collection status. Optimise routes with EcoRoute AI.</p></a>
+                <a href="ecowallet.html" class="feature-card reveal-blur"><div class="icon"><i class="fas fa-wallet"></i></div><h3>4. EcoWallet</h3><p>Secure digital value centre. Track verified sales, payments, rewards, EcoPoints, and transaction history. Future-ready for payment integrations.</p></a>
+                <a href="ecoconnect.html" class="feature-card reveal-rotate"><div class="icon"><i class="fas fa-network-wired"></i></div><h3>5. EcoConnect</h3><p>Network and map connecting households, schools, businesses, collectors, recyclers, repairers, EcoHubs, and environmental projects.</p></a>
+                <a href="ecogenius.html" class="feature-card reveal-left"><div class="icon"><i class="fas fa-brain"></i></div><h3>6. EcoGenius</h3><p>AI assistant for recycling guidance, reuse and upcycling ideas, repair suggestions, and green-entrepreneurship information.</p></a>
+                <a href="ecosmart.html" class="feature-card reveal-scale"><div class="icon"><i class="fas fa-microchip"></i></div><h3>7. EcoSmart</h3><p>Connects smart bins, digital scales, fill-level sensors, GPS devices, and vehicles to EcoCycle X for real-time monitoring and automation.</p></a>
+                <a href="ecoimpact.html" class="feature-card reveal-right"><div class="icon"><i class="fas fa-leaf"></i></div><h3>8. EcoImpact</h3><p>Combines EcoPoints, challenges, leaderboards, recycling history, and environmental-impact tracking.</p></a>
+                <a href="ecocommand.html" class="feature-card reveal-blur"><div class="icon"><i class="fas fa-satellite"></i></div><h3>9. EcoCommand</h3><p>Advanced analytics and environmental-intelligence centre for waste hotspots, collection patterns, and trends.</p></a>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>SUPPORTING TECHNOLOGIES</h2>
+                <p>These modules work within the core systems to enhance the experience.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+                <div class="feature-card reveal-left"><div class="icon">🚁</div><h3>EcoDrone</h3><p>Environmental monitoring and hotspot mapping (where legally and safely operated).</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">⚖️</div><h3>EcoScale</h3><p>Connected weighing for verified weight data.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">📦</div><h3>EcoTrack</h3><p>Material traceability through recycling journey.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon">🔔</div><h3>EcoAlert</h3><p>Smart notifications for events and updates.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon">📢</div><h3>EcoReport</h3><p>Community problem reporting (dumping, overflowing bins).</p></div>
+                <div class="feature-card reveal-left"><div class="icon">🏢</div><h3>EcoHub</h3><p>Network of recycling and circular-economy partners.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">💡</div><h3>EcoCreate</h3><p>AI-assisted upcycling and green-business ideas.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how" style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>HOW ECOCYCLE X WORKS</h2>
+                <p>Follow these simple steps to turn waste into value.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;">
+                <div class="feature-card reveal-left"><div class="icon">1</div><h3>Create EcoAccount</h3><p>Sign up and receive your unique EcoID.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">2</div><h3>Scan with EcoScan AI</h3><p>Photograph or upload an item.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">3</div><h3>AI Identifies Material</h3><p>Recycling, reuse, repair, sell, or trade options provided.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon">4</div><h3>Review Weight & Value</h3><p>Camera estimates labelled as AI ESTIMATE unless verified.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon">5</div><h3>Choose Action</h3><p>Sell on EcoMarket, request EcoCollect, or get advice.</p></div>
+                <div class="feature-card reveal"><div class="icon">6</div><h3>Complete Transaction</h3><p>Verified collection or sale updates your wallet and impact.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="guide" style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>HOW TO USE ECOCYCLE X</h2>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+                <div class="feature-card reveal-left"><div class="icon"><i class="fas fa-camera"></i></div><h3>Scan Waste</h3><p>Open EcoScan AI, take a photo, get instant material info.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon"><i class="fas fa-chart-line"></i></div><h3>Interpret Result</h3><p>Check recyclability, value, weight, and recommended action.</p></div>
+                <div class="feature-card reveal-right"><div class="icon"><i class="fas fa-store"></i></div><h3>Sell Materials</h3><p>Send item to EcoMarket and create a listing in seconds.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon"><i class="fas fa-truck"></i></div><h3>Request Collection</h3><p>Use EcoCollect to schedule a pickup from a verified collector.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon"><i class="fas fa-map-marker-alt"></i></div><h3>Find Locations</h3><p>EcoConnect shows recycling centres, collectors, and EcoHubs.</p></div>
+                <div class="feature-card reveal-left"><div class="icon"><i class="fas fa-brain"></i></div><h3>Ask EcoGenius</h3><p>Get advice on reuse, repair, and green business ideas.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon"><i class="fas fa-star"></i></div><h3>Earn EcoPoints</h3><p>Participate in challenges, report issues, and recycle more.</p></div>
+                <div class="feature-card reveal-right"><div class="icon"><i class="fas fa-chart-pie"></i></div><h3>View Impact</h3><p>Track your recovered materials and environmental contribution.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon"><i class="fas fa-bars"></i></div><h3>Navigate</h3><p>Use the hamburger menu to switch between systems.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>SEE IT IN ACTION</h2>
+                <p>Example: Plastic Bottle</p>
+            </div>
+            <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;">
+                <div class="reveal-left">
+                    <div style="background:rgba(255,255,255,0.03);border-radius:24px;padding:30px;border:1px solid var(--border-glass);">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;"><i class="fas fa-camera" style="color:var(--emerald-light);"></i> Scan Bottle</div>
+                        <div style="background:#000;border-radius:16px;height:200px;position:relative;overflow:hidden;">
+                            <div style="position:absolute;left:50%;top:0;width:2px;height:100%;background:linear-gradient(to bottom,transparent,var(--emerald-glow),transparent);animation:scanBeam 2s linear infinite;"></div>
+                            <i class="fas fa-bottle-water" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:5rem;color:rgba(255,255,255,0.1);"></i>
+                        </div>
+                        <div class="mt-3">
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <span class="badge">AI ESTIMATE</span><span class="badge badge-blue">DEMO</span>
+                            </div>
+                            <p style="margin-top:12px;font-weight:600;color:var(--white);">Object Detected: Plastic Bottle</p>
+                            <p>Material: PET — Recyclable: Yes</p>
+                            <p>Estimated Weight: 250g — Value: $0.20</p>
+                            <p>Recommended Action: Sell / Recycle</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <h3 style="font-size:1.8rem;font-weight:700;color:var(--white);">AI cannot guarantee exact weight from a camera.</h3>
+                    <p style="color:rgba(255,255,255,0.6);">Until a connected scale or verified weighing station provides actual weight, camera-based estimates are labelled <strong>AI ESTIMATE</strong>.</p>
+                    <p class="mt-2"><strong>Another example:</strong> Old electronic device → EcoCycle X might recommend repair, resale, responsible recycling, or special handling, not just scrap.</p>
+                    <a href="ecoscan.html" class="btn btn-primary mt-3">Try EcoScan AI</a>
+                </div>
+            </div>
+            <style>@keyframes scanBeam{0%{top:0}100%{top:100%}}</style>
+        </div>
+    </section>
+
+    <section id="who" style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>WHO CAN USE ECOCYCLE X?</h2>
+                <p>Designed for everyone in the circular economy.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+                <div class="feature-card reveal-left"><div class="icon">👤</div><h3>Individuals</h3><p>Sort and sell recyclables from home.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">🏠</div><h3>Households</h3><p>Reduce waste and earn rewards.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">🎓</div><h3>Students</h3><p>Learn and participate in challenges.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon">🏫</div><h3>Schools & Eco Clubs</h3><p>Run recycling programmes and compete.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon">🚛</div><h3>Collectors</h3><p>Find jobs and build reputation.</p></div>
+                <div class="feature-card reveal-left"><div class="icon">🏭</div><h3>Recyclers & Businesses</h3><p>Source materials and manage waste.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">💡</div><h3>Entrepreneurs</h3><p>Discover green business opportunities.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">🌍</div><h3>NGOs & Organisations</h3><p>Coordinate environmental projects.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>WHY ECOCYCLE X IS DIFFERENT</h2>
+                <p>Most people see waste. EcoCycle X sees opportunity.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;">
+                <div class="feature-card reveal-left"><div class="icon">🔗</div><h3>All-in-One Ecosystem</h3><p>Identification, marketplace, collection, wallet, and impact in one platform.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">🤖</div><h3>AI at the Core</h3><p>Smart scanning, recommendations, and matching.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">📡</div><h3>IoT Connected</h3><p>Smart bins, scales, and sensors integrated for real-time data.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon">🌱</div><h3>Impact Tracking</h3><p>See your environmental contribution clearly.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>THE TECHNOLOGY BEHIND ECOCYCLE X</h2>
+                <p>Explained simply for everyone.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+                <div class="feature-card reveal-left"><div class="icon">📷</div><h3>AI & Computer Vision</h3><p>Identifies materials from photos.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">🛒</div><h3>Digital Marketplace</h3><p>Connects buyers and sellers.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">🗺️</div><h3>Map Technology</h3><p>Locates recyclers and EcoHubs.</p></div>
+                <div class="feature-card reveal-blur"><div class="icon">📡</div><h3>Smart Bins & Sensors</h3><p>Fill levels and environmental monitoring.</p></div>
+                <div class="feature-card reveal-rotate"><div class="icon">⚖️</div><h3>Digital Scales</h3><p>Provide verified weights when connected.</p></div>
+                <div class="feature-card reveal-left"><div class="icon">🚁</div><h3>Drone Data (future)</h3><p>Environmental monitoring and hotspot mapping.</p></div>
+                <div class="feature-card reveal-scale"><div class="icon">📊</div><h3>Analytics</h3><p>Turns data into environmental insights.</p></div>
+                <div class="feature-card reveal-right"><div class="icon">💳</div><h3>Future Payments</h3><p>Ready for approved payment providers.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>SMART BIN EXAMPLE</h2>
+                <p>How smart bins are integrated into the EcoCycle X network.</p>
+            </div>
+            <div class="text-center reveal">
+                <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+                    <span class="badge">SMART BIN</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">FILL-LEVEL DATA</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">ECO COMMAND</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">COLLECTION</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">RECYCLING</span>
+                </div>
+                <p class="mt-3">Smart bins report their fill level, triggering automatic collection alerts and route optimization.</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>CIRCULAR ECONOMY</h2>
+                <p>Materials keep moving instead of ending up in disposal.</p>
+            </div>
+            <div class="text-center reveal-scale">
+                <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+                    <span class="badge">WASTE</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">COLLECTION</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">RECYCLING</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">RAW MATERIAL</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">MANUFACTURING</span><i class="fas fa-arrow-right" style="color:var(--emerald-light);"></i>
+                    <span class="badge">NEW PRODUCTS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0b1120;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>FROM ONE ITEM TO A WHOLE COUNTRY</h2>
+                <p>Our vision is to connect individual users, collectors, recyclers, businesses, schools, smart bins, and environmental data into a smarter national recycling ecosystem.</p>
+            </div>
+            <blockquote class="reveal-left" style="background:rgba(16,185,129,0.08);border-left:4px solid var(--emerald-light);padding:20px;border-radius:8px;font-size:1.2rem;color:var(--white);">
+                “A Zimbabwe where waste is no longer seen only as something to throw away, but as a resource that can create income, jobs, innovation, cleaner communities and a more sustainable future.”
+            </blockquote>
+        </div>
+    </section>
+
+    <section style="background:#0a1f0e;">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>OUR FUTURE</h2>
+                <p>EcoCycle X can evolve toward AI predictions, smart collection routes, national dashboards, and expansion across Africa and internationally.</p>
+            </div>
+            <div class="text-center reveal-right">
+                <a href="dashboard.html" class="btn btn-primary btn-lg"><i class="fas fa-chart-pie"></i> Open Dashboard</a>
+                <a href="ecoscan.html" class="btn btn-accent btn-lg"><i class="fas fa-camera"></i> Scan Your First Item</a>
+            </div>
+        </div>
+    </section>
+
+    <section style="background:#0b1120;">
+        <div class="container text-center">
+            <div class="section-heading reveal">
+                <h2>START USING ECOCYCLE X TODAY</h2>
+            </div>
+            <div class="hero-actions" style="justify-content:center;" class="reveal">
+                <a href="account.html" class="btn btn-primary btn-lg"><i class="fas fa-user-plus"></i> Create EcoAccount</a>
+                <a href="ecoscan.html" class="btn btn-outline btn-lg"><i class="fas fa-camera"></i> Scan Waste</a>
+                <a href="dashboard.html" class="btn btn-accent btn-lg"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background:#040a06;padding:40px 0 20px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+        <div class="container">
+            <a class="logo" href="index.html" style="display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:1.4rem;color:var(--white);margin-bottom:8px;">
+                <div class="logo-icon" style="width:36px;height:36px;"><i class="fas fa-recycle"></i></div>
+                <span>ECO<span style="color:var(--emerald-light)">CYCLE</span> X</span>
+            </a>
+            <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;">Nothing Is Waste. Everything Has Value.</p>
+            <p style="color:rgba(255,255,255,0.3);font-size:0.8rem;margin-top:4px;">SCAN. SORT. CONNECT. EARN. TRANSFORM.</p>
+            <p style="color:rgba(255,255,255,0.25);font-size:0.75rem;margin-top:16px;">© 2026 EcoCycle X. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                scrollProgress.style.width = scrollPercent + '%';
+                if (scrollTop > 500) backToTop.classList.add('visible');
+                else backToTop.classList.remove('visible');
+                const nav = document.getElementById('nav');
+                if (scrollTop > 50) nav.classList.add('scrolled');
+                else nav.classList.remove('scrolled');
+            });
+            backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+            const hamburger = document.getElementById('hamburger');
+            const menuPanel = document.getElementById('menuPanel');
+            const menuClose = document.getElementById('menuClose');
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('open');
+                menuPanel.classList.toggle('open');
+            });
+            menuClose.addEventListener('click', () => {
+                hamburger.classList.remove('open');
+                menuPanel.classList.remove('open');
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                        hamburger.classList.remove('open');
+                        menuPanel.classList.remove('open');
+                    }
+                });
+            });
+
+            // Enhanced reveal observer for all animation classes
+            const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-rotate, .reveal-blur');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+            revealElements.forEach(el => observer.observe(el));
+
+            const particleContainer = document.getElementById('heroParticles');
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.width = (Math.random() * 5 + 2) + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDelay = Math.random() * 8 + 's';
+                p.style.animationDuration = (Math.random() * 10 + 6) + 's';
+                particleContainer.appendChild(p);
+            }
+
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    const rect = this.getBoundingClientRect();
+                    ripple.style.left = (e.clientX - rect.left) + 'px';
+                    ripple.style.top = (e.clientY - rect.top) + 'px';
+                    ripple.style.width = ripple.style.height = '20px';
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
